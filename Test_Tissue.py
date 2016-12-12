@@ -11,7 +11,7 @@ import cv2
 import time
 import math
 import numpy as np
-import LARC1 as rb
+import LARC2 as rb
 import random
 import serial
 import statistics
@@ -22,7 +22,7 @@ from copy import deepcopy
 
 ##-----------GLOBAL VARIABLES-----------##
 
-mainFrame = cv2.imread('image3.jpg')
+mainFrame = cv2.imread('image9.jpg')
 
 
 def main():
@@ -36,6 +36,10 @@ def main():
 	if cowFound:
 		print "Cow Found"
 		go,lL,lR,lT,theta = rb.isCowMilkeable(cowTissue,allSquares)
+		if go:
+			print "Cow can be milked"
+		else:
+			print "Cow cannot be milked"
 		A,B, theta = rb.ajusteDeCurvas(cowTissue)
 		mainFrame = rb.drawSlope(mainFrame,A,B)
 		mainFrame = rb.drawLimits(mainFrame,lL,lR,lT)

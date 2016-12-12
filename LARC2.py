@@ -89,6 +89,7 @@ class cowSquare:
 
    ##-----END of Class 'cowSquare'-----
 
+# clustering class NOT USED
 class cluster:
    ##-----------ATRIBUTES-----------##
    center = []
@@ -214,6 +215,7 @@ def distance(x1,y1,x2,y2):
 ##---------.-- DESSISION MAKING------------##
 #############################################
 # To take the last steps over dessions in dataflow
+
 
 def makeTissue(tCowSquares, tissue, epsilon, checkWith, corner, curLevel):
 
@@ -749,9 +751,10 @@ def drawGreatestTissue(frame,greatestTissue):
 
 def drawLimits(frame,left,right,y):
    font = cv2.FONT_HERSHEY_SIMPLEX
-   cv2.line(frame,(left,0),(left,480),(255,0,0),3)
-   cv2.line(frame,(right,0),(right,480),(255,0,0),3)
-   cv2.line(frame,(0,y),(640,y),(255,0,0),3)
+   cv2.line(frame,(left,0),(left,480),(0,200,0),3)
+   cv2.line(frame,(right,0),(right,480),(0,200,0),3)
+   cv2.line(frame,(0,y),(640,y),(0,200,0),3)
+
    cv2.putText(frame,("diff L: " + str(left)),(30,20), font, 0.8,(0,0,255),1)
    cv2.putText(frame,("diff R: " + str(640-right)),(30,50), font, 0.8,(0,0,255),1)
    cv2.putText(frame,("diff Top: " + str(y)),(30,80), font, 0.8,(0,0,255),1)
