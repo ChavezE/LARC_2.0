@@ -179,7 +179,6 @@ def findContours(img):
 # cowSquare(x,y,w,h,area)
 def getGoodSquares(contours,imgOriginal,thres):
 
-
    # ----VARIABLES----
    cowSquares = []   # This list is the one that is going to being returned
    # -----------------
@@ -212,11 +211,11 @@ def distance(x1,y1,x2,y2):
 
 
 #############################################
-##---------.-- DESSISION MAKING------------##
+##------------ DESSISION MAKING------------##
 #############################################
 # To take the last steps over dessions in dataflow
 
-
+# ONE OF THE MOST IMPORTANT FUNCTION
 def makeTissue(tCowSquares, tissue, epsilon, checkWith, corner, curLevel):
 
    if checkWith == 1:   # corner => topLeft
@@ -401,7 +400,6 @@ def ajusteDeCurvas(cSquares):
       
    return A,B,theta
 
-
 # Calculates and returns the limits of the cowlimitLeft, limitRight, topY
 # using maxLvl from Tissue
 def calcCowLimits(maxLvl):
@@ -489,12 +487,12 @@ def isThereACow(frame):
    
    return False,[],[]
 
+# INPUT: maximunLengthTissue found in isThereACow
+# OUTPUT : bool to go and milk the cow, limLeft, limRight, limTop
+# if tissue[0].getLevel() != tissue[1].getLevel() and tissue[1].getLevel() == tissue[2].getLevel():
+#  # To remove any noise that is higher than the cow
+#  tissue.pop(0)
 def isCowMilkeable(tissue,squares):
-   # INPUT: maximunLengthTissue found in isThereACow
-   # OUTPUT : bool to go and milk the cow, limLeft, limRight, limTop
-   # if tissue[0].getLevel() != tissue[1].getLevel() and tissue[1].getLevel() == tissue[2].getLevel():
-   #  # To remove any noise that is higher than the cow
-   #  tissue.pop(0)
 
    if tissue[0].getLevel() == tissue[1].getLevel() and tissue[1].getLevel() == tissue[2].getLevel():
       # Tissue has the 3 squares on the top...
@@ -567,14 +565,16 @@ def isCowMilkeable(tissue,squares):
    #  # Go milk the cow
    #  return True,limLeft,limRight,limTop,theta
 
-
+###########################################################################
 # THE FOLLOWING WERE CONSIDERABLE APPROACH IDEAD BUT NOT USED IN LARC 2016
+###########################################################################
 
+# This function is to implement the clustering algorithm 
+# PARAMETERS: number of clusters to search for, list of coordinates of the cow
+# and number of iterations before returning the final clusters
+# First, the list clusters is initialized with n number of Clusters
 def findClusters(cowRectangles,iterations,coordClusters):
-   # This function is to implement the clustering algorithm 
-   # PARAMETERS: number of clusters to search for, list of coordinates of the cow
-   # and number of iterations before returning the final clusters
-   # First, the list clusters is initialized with n number of Clusters
+
    clusters = []
    for iA in range(len(coordClusters)):
       cluster = Cluster(coordClusters[iA])
@@ -597,9 +597,10 @@ def findClusters(cowRectangles,iterations,coordClusters):
    
    return clusters
 
+# This function returnsa list of coords with all those
+# that have more than 2 neihbors in a specific radius
 def neighboors(cowSquares):
-   # This function returnsa list of coords with all those
-   # that have more than 2 neihbors in a specific radius
+
    radius = 100
    neighboors = []
    for i in range (len(cowSquares)):
@@ -616,11 +617,12 @@ def neighboors(cowSquares):
          neigh.append([xi,yi])
    return neigh
 
+# This function is to implement the clustering algorithm 
+# PARAMETERS: number of clusters to search for, list of coordinates of the cow
+# and number of iterations before returning the final clusters
+# First, the list clusters is initialized with n number of Clusters
 def findClusters(cowRectangles,iterations,coordClusters):
-   # This function is to implement the clustering algorithm 
-   # PARAMETERS: number of clusters to search for, list of coordinates of the cow
-   # and number of iterations before returning the final clusters
-   # First, the list clusters is initialized with n number of Clusters
+
    clusters = []
    for iA in range(len(coordClusters)):
       cluster = Cluster(coordClusters[iA])
@@ -643,9 +645,10 @@ def findClusters(cowRectangles,iterations,coordClusters):
    
    return clusters
 
+# This function is still on progress, hope to return well 
+# ordered body of cow in a convenient way 
 def getBody(cowRectangles,imgOriginal,totLines,epsilon):
-   # This function is still on progress, hope to return well 
-   # ordered body of cow in a convenient way 
+
    bodyLines = []
    singleLine = []
    yTest = cowRectangles[0][5]
@@ -677,8 +680,9 @@ def getBody(cowRectangles,imgOriginal,totLines,epsilon):
 ##-----------SECONDARY FUNCTIONS-----------##
 #############################################
 
+# This functions sorts a multivaraible list depending on the index specified
 def sortList(index,l): 
-   # This functions sorts a multivaraible list depending on the index specified
+
    l = sorted(l, key=lambda x:x[index], reverse=False) 
    
    return l
@@ -691,11 +695,12 @@ def findMedian(index,l):
    else:              
       return (l[len(l)/2][index] + l[len(l)/2 + 1][index])/2
 
-def boundingRectSort(allRect,criteria):
-   # This method will sort countours respect to Y or X coord of bounding Rectangle
+# This method will sort countours respect to Y or X coord of bounding Rectangle
    # Critieria defines whether X o Y is used DEFAULT IS y
    # This is always from lef to right of from top to bottom --> Reverse = False
    # Most of this is from here : http://www.pyimagesearch.com/2015/04/20/sorting-contours-using-python-and-opencv/
+def boundingRectSort(allRect,criteria):
+   
    i = 1
    if criteria == 'X' or criteria ==  'x':
       i = 0
