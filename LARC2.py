@@ -719,21 +719,21 @@ def boundingRectSort(allRect,criteria):
 def printContourCoords(cx,cy,x,y):
    print "Center: %d, %d   LeftTopCorner: %d, %d" % (cx,cy,x,y)
 
-def printCowSquares(imgOriginal,G,B,R,sqrs):
+def drawCowSquares(frame,G,B,R,sqrs):
    for sqr in sqrs:
       x = sqr.getX()
       y = sqr.getY()
       w = sqr.getW()
       h = sqr.getH()
-      cv2.rectangle(imgOriginal,(x,y),(x+w,y+h),(G,B,R),2)
-   # cv2.imshow('m',imgOriginal) 
+      cv2.rectangle(frame,(x,y),(x+w,y+h),(G,B,R),2)
+   return frame
 
 def drawSlope(frame,A,B):
    x1 = 0
    x2 = 600
    y1 = int(A*x1 + B)
    y2 = int(A*x2 + B)
-   cv2.line(frame,(x1,y1),(x2,y2),(0,0,255),3)
+   cv2.line(frame,(x1,y1),(x2,y2),(0,255,255),3)
 
    return frame
 

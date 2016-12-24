@@ -22,7 +22,8 @@ from copy import deepcopy
 
 ##-----------GLOBAL VARIABLES-----------##
 
-mainFrame = cv2.imread('image9.jpg')
+mainFrame = cv2.imread('cow1.jpg')
+mainFrame = cv2.resize(mainFrame,None,fx=0.20,fy=0.20,interpolation=cv2.INTER_AREA)
 
 
 def main():
@@ -32,7 +33,10 @@ def main():
 	equalizedFrame = cv2.equalizeHist(clearedImage)
 
 	cowFound, cowTissue, allSquares = rb.isThereACow(equalizedFrame)
+	mainFrame = rb.drawCowSquares(mainFrame,0,0,255,allSquares)
 	mainFrame = rb.drawGreatestTissue(mainFrame,cowTissue)
+	cv2.imshow('img',mainFrame)
+
 	if cowFound:
 		print "Cow Found"
 		go,lL,lR,lT,theta = rb.isCowMilkeable(cowTissue,allSquares)
@@ -45,9 +49,11 @@ def main():
 		mainFrame = rb.drawLimits(mainFrame,lL,lR,lT)
 
 		cv2.imshow('img',mainFrame)
-		cv2.waitKey(0)
 
-	
+	else:
+		print "Cow not found"
+
+	cv2.waitKey(0)
 ##-------------------------------------##
 ##---------RUNNIGING MAIN LOOP---------##
 ##-------------------------------------##
