@@ -216,12 +216,61 @@ def distance(x1,y1,x2,y2):
 # To take the last steps over dessions in dataflow
 
 # ONE OF THE MOST IMPORTANT FUNCTION
+# Description of the parameters:
+# tCowSquares -> Stores the remaining squares and it will decrease its size in 1 each time a new neighboor is found
+# tissue -> The current tissue that is being formed and that will be compared with greatestTissue 
+# epsilon -> is a parameter determined in the main module and is the margin of error when checking for neighboors
+# checkWith -> could have a value of 1, 2, 3, or 4 when searching for neighboors and it determines which corner of the 
+# square is being used and which is the one that need to be compared with. It could also be 0 but just when it is called
+# from the main module
+# corner -> is a coordinate that corresponds to a specific corner which is determined by the checkWith parameter
+# curLevel -> Determines the level of the square to keep track of where it was found inside the tissue
 def makeTissue(tCowSquares, tissue, epsilon, checkWith, corner, curLevel):
 
-   if checkWith == 1:   # corner => topLeft
+   if checkWith == 0:   # First call to the function
+      greatestTissue = []
+      tissue = []
+
+      while len(tCowSquares) > 0:
+         actSquare = tCowSquares.pop(0)
+         actSquare.setLevel(0)
+         tissue.append(actSquare)
+         makeTissue(tCowSquares, tissue, epsilon, 1, actSquare.getTopLeftC(), 0)
+         makeTissue(tCowSquares, tissue, epsilon, 2, actSquare.getTopRightC(), 0)
+         makeTissue(tCowSquares, tissue, epsilon, 3, actSquare.getBotLeftC(), 0)
+         makeTissue(tCowSquares, tissue, epsilon, 4, actSquare.getBotRightC(), 0)
+
+         # Compare the tissue that was formed with the current 'greatestTissue'
+         if len(tissue) > len(greatestTissue):
+            greatestTissue = deepcopy(tissue)
+         tissue[:] = []
+
+      greatestTissue = sorted(greatestTissue, key=lambda x:x.getLevel(), reverse=True)
+      iA = 0
+      # Remove those squares who are unique at a specific level
+      while iA < len(greatestTissue) and len(greatestTissue) > 1:
+         if(iA == len(greatestTissue) - 1):
+            if(greatestTissue[iA-1].getLevel() != greatestTissue[iA].getLevel()):
+               greatestTissue.pop(iA)
+            else:
+               iA += 1
+         elif(iA == 0):
+            if(greatestTissue[iA+1].getLevel() != greatestTissue[iA].getLevel()):
+               greatestTissue.pop(iA)
+            else:
+               iA += 1
+         else:
+            if(greatestTissue[iA-1].getLevel() != greatestTissue[iA].getLevel() and greatestTissue[iA+1].getLevel() != greatestTissue[iA].getLevel()):
+               greatestTissue.pop(iA)
+            else:
+               iA += 1
+         
+      return greatestTissue
+
+   elif checkWith == 1:   # corner => topLeft
       found = False     # Flag to check if the tissue found a neighboor
       # found2 = False
-      for i in range(len(tCowSquares)):    # Go over all the elements in 'tCowSquares' from 0 to len(cowSquares)-1
+      for i in range(len(tCowSquares)):    # Go over the remaining elements in 'tCowSquares' from 0 to len(cowSquares)-1
          cowSquare= tCowSquares[i]        # temporal square
          compareCoord = cowSquare.getBotRightC()   # use the corner of interest depending on the attribute 'checkWith'
          # compareCoord2 = cowSquare.getTopRightC()
@@ -231,25 +280,13 @@ def makeTissue(tCowSquares, tissue, epsilon, checkWith, corner, curLevel):
             tissue.append(cowSquare)  # Add 'cowSquare' to the list 'tissue'
             found = True
             tCowSquares.pop(i)
-            break
-         # if(distance(corner[0],corner[1],compareCoord2[0],compareCoord2[1]) > cowSquare.getW() * 0.75 and distance(corner[0],corner[1],compareCoord2[0],compareCoord2[1]) < cowSquare.getW() * 1.25 and abs(compareCoord2[1] - corner[1]) < 25):
-         #    cowSquare.setLevel(curLevel)   # Set the level of the square
-         #    tissue.append(cowSquare)  # Add 'cowSquare' to the list 'tissue'
-         #    found = True
-         #    tCowSquares.pop(i)
-         #    break        
+            break      
 
       if found:
          tempElement = tissue[len(tissue)-1]
          makeTissue(tCowSquares, tissue, epsilon, 1, tempElement.getTopLeftC(), curLevel + 1)
          makeTissue(tCowSquares, tissue, epsilon, 2, tempElement.getTopRightC(), curLevel + 1)
          makeTissue(tCowSquares, tissue, epsilon, 3, tempElement.getBotLeftC(), curLevel + 1)
-
-      # if found2:
-      #    tempElement = tissue[len(tissue)-1]
-      #    makeTissue(tCowSquares, tissue, epsilon, 1, tempElement.getTopLeftC(), curLevel)
-      #    makeTissue(tCowSquares, tissue, epsilon, 2, tempElement.getBotRightC(), curLevel)
-      #    makeTissue(tCowSquares, tissue, epsilon, 3, tempElement.getBotLeftC(), curLevel)
 
    elif checkWith == 2:   # corner => topRight
       found = False
@@ -267,12 +304,6 @@ def makeTissue(tCowSquares, tissue, epsilon, checkWith, corner, curLevel):
             tCowSquares.pop(i)
             break
 
-         # if(distance(corner[0],corner[1],compareCoord2[0],compareCoord2[1]) > cowSquare.getW() * 0.75 and distance(corner[0],corner[1],compareCoord2[0],compareCoord2[1]) < cowSquare.getW() * 1.25 and abs(compareCoord2[1] - corner[1]) < 25):
-         #    cowSquare.setLevel(curLevel)   # Set the level of the square
-         #    tissue.append(cowSquare)  # Add 'cowSquare' to the list 'tissue'
-         #    found = True
-         #    tCowSquares.pop(i)
-         #    break 
 
       if found:
          tempElement = tissue[len(tissue)-1]
@@ -280,11 +311,6 @@ def makeTissue(tCowSquares, tissue, epsilon, checkWith, corner, curLevel):
          makeTissue(tCowSquares, tissue, epsilon, 2, tempElement.getTopRightC(), curLevel + 1)
          makeTissue(tCowSquares, tissue, epsilon, 4, tempElement.getBotRightC(), curLevel + 1)
 
-      # if found2:
-      #    tempElement = tissue[len(tissue)-1]
-      #    makeTissue(tCowSquares, tissue, epsilon, 1, tempElement.getTopRightC(), curLevel)
-      #    makeTissue(tCowSquares, tissue, epsilon, 2, tempElement.getBotRightC(), curLevel)
-      #    makeTissue(tCowSquares, tissue, epsilon, 3, tempElement.getBotLeftC(), curLevel)
 
    elif checkWith == 3:   # corner => botLeft
       found = False
@@ -323,45 +349,6 @@ def makeTissue(tCowSquares, tissue, epsilon, checkWith, corner, curLevel):
          makeTissue(tCowSquares, tissue, epsilon, 2, tempElement.getTopRightC(), curLevel - 1)
          makeTissue(tCowSquares, tissue, epsilon, 3, tempElement.getBotLeftC(), curLevel - 1)
          makeTissue(tCowSquares, tissue, epsilon, 4, tempElement.getBotRightC(), curLevel - 1)
-   
-   elif checkWith == 0:   # First call to the function
-      greatestTissue = []
-      tissue = []
-
-      while len(tCowSquares) > 0:
-         actSquare = tCowSquares.pop(0)
-         actSquare.setLevel(0)
-         tissue.append(actSquare)
-         makeTissue(tCowSquares, tissue, epsilon, 1, actSquare.getTopLeftC(), 0)
-         makeTissue(tCowSquares, tissue, epsilon, 2, actSquare.getTopRightC(), 0)
-         makeTissue(tCowSquares, tissue, epsilon, 3, actSquare.getBotLeftC(), 0)
-         makeTissue(tCowSquares, tissue, epsilon, 4, actSquare.getBotRightC(), 0)
-
-         if len(tissue) > len(greatestTissue):
-            greatestTissue = deepcopy(tissue)
-         tissue[:] = []
-
-      greatestTissue = sorted(greatestTissue, key=lambda x:x.getLevel(), reverse=True)
-      iA = 0
-      # Remove those squares who are unique at a specific level
-      while iA < len(greatestTissue) and len(greatestTissue) > 1:
-         if(iA == len(greatestTissue) - 1):
-            if(greatestTissue[iA-1].getLevel() != greatestTissue[iA].getLevel()):
-               greatestTissue.pop(iA)
-            else:
-               iA += 1
-         elif(iA == 0):
-            if(greatestTissue[iA+1].getLevel() != greatestTissue[iA].getLevel()):
-               greatestTissue.pop(iA)
-            else:
-               iA += 1
-         else:
-            if(greatestTissue[iA-1].getLevel() != greatestTissue[iA].getLevel() and greatestTissue[iA+1].getLevel() != greatestTissue[iA].getLevel()):
-               greatestTissue.pop(iA)
-            else:
-               iA += 1
-         
-      return greatestTissue
 
 # cSquares is a multidimensional list: [[x1,y1],[x2,y2],...,[xN,yN]]
 # These lists and variables are used to calculate A and B
