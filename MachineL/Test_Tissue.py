@@ -8,6 +8,7 @@ LARC 2.0 is being updated at the same time
 ##--------------LIBRARIES--------------##
 
 import cv2
+import glob
 import time
 import math
 import numpy as np
@@ -17,44 +18,72 @@ import serial
 import statistics
 #import gtk
 import subprocess
+import getGoodSquares as sqr
 from copy import deepcopy
 
 
 ##-----------GLOBAL VARIABLES-----------##
 
-mainFrame = cv2.imread("/Users/Emilio/Documents/Robotica_Todo/Tissue_2.0/LARC_2.0/photos/cow2.jpg")
-mainFrame = cv2.resize(mainFrame,None,fx=0.20,fy=0.20,interpolation=cv2.INTER_AREA)
+
+
+# mainFrame = cv2.imread("/Users/Emilio/Documents/Robotica_Todo/Tissue_2.0/MachineL/lastPhotos/80cm.jpg")
+# mainFrame = cv2.resize(mainFrame,None,fx=0.20,fy=0.20,interpolation=cv2.INTER_AREA)
+cap = cv2.VideoCapture(0)
+
+ret , mainFrame = cap.read()
+
+
+
+def getDistance(x):
+	return 0.2255*x + 61.474
 
 
 def main():
 	global mainFrame
+	secondT = deepcopy(mainFrame)
 
 	clearedImage = rb.clearImage(mainFrame)
-	#cv2.imshow('c',clearedImage)        
 	equalizedFrame = cv2.equalizeHist(clearedImage)
+	# #cv2.imshow('c',clearedImage)        
 	#cv2.imshow('eq', equalizedFrame)
-	cowFound, cowTissue, allSquares = rb.isThereACow(equalizedFrame)
+	cowFound, cowTissue, cowTissue2, allSquares = rb.isThereACow(equalizedFrame)
+
 	mainFrame = rb.drawCowSquares(mainFrame,0,0,255,allSquares)
 	mainFrame = rb.drawGreatestTissue(mainFrame,cowTissue)
-	#cv2.imshow('2',mainFrame)
+	
+	secondT = rb.drawGreatestTissue(secondT,cowTissue2)
 
+
+	
 	if cowFound:
 		print "Cow Found"
 		go,lL,lR,lT,theta = rb.isCowMilkeable(cowTissue,allSquares)
+		print "top :", lT
+		y = getDistance(lT)
+		print "DISTANCIA A LA VACA : " ,y
 		if go:
 			print "Cow can be milked"
 		else:
 			print "Cow cannot be milked"
+		# Tissue 1
 		A,B, theta = rb.ajusteDeCurvas(cowTissue)
-		mainFrame = rb.drawSlope(mainFrame,A,B)
-		mainFrame = rb.drawLimits(mainFrame,lL,lR,lT)
+		# mainFrame = rb.drawSlope(mainFrame,A,B)
+		# mainFrame = rb.drawLimits(mainFrame,lL,lR,lT)
+		# Tissue 2
+		A,B, theta = rb.ajusteDeCurvas(cowTissue2)
+		# secondT = rb.drawSlope(secondT,A,B)
+		# secondT = rb.drawLimits(secondT,lL,lR,lT)
 
-		cv2.imshow('img',mainFrame)
+
+
+		cv2.imshow('tissue1',mainFrame)
+		cv2.imshow('tissue2',secondT)
+		cv2.waitKey(0)
 
 	else:
 		print "Cow not found"
 
-	cv2.waitKey(0)
+	
 ##-------------------------------------##
 ##---------RUNNIGING MAIN LOOP---------##
 ##-------------------------------------##

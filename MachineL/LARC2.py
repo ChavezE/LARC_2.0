@@ -21,6 +21,9 @@ import serial
 import statistics
 from copy import deepcopy
 
+import updates as up
+
+
 
 #############################################
 ##------------------CLASSES----------------##
@@ -185,7 +188,7 @@ def getGoodSquares(contours,imgOriginal,thres):
 
    for cnt in contours:
       area = cv2.contourArea(cnt)
-      rect = cv2.minAreaRect(cnt)
+      rect = cv2.minAreaRect(cnt)      # rotated rectangle
       w = int(rect[1][0])
       h = int(rect[1][1])
       rect_area = w * h
@@ -204,16 +207,6 @@ def getGoodSquares(contours,imgOriginal,thres):
    # printCowSquares(imgOriginal,b,g,r,cowSquares)
                                        
    return cowSquares
-
-# Returns distance between two point in the image.
-def distance(x1,y1,x2,y2):
-  return math.sqrt(pow(x2 - x1,2) + pow(y2 - y1,2))
-
-
-#############################################
-##------------ DESSISION MAKING------------##
-#############################################
-# To take the last steps over dessions in dataflow
 
 def getCorners(frame,n,quality):
    corners = cv2.goodFeaturesToTrack(frame,n,quality,10)
@@ -243,7 +236,7 @@ def cornersMatch(cnt,corners,minC,eps):
 
 def getGoodSquares2(binFrame,contours,corners):
    # setting constants
-   minArea = 400
+   minArea = 10
    maxArea = 8500
 
    # variable to store the good squares
@@ -263,19 +256,30 @@ def getGoodSquares2(binFrame,contours,corners):
             x,y,w,h = cv2.boundingRect(cnt)
             if(binFrame[y + h*0.5,x + w*0.5] == 1 and w/h < 3):   # is a black rectangle ans sqr
                m = cornersMatch(cnt,corners,2,15)
-               print m
+               #print m
                if(extent >= 0.88):                       # very simetric square
-                  tempSqr = cowSquare(x,y,w,h,area)         # ADD TO LIST
+                  tempSqr = cowSquare(x,y,w,h,area)        
                   goodSqrs.append(tempSqr)
                   
-               elif(extent >= 0.65 and m == True):
+               elif(extent >= 0.5 and m == True):        # BEST CONSTANT
                   tempSqr = cowSquare(x,y,w,h,area)
                   goodSqrs.append(tempSqr)
-                  print "here"
+                  #print "here"
                else:
                   pass
 
    return goodSqrs
+
+
+# Returns distance between two point in the image.
+def distance(x1,y1,x2,y2):
+  return math.sqrt(pow(x2 - x1,2) + pow(y2 - y1,2))
+
+
+#############################################
+##------------ DESSISION MAKING------------##
+#############################################
+# To take the last steps over dessions in dataflow
 
 # ONE OF THE MOST IMPORTANT FUNCTION
 # Description of the parameters:
@@ -502,41 +506,49 @@ def isThereACow(frame):
    for binValueT in range(5,131,3):
       cp0 = cp1 = cp2 = deepcopy(frame)
 
-      corners = getCorners(cp0,50,0.1)
-      thresFrame0 = rb.doThresHold(cp0, binValueT,3,1) 
-      contours0 = rb.findContours(thresFrame0)
-      #cowRectangles0 = getGoodSquares2(thresFrame0,contours0,corners)
-      cowRectangles0 = rb.getGoodSquares(contours0,frame,thresFrame0) 
+      
+      corners = getCorners(cp0,70,0.1)
+      #print (corners)
+      thresFrame0 = doThresHold(cp0, binValueT,3,1)
+      contours0 = findContours(thresFrame0)
+      #cowRectangles0 = getGoodSquares(contours0,frame,thresFrame0) # From contours, extract possile cow squares
+      cowRectangles0 = getGoodSquares2(thresFrame0,contours0,corners)
       findEquals(allSquares,cowRectangles0,15)
 
-
-      
       # thresFrame1 = rb.doThresHold(cp1, binValueT,3,3) 
-      # contours1 = rb.findContours(thresFrame1) 
-      # cowRectangles1 = rb.getGoodSquares(contours1,frame,thresFrame1) # From contours, extract possile cow squares
+      # #cv2.imshow('1', thresFrame1)
+      # contours1 = findContours(thresFrame1) 
+      # cowRectangles1 = getGoodSquares(contours1,frame,thresFrame1) # From contours, extract possile cow squares
       # findEquals(allSquares,cowRectangles1,15)
 
-      # thresFrame2 = rb.doThresHold(cp2, binValueT,5,2) 
-      # contours2 = rb.findContours(thresFrame2) 
-      # cowRectangles2 = rb.getGoodSquares(contours2,frame,thresFrame2) 
+      # thresFrame2 = doThresHold(cp2, binValueT,5,2) 
+      # #cv2.imshow('2', thresFrame2)
+      # contours2 = findContours(thresFrame2) 
+      # cowRectangles2 = getGoodSquares(contours2,frame,thresFrame2) 
       # findEquals(allSquares,cowRectangles2,15)
 
       del cp0
       del cp1
       del cp2
+      
+      
+    
+      #cv2.waitKey(100)
 
-   # print "im done with thres"
+   print "im done with thres"
    
-   # for c in allSquares:
-   #  cv2.rectangle(mainFrame,(c.getX(),c.getY()),(c.getX()+c.getW(),c.getY()+c.getH()),(255,255,255),4)
+   #for c in allSquares:
+   #   cv2.rectangle(mainFrame,(c.getX(),c.getY()),(c.getX()+c.getW(),c.getY()+c.getH()),(255,255,255),4)
    
    # When there are more than 'minNumSquares', it can be found at least one tissue
    if len(allSquares) > minNumSquares:
       tempAllSquares = deepcopy(allSquares)
+      tempAllSquares2 = deepcopy(allSquares)
       maxLenT = rb.makeTissue(tempAllSquares,[],50,0,[0,0],0)
+      maxLenT2 = up.doTissue(tempAllSquares2)
       
       if len(maxLenT) > minNumSquares:
-         return True,maxLenT,allSquares
+         return True,maxLenT,maxLenT2,allSquares
    
    return False,[],[]
 
@@ -736,7 +748,7 @@ def getBody(cowRectangles,imgOriginal,totLines,epsilon):
 # This functions sorts a multivaraible list depending on the index specified
 def sortList(index,l): 
 
-   l = sorted(l, key=lambda x:x[index], reverse=False) 
+   l = sorted(l, key=lambda x:x[index], reverse=True) 
    
    return l
 
