@@ -1,0 +1,26 @@
+Arduino Function:		Serial("x" should be numbers):
+
+adelante(int cm)		arduino.write("a") #call functions
+				arduino.write("x") #parameter of function
+
+atras(int cm)			arduino.write("b") #call functions
+				arduino.write("x") #parameter of function
+
+atrasHastaPared(int cm)		arduino.write("u") #call functions
+				arduino.write("x") #parameter of function
+
+adelanteHastaPared(int cm)	arduino.write("w") #call functions
+				arduino.write("x") #parameter of function
+
+adelanteHastaDer()		arduino.write("d") #call functions
+
+adelanteHastaIzq()		arduino.write("l") #call functions
+
+girarA(long grados)		arduino.write("g") #call functions
+				arduino.write("x") #parameter of function
+
+girarDer(long cant)		arduino.write("t") #call functions
+				arduino.write("x") #parameter of function
+
+girarIzq(long cant)		arduino.write("r") #call functions
+				arduino.write("x") #parameter of function
