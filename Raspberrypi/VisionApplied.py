@@ -65,7 +65,7 @@ def isThereACow():
 			# When there are more than 'minNumSquares', it can be found at least one tissue
 			if len(allSquares) > minNumSquares:
 				tempAllSquares = deepcopy(allSquares)
-				maxLenT = rb.makeTissue(tempAllSquares,[],10,0,[0,0],0)
+				maxLenT = rb.doTissue(tempAllSquares)
 
 				# for sqr in maxLenT:
 				# 	cv2.rectangle(main_copy2, (sqr.getTopLeftC()[0],sqr.getTopLeftC()[1]), (sqr.getBotRightC()[0],sqr.getBotRightC()[1]), (127,50,127), 2)
@@ -116,3 +116,9 @@ def distanceBCorners(c1,c2):
 	y2 = c2[1]
 	return rb.distance(x1,y1,x2,y2)
 
+def getCowXCenter(maxLenT):
+	left,right,_=rb.calcCowLimits(maxLenT)
+	return (left+right)/2
+
+def getXCenterFrame():
+	return (mainFrame.shape[1])/2

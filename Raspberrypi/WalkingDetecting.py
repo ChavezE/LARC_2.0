@@ -1,11 +1,12 @@
 import VisionApplied as vs
+maxLenTissue=[]
 
 def checkingTurningR():
 	girarDer(50)
 	for x in range(1,3):
 		girarDer(15)
 		missingAngles=((3-x)*15)+75
-		foundCow,_,_ = vs.isThereACow()
+		foundCow,maxLenTissue,_ = vs.isThereACow()
 		if foundCow:
 			break
 	girarDer(missingAngles)
@@ -67,6 +68,17 @@ def walkingDetecting(terZonPos):
 		foundCow=checkingTurningL()
 		startedLeft+=1
 				
+def alignWithCow():
+	centerFrame=vs.getXCenterFrame()
+	foundCow,maxLenTissue,_ = vs.isThereACow()
+	if foundCow:
+		cowCenter = vs.getCowXCenter(maxLenTissue)
+		degrDif= abs(cowCenter - centerFrame)
+
+		if (cowCenter < centerFrame - 10):
+			#gira a la izquierda x grados
+		elif(cowCenter > centerFrame + 10):
+			#gira a la derecha x grados
 
 
 
