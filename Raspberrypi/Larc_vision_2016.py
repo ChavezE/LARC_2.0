@@ -188,12 +188,11 @@ def getGoodSquares(contours,imgOriginal,thres,mainC):
       w = int(rect[1][0])
       h = int(rect[1][1])
       rect_area = w * h
-      final_contours=[]
+      # final_contours=[]
 
-      cv2.drawContours(mainC,[cnt],-1,(0,255,0),1)
+      
       # print area
-      cv2.imshow("individual: " ,mainC)
-      # cv2.waitKey(200)
+      
       if(rect_area > 0): # sometimes this value is found
          extent = float(area / rect_area)
          if (extent >= 0.75 and area >= 50 and area <= 500):   # tolerance #previos range: 400-8500
@@ -201,15 +200,15 @@ def getGoodSquares(contours,imgOriginal,thres,mainC):
             if thres[y + h*0.5,x + w*0.5] == 1.0 and w/h < 3.0:
                tempCowSquare = cowSquare(x,y,w,h,area)    # Create an objet from the 'cowSquare' class
                cowSquares.append(tempCowSquare) # Insert object 'cowSquare' into a list  
-               cv2.drawContours(mainC,[cnt],-1,(255,0,0),2)
-               final_contours.append(cnt)
+               # cv2.drawContours(mainC,[cnt],-1,(255,0,0),2)
+               # final_contours.append(cnt)
    # Print elements in cowSqrs
    # b = int ( random.uniform(50,255))
    # g = int ( random.uniform(50,255))
    # r = int ( random.uniform(50,255))
    # printCowSquares(imgOriginal,b,g,r,cowSquares)
                                        
-   return cowSquares,final_contours
+   return cowSquares
 
 # Returns distance between two point in the image.
 def distance(x1,y1,x2,y2):

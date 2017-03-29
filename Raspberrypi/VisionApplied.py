@@ -34,21 +34,21 @@ def isThereACow():
 		# FOR: search for the best threshold value
 		for binValueT in range(3,131,3):
 			cp0 = cp1 = cp2 = deepcopy(equalizedFrame)
-			main_copy2=mainFrame.copy()
+			# main_copy2=mainFrame.copy()
 
 			thresFrame0 = rb.doThresHold(cp0, binValueT,7,1) 
 			contours0 = rb.findContours(thresFrame0) 
-			cowRectangles0,_ = rb.getGoodSquares(contours0,mainFrame,thresFrame0,main_copy2) 
+			cowRectangles0 = rb.getGoodSquares(contours0,mainFrame,thresFrame0) 
 			findEquals(allSquares,cowRectangles0,15)
 
 			thresFrame1 = rb.doThresHold(cp1, binValueT,3,3) # Thresholds the image and erodes it
 			contours1 = rb.findContours(thresFrame1) # Finds all the contours inside the image
-			cowRectangles1,_ = rb.getGoodSquares(contours1,mainFrame,thresFrame1,main_copy2) # From contours, extract possile cow squares
+			cowRectangles1 = rb.getGoodSquares(contours1,mainFrame,thresFrame1) # From contours, extract possile cow squares
 			findEquals(allSquares,cowRectangles1,15)
 
 			thresFrame2 = rb.doThresHold(cp2, binValueT,5,2) 
 			contours2 = rb.findContours(thresFrame2) 
-			cowRectangles2,_ = rb.getGoodSquares(contours2,mainFrame,thresFrame2,main_copy2) 
+			cowRectangles2 = rb.getGoodSquares(contours2,mainFrame,thresFrame2) 
 			findEquals(allSquares,cowRectangles2,15)
 
 			del cp0
@@ -67,10 +67,10 @@ def isThereACow():
 				tempAllSquares = deepcopy(allSquares)
 				maxLenT = rb.makeTissue(tempAllSquares,[],10,0,[0,0],0)
 
-				for sqr in maxLenT:
-					cv2.rectangle(main_copy2, (sqr.getTopLeftC()[0],sqr.getTopLeftC()[1]), (sqr.getBotRightC()[0],sqr.getBotRightC()[1]), (127,50,127), 2)
-					cv2.imshow("squares of " + str(binValueT),main_copy2)
-					cv2.waitKey(50)
+				# for sqr in maxLenT:
+				# 	cv2.rectangle(main_copy2, (sqr.getTopLeftC()[0],sqr.getTopLeftC()[1]), (sqr.getBotRightC()[0],sqr.getBotRightC()[1]), (127,50,127), 2)
+				# 	cv2.imshow("squares of " + str(binValueT),main_copy2)
+				# 	cv2.waitKey(50)
 				# drawGreatestTissue(maxLenT)
 				# cv2.imshow("m",mainFrame)
 				# cv2.waitKey(5000)
@@ -116,8 +116,3 @@ def distanceBCorners(c1,c2):
 	y2 = c2[1]
 	return rb.distance(x1,y1,x2,y2)
 
-validation=False
-
-validation,_,_=isThereACow()
-print validation
-cv2.waitKey(0)
