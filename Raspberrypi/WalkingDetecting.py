@@ -1,9 +1,11 @@
+import VisionApplied as vs
+
 def checkingTurningR():
 	girarDer(50)
 	for x in range(1,3):
 		girarDer(15)
 		missingAngles=((3-x)*15)+75
-		foundCow = isThereACow()
+		foundCow,_,_ = vs.isThereACow()
 		if foundCow:
 			break
 	girarDer(missingAngles)
@@ -14,7 +16,7 @@ def checkingTurningL():
 	for x in range(1,3):
 		girarIzq(15)
 		missingAngles=((3-x)*15)+75
-		foundCow = isThereACow()
+		foundCow,_,_ = vs.isThereACow()
 		if foundCow:
 			break
 	girarIzq(missingAngles)
