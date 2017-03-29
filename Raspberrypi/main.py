@@ -21,16 +21,40 @@ def checkForArduino():
 
 #Turn right the angles in the parameters
 def turnRight(angle):
+    arduino.write("r {}".format(angle)) #Send Turn Right angle
+    while(True):
+        if(arduino.read() == "0"):
+            break
 
 #Turn left the angles in the parameters
 def turnLeft(angle):
+    arduino.write("l {}".format(angle)) #Send Turn Left angle
+    while(True):
+        if(arduino.read() == "0"):
+            break
 
 #Move Forward till it detect a wall in front
-def ForwardTillWall():
+def ForwardTillWall(separation):
+    arduino.write("r {}".format(separation)) #Send Move Forward until Separation
+    while(True):
+        if(arduino.read() == "0"):
+            break
 
 #Return True if the robot is in the terrines zone, False if not
 def confirmTerrineZone():
-    return False
+
+    arduino.write("z {}".format(separation)) #Send confirmTerrineZone
+    response = ""
+
+    while(True):
+        response = arduino.read() #Save Response
+        if(response != ""):
+            break
+
+    if(response == "0"): #The arduino tell us we are not in Terrine Zone
+        return False
+    if(response == "1"): #The arduino tell us we are in Terrine Zone
+        return True
 
 #Go to terrines zone
 def goToTerrines():
@@ -50,33 +74,46 @@ def goToTerrines():
 
 #Grab the terrine
 def grabTerrine():
+    arduino.write("t") #Send grab terrine
+    while(True):
+        if(arduino.read() == "0"):
+            break
 
 #Look for cow and fill cowPos and cowAngle variables
 def lookForCow():
+    return
 
 #Get next to cow
 def goToCow():
+    return
 
 #Get inside the cow
 def getInCow():
+    return
 
 #milk the cow
 def milk():
+    return
 
 #Get in Gravel zone
 def goToGravel():
+    return
 
 #Look for Tank and fill tankPos and tankAngle variables
 def lookForTank():
+    return
 
 #getNext to the Tank
 def goToTank():
+    return
 
 #Throw Terrine inside the Tank
 def throwTerrine():
+    return
 
 #Get to initial position
-def getToInit()
+def getToInit():
+    return
 
 if __name__ == "__main__":
     while(!checkForArduino()):
