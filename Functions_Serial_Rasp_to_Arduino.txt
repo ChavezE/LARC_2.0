@@ -12,6 +12,9 @@ atrasHastaPared(int cm)		arduino.write("u") #call functions
 adelanteHastaPared(int cm)	arduino.write("w") #call functions
 				arduino.write("x") #parameter of function
 
+atrasHastaPared(int cm)		arduino.write("s") #call function
+				arduino.write("x") #parameter of function
+
 adelanteHastaDer()		arduino.write("d") #call functions
 
 adelanteHastaIzq()		arduino.write("l") #call functions
@@ -19,8 +22,12 @@ adelanteHastaIzq()		arduino.write("l") #call functions
 girarA(long grados)		arduino.write("g") #call functions
 				arduino.write("x") #parameter of function
 
-girarDer(long cant)		arduino.write("t") #call functions
+girarDer(long cant)		arduino.write("r") #call functions
 				arduino.write("x") #parameter of function
 
-girarIzq(long cant)		arduino.write("r") #call functions
+girarIzq(long cant)		arduino.write("i") #call functions
 				arduino.write("x") #parameter of function
+
+agarrarVasoDer()		arduino.write("v") #call function
+
+agarrarVasoIzq()		arduino.write("t") #call funciton
