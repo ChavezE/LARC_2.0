@@ -38,17 +38,17 @@ def isThereACow():
 
 			thresFrame0 = rb.doThresHold(cp0, binValueT,7,1) 
 			contours0 = rb.findContours(thresFrame0) 
-			cowRectangles0 = rb.getGoodSquares(contours0,mainFrame,thresFrame0) 
+			cowRectangles0 = rb.getGoodSquares(contours0,thresFrame0) 
 			findEquals(allSquares,cowRectangles0,15)
 
 			thresFrame1 = rb.doThresHold(cp1, binValueT,3,3) # Thresholds the image and erodes it
 			contours1 = rb.findContours(thresFrame1) # Finds all the contours inside the image
-			cowRectangles1 = rb.getGoodSquares(contours1,mainFrame,thresFrame1) # From contours, extract possile cow squares
+			cowRectangles1 = rb.getGoodSquares(contours1,thresFrame1) # From contours, extract possile cow squares
 			findEquals(allSquares,cowRectangles1,15)
 
 			thresFrame2 = rb.doThresHold(cp2, binValueT,5,2) 
 			contours2 = rb.findContours(thresFrame2) 
-			cowRectangles2 = rb.getGoodSquares(contours2,mainFrame,thresFrame2) 
+			cowRectangles2 = rb.getGoodSquares(contours2,thresFrame2) 
 			findEquals(allSquares,cowRectangles2,15)
 
 			del cp0

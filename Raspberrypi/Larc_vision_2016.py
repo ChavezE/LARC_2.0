@@ -176,7 +176,7 @@ def findContours(img):
 # Processes the contours found in order to find squares in the image
 # returns a list of objects 'cowsquare' class:
 # cowSquare(x,y,w,h,area)
-def getGoodSquares(contours,imgOriginal,thres,mainC):
+def getGoodSquares(contours,thres):
 
    # ----VARIABLES----
    cowSquares = []   # This list is the one that is going to being returned
@@ -195,9 +195,9 @@ def getGoodSquares(contours,imgOriginal,thres,mainC):
       
       if(rect_area > 0): # sometimes this value is found
          extent = float(area / rect_area)
-         if (extent >= 0.75 and area >= 50 and area <= 2500):   # tolerance #previos range: 400-8500
+         if (extent >= 0.75 and area >= 150 and area <= 2000):   # tolerance #previos range: 400-8500
             x,y,w,h = cv2.boundingRect(cnt)
-            if thres[y + h*0.5,x + w*0.5] == 1.0 and w/h < 3.0:
+            if thres[y + h*0.5,x + w*0.5] == 1.0 and w/h < 1.5:
                tempCowSquare = cowSquare(x,y,w,h,area)    # Create an objet from the 'cowSquare' class
                cowSquares.append(tempCowSquare) # Insert object 'cowSquare' into a list  
                # cv2.drawContours(mainC,[cnt],-1,(255,0,0),2)
