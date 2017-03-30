@@ -24,13 +24,18 @@
 const byte adelanteDerecha=0, adelanteIzquierda=1, atrasDerecha=2, atrasIzquierda=3;
 int pinA[4] = {29,  27,  35,   37}; //adelante inApin
 int pinB[4] = {31,  33,  41,  39}; //atras  inBpin
-int pwmpin[4] = {2,  3, 5,   4}; //PWM's input
+int pwmpin[4] = {2,  3, 5,   4}; //PWM's input   Salida mega 4->shield atras 5
 
 const byte PINENCODER= 18;
 
 //Sharps
-const byte sharpAde=A4, sharpAtras=A1, sharpDerAde=A3, sharpDerCentro, sharpDerAtras=A2, sharpIzqAde=A5, sharpIzqCentro, sharpIzqAtras=A0;
+const byte sharpAde=A4, sharpAtras=A1, sharpDerAde=A3, sharpDerCentro, sharpDerAtras=A2, sharpIzqAde=A5, sharpIzqCentro, sharpIzqAtras=A0, sharpGarra;
 
+//LimitSwitch
+const byte limitGarraAde, limitGarraAtras;
+
+//Servos
+const byte servoGarra, servoPlata;
 
 /*
  * CONSTANTES
@@ -40,8 +45,8 @@ const long constPGirar= 30L;//La constante se divide
 const long constPCorrect= 18L;//La const se divide
 const long constPDist= 110L;//La const se divide
 
-const long velAvanzar= 50L;
-const long velGirar= 60L;
+const long velAvanzar= 110L;
+const long velGirar= 90L;
 
 
 /*
@@ -325,14 +330,14 @@ void adelanteHastaPared(int separacion){//Argumento en cm, 0<=separacion<=26
     long e= separacion - dist;
     long avanzar;
     if(e < -1) {
-      avanzar= velAvanzar + 100/e;
-      if(avanzar<20) avanzar= 20L;
+      avanzar= velAvanzar + 180/e;
+      if(avanzar<50) avanzar= 50L;
       
       adelante(avanzar, avanzar);//No se corrigue en esta parte pues.. por facilidad. TODO: adelante(avanzar-grados/constPCorrect, avanzar+grados/constPCorrect);
       veces=0;
     }else if(e>1){
-      avanzar= velAvanzar - 100/e;
-      if(avanzar<20) avanzar= 20L;
+      avanzar= velAvanzar - 180/e;
+      if(avanzar<50) avanzar= 50L;
 
       atras(avanzar, avanzar);//atras(avanzar+grados/constPCorrect, avanzar-grados/constPCorrect);
       veces=0;
@@ -398,14 +403,14 @@ void atrasHastaPared(int separacion){//Argumento en cm, 0<=separacion<=26
     long e= separacion - dist;
     long avanzar;
     if(e < -1) {
-      avanzar= velAvanzar + 100/e;
-      if(avanzar<20) avanzar= 20L;
+      avanzar= velAvanzar + 180/e;
+      if(avanzar<50) avanzar= 50L;
       
       atras(avanzar, avanzar);//No se corrigue en esta parte pues.. por facilidad. TODO: adelante(avanzar-grados/constPCorrect, avanzar+grados/constPCorrect);
       veces=0;
     }else if(e>1){
-      avanzar= velAvanzar - 100/e;
-      if(avanzar<20) avanzar= 20L;
+      avanzar= velAvanzar - 180/e;
+      if(avanzar<50) avanzar= 50L;
 
       adelante(avanzar, avanzar);//atras(avanzar+grados/constPCorrect, avanzar-grados/constPCorrect);
       veces=0;
@@ -482,8 +487,9 @@ void girarDerTantosGrados(long cant){//No negativa!
 
 //Girar g grados Izquierda (-)
 void girarIzqTantosGrados(long cant){//No negativa!
-  long obj= (getCompass()-cant)%36000L;
-  girarAObjetivo(abs(obj));
+  long obj= (getCompass()-cant);
+  if(obj<0L) obj+= 36000;
+  girarAObjetivo(obj);
 }
 
 
@@ -491,7 +497,6 @@ void girarIzqTantosGrados(long cant){//No negativa!
  * SETUP
  */
 void setup() {
-  delay(1000);
   Serial.begin(9600);
   delay(1000);
 
@@ -500,7 +505,7 @@ void setup() {
   if(!bno.begin(Adafruit_BNO055::OPERATION_MODE_NDOF)){
     /* There was a problem detecting the BNO055 ... check your connections */
     Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
-    while(1);
+    //while(1);
   }
   bno.setExtCrystalUse(true);
 
@@ -518,7 +523,8 @@ void setup() {
   
   delay(1000);
   DIRECCION= getCompass();
-  estadoEncoder= 1;
+  estadoEncoder= 1; 
+  pinMode(13, OUTPUT);
 }
 
 
@@ -526,8 +532,9 @@ void setup() {
  * LOOP
  */
 void loop() {
-    atrasHastaPared(5);
-    while(1);
+    atrasHastaPared(10);
+    while(1);// Serial.println(getCompass());
+    
 }
 
 
