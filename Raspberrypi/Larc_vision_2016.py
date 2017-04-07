@@ -361,11 +361,13 @@ def doTissue(goodSqrs):
    # setting constants #
    tissue = []
    biggestTissue = []
-   eps = 20
+   eps = 30
    # ------------------ #
    for i in range(len(goodSqrs)):
       print(goodSqrs[i].getTopLeftC())
    print("buling form now on")
+
+   goodSqrs = sorted(goodSqrs, key=lambda x:x.getY(), reverse = False)
 
    while( len(goodSqrs) > 0):
       print ("here i am")
@@ -528,50 +530,50 @@ def findEquals(allSqrs,partial,epsilon):
 
 # Looks after a tissue in the frame and returns the tissue itself and allsquares
 # returns a bolean and empty lists if the squares dont match for a cow 
-def isThereACow(frame):
+# def isThereACow(frame):
    
-   maxLenT = [] # maximumLenghtTissue
-   allSquares = [] # Store in each iteration of the binarization the squares found in the image
-   minNumSquares = 4
+#    maxLenT = [] # maximumLenghtTissue
+#    allSquares = [] # Store in each iteration of the binarization the squares found in the image
+#    minNumSquares = 4
      
-   # iterate to get max squares from the image
-   # best way so far to counter ligh strokes 
-   for binValueT in range(40,131,3):
-      cp0 = cp1 = cp2 = deepcopy(frame)
+#    # iterate to get max squares from the image
+#    # best way so far to counter ligh strokes 
+#    for binValueT in range(40,131,3):
+#       cp0 = cp1 = cp2 = deepcopy(frame)
 
-      thresFrame0 = rb.doThresHold(cp0, binValueT,7,1) 
-      contours0 = rb.findContours(thresFrame0) 
-      cowRectangles0 = rb.getGoodSquares(contours0,frame,thresFrame0) 
-      findEquals(allSquares,cowRectangles0,15)
+#       thresFrame0 = rb.doThresHold(cp0, binValueT,7,1) 
+#       contours0 = rb.findContours(thresFrame0) 
+#       cowRectangles0 = rb.getGoodSquares(contours0,frame,thresFrame0) 
+#       findEquals(allSquares,cowRectangles0,15)
 
-      thresFrame1 = rb.doThresHold(cp1, binValueT,3,3) 
-      contours1 = rb.findContours(thresFrame1) 
-      cowRectangles1 = rb.getGoodSquares(contours1,frame,thresFrame1) # From contours, extract possile cow squares
-      findEquals(allSquares,cowRectangles1,15)
+#       thresFrame1 = rb.doThresHold(cp1, binValueT,3,3) 
+#       contours1 = rb.findContours(thresFrame1) 
+#       cowRectangles1 = rb.getGoodSquares(contours1,frame,thresFrame1) # From contours, extract possile cow squares
+#       findEquals(allSquares,cowRectangles1,15)
 
-      thresFrame2 = rb.doThresHold(cp2, binValueT,5,2) 
-      contours2 = rb.findContours(thresFrame2) 
-      cowRectangles2 = rb.getGoodSquares(contours2,frame,thresFrame2) 
-      findEquals(allSquares,cowRectangles2,15)
+#       thresFrame2 = rb.doThresHold(cp2, binValueT,5,2) 
+#       contours2 = rb.findContours(thresFrame2) 
+#       cowRectangles2 = rb.getGoodSquares(contours2,frame,thresFrame2) 
+#       findEquals(allSquares,cowRectangles2,15)
 
-      del cp0
-      del cp1
-      del cp2
+#       del cp0
+#       del cp1
+#       del cp2
 
-   # print "im done with thres"
+#    # print "im done with thres"
    
-   # for c in allSquares:
-   #  cv2.rectangle(mainFrame,(c.getX(),c.getY()),(c.getX()+c.getW(),c.getY()+c.getH()),(255,255,255),4)
+#    # for c in allSquares:
+#    #  cv2.rectangle(mainFrame,(c.getX(),c.getY()),(c.getX()+c.getW(),c.getY()+c.getH()),(255,255,255),4)
    
-   # When there are more than 'minNumSquares', it can be found at least one tissue
-   if len(allSquares) > minNumSquares:
-      tempAllSquares = deepcopy(allSquares)
-      maxLenT = rb.makeTissue(tempAllSquares,[],50,0,[0,0],0)
+#    # When there are more than 'minNumSquares', it can be found at least one tissue
+#    if len(allSquares) > minNumSquares:
+#       tempAllSquares = deepcopy(allSquares)
+#       maxLenT = rb.makeTissue(tempAllSquares,[],50,0,[0,0],0)
       
-      if len(maxLenT) > minNumSquares:
-         return True,maxLenT,allSquares
+#       if len(maxLenT) > minNumSquares:
+#          return True,maxLenT,allSquares
    
-   return False,[],[]
+#    return False,[],[]
 
 # INPUT: maximunLengthTissue found in isThereACow
 # OUTPUT : bool to go and milk the cow, limLeft, limRight, limTop

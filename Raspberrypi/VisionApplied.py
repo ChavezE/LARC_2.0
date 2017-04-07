@@ -1,17 +1,16 @@
 import cv2
 
 import numpy as np
-import Larc_vision as rb
+import Larc_vision_2016 as rb
 
 from copy import deepcopy
+
 ##-------------------------------##
 
 ##-----------GLOBAL VARIABLES-----------##
-binValue = 70
-headingWall = "E"	# GLOBAL DIRECTION VARIABLE
+
 mainFrame = []	# Initialize global variable for image
-lastTurn = "left"
-firstWalk = "225"
+
 ##--------------------------------------##
 
 ##-----------SETUP-----------##
@@ -24,7 +23,6 @@ def isThereACow():
 	maxLenT = [] # maximumLenghtTissue
 	allSquares = [] # Store, in each iteration of the binarization, the squares found in the image
 	minNumSquares = 4
-	# mainFrame = cv2.imread('/home/pi/pruebasVision/FotosVaca/img25.jpg') 
 	gF = True
 	gF = takePicture() # returns boolean to know if the picture is OK
 	if gF:
@@ -34,7 +32,6 @@ def isThereACow():
 		# FOR: search for the best threshold value
 		for binValueT in range(3,131,3):
 			cp0 = cp1 = cp2 = deepcopy(equalizedFrame)
-			# main_copy2=mainFrame.copy()
 
 			thresFrame0 = rb.doThresHold(cp0, binValueT,7,1) 
 			contours0 = rb.findContours(thresFrame0) 
@@ -59,32 +56,29 @@ def isThereACow():
 			print "im done with thres"
 
 
-			#-------END FOR------
-			# for c in allSquares:
-			# 	cv2.rectangle(mainFrame,(c.getX(),c.getY()),(c.getX()+c.getW(),c.getY()+c.getH()),(255,255,255),4)
-			# When there are more than 'minNumSquares', it can be found at least one tissue
+			
 			if len(allSquares) > minNumSquares:
 				tempAllSquares = deepcopy(allSquares)
 				maxLenT = rb.doTissue(tempAllSquares)
-
-				# for sqr in maxLenT:
-				# 	cv2.rectangle(main_copy2, (sqr.getTopLeftC()[0],sqr.getTopLeftC()[1]), (sqr.getBotRightC()[0],sqr.getBotRightC()[1]), (127,50,127), 2)
-				# 	cv2.imshow("squares of " + str(binValueT),main_copy2)
-				# 	cv2.waitKey(50)
-				# drawGreatestTissue(maxLenT)
-				# cv2.imshow("m",mainFrame)
-				# cv2.waitKey(5000)
-				# cv2.destroyAllWindows()
+				print "THIS"
+			
 				if len(maxLenT) > minNumSquares:
-					return True,maxLenT,allSquares
+					print "THIS ONE"
+					left,right,_=rb.calcCowLimits(maxLenT)
+					if(right - left) > (mainFrame.shape[1]*.10):
+						print "THIS OTHER ONE"
+						return True,maxLenT,allSquares
 	return False,[],[]
 
 def takePicture():
 	global mainFrame
-	for i in range(4):
-		cap.grab()
-	goodFrm, mainFrame = cap.read()
+	# mainFrame=cv2.imread('TMR2017/'+str(frameNumber)+'.jpg')
+	# cv2.imshow("frame: " + str(frameNumber),mainFrame)
+	# cv2.waitKey(0)
+	for i in range(10):
+		goodFrm, mainFrame = cap.read()
 	print "I took a pic"
+
 	return goodFrm
 
 def findEquals(allSqrs,partial,epsilon):
@@ -122,3 +116,90 @@ def getCowXCenter(maxLenT):
 
 def getXCenterFrame():
 	return (mainFrame.shape[1])/2
+
+def checkingTurningR():
+	turnRight(50)
+	for x in range(1,3):
+		turnRight(15)
+		missingAngles=((3-x)*15)+75
+		foundCow,_,_ = isThereACow()
+		if foundCow:
+			break
+	turnRight(missingAngles)
+	return foundCow
+
+def checkingTurningL():
+	turnLeft(50)
+	for x in range(1,3):
+		turnLeft(15)
+		missingAngles=((3-x)*15)+75
+		foundCow,_,_ = isThereACow()
+		if foundCow:
+			break
+	turnLeft(missingAngles)
+	return foundCow
+
+
+def walkingDetecting(terZonPos):
+	foundCow=False
+	missingAngles=0
+	startedLeft=0
+
+	if terZonPos=='l':
+		startedLeft=True
+		BackwardCms(75)
+	else:
+		ForwardCms(75)
+		turnRight(180)
+
+	while foundCow == False:
+		if startedLeft == True:
+			
+			foundCow=checkingTurningR()
+			if foundCow:
+				break
+
+			ForwardCms(75)
+			foundCow=checkingTurningL()
+			if foundCow:
+				break
+
+
+			BackwardCms(75)
+			foundCow=checkingTurningR()
+			if foundCow:
+				break
+
+		
+		foundCow=checkingTurningL()
+		if foundCow:
+			break
+
+		ForwardCms(75)
+		foundCow=checkingTurningR()
+		if foundCow:
+			break			
+
+		BackwardCms(75)
+		foundCow=checkingTurningL()
+		startedLeft=True
+				
+def alignWithCow():
+	centerFrame=vs.getXCenterFrame()
+	foundCow,maxLenTissue,_ = isThereACow()
+	if foundCow:
+		cowCenter = getCowXCenter(maxLenTissue)
+		degrDif= abs(cowCenter - centerFrame)
+
+		if (cowCenter < centerFrame - 10):
+			#gira a la izquierda x grados
+			pass
+		elif(cowCenter > centerFrame + 10):
+			#gira a la derecha x grados
+			pass
+
+validation,_,_=isThereACow()
+print (validation)
+
+
+			
