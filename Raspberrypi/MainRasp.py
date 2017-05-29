@@ -321,9 +321,8 @@ def checkingTurningL():
 	turnLeft(missingAngles)
 	return foundCow
 
-
 def walkingDetecting():
-        global terrinesZone
+	global terrinesZone
 	foundCow=False
 	missingAngles=0
 	startedLeft=0

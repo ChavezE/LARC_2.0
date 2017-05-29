@@ -79,11 +79,11 @@ def distance(x1,y1,x2,y2 ):
   return math.sqrt(pow(x2 - x1,2) + pow(y2 - y1,2))
 
 # call for tissue
-def doTissue(goodSqrs):
+def doTissue(goodSqrs,frame):
 	# setting constants #
 	tissue = []
 	biggestTissue = []
-	eps = 50
+	eps = 35
 	# ------------------ #
 	for i in range(len(goodSqrs)):
 		print(goodSqrs[i].getTopLeftC())
@@ -94,7 +94,10 @@ def doTissue(goodSqrs):
 		print (goodSqrs[0].getTopLeftC())
 		tActSqr = goodSqrs.pop(0)
 		tissue.append(tActSqr)
-		makeTissue(tActSqr,goodSqrs,tissue,eps)
+		# cv2.circle(frame,(tActSqr.getTopLeftC()[0],tActSqr.getTopLeftC()[1]),5,(255,0,0),-1)
+		# cv2.imshow('t',frame)
+		# cv2.waitKey(0)
+		makeTissue(tActSqr,goodSqrs,tissue,eps,0,frame)
 
 		if(len(tissue) > len(biggestTissue)):
 			biggestTissue = deepcopy(tissue)
@@ -104,66 +107,118 @@ def doTissue(goodSqrs):
 	return biggestTissue
 
 # build the tissue
-def makeTissue(tActSqr,tAllSqrs,tissue,eps):
-		
+def makeTissue(tActSqr,tAllSqrs,tissue,eps,lvl,frame):
+	
+	flag_print = False
 	found = False
 	for tSq in (tAllSqrs):
-
+		x = tSq.getTopLeftC()[0]
+		y = tSq.getTopLeftC()[1]
 		# UPPER 
 		if (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] - 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps):
+			tSq.setLevel(lvl+2)
 			tissue.append(tSq)
 			tAllSqrs.pop(tAllSqrs.index(tSq))
 			found = True
-			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+			# cv2.circle(frame,(x,y),5,(255,0,0),-1)
+			# cv2.imshow('t',frame)
+			# print (tSq.getLevel())
+			# print "upper"
+			# cv2.waitKey(0)
+			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl+2,frame)
+
+		
 
 		# LOWER 
 		elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] + 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps):
+			tSq.setLevel(lvl-2)
 			tissue.append(tSq)
 			tAllSqrs.pop(tAllSqrs.index(tSq))
 			found = True
-			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+			# cv2.circle(frame,(x,y),5,(255,0,0),-2)
+			# cv2.imshow('t',frame)
+			# print (tSq.getLevel())
+			# print "lower"
+			# cv2.waitKey(0)			
+			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl-1,frame)
 
 		# RIGHT
 		elif (distance( tActSqr.getTopLeftC()[0] + 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps):
+			tSq.setLevel(lvl)
 			tissue.append(tSq)
 			tAllSqrs.pop(tAllSqrs.index(tSq))
+			# cv2.circle(frame,(x,y),5,(255,0,0),-1)
+			# cv2.imshow('t',frame)
+			# print (tSq.getLevel())
+			# print "R"
+			# cv2.waitKey(0)
 			found = True
-			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl,frame)
 
 		# LEFT
 		elif (distance( tActSqr.getTopLeftC()[0] - 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps):
+			tSq.setLevel(lvl)
 			tissue.append(tSq)
 			tAllSqrs.pop(tAllSqrs.index(tSq))
+			# cv2.circle(frame,(x,y),5,(255,0,0),-1)
+			# cv2.imshow('t',frame)
+			# print (tSq.getLevel())
+			# print "L"
+			# cv2.waitKey(0)
 			found = True
-			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl,frame)
 
 		# UPPER RIGHT
 		elif (distance( tActSqr.getTopLeftC()[0] + tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1] + tSq.getH()) < eps):
+			tSq.setLevel(lvl+1)
 			tissue.append(tSq)
 			tAllSqrs.pop(tAllSqrs.index(tSq))
+			# cv2.circle(frame,(x,y),5,(255,0,0),-1)
+			# cv2.imshow('t',frame)
+			# print (tSq.getLevel())
+			# print "UR"
+			# cv2.waitKey(0)
 			found = True
-			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl+1,frame)
 
 		# UPPER LEFT
 		elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0] + tSq.getW(), tSq.getTopLeftC()[1] + tSq.getH()) < eps):
+			tSq.setLevel(lvl+1)
 			tissue.append(tSq)
 			tAllSqrs.pop(tAllSqrs.index(tSq))
+			# cv2.circle(frame,(x,y),5,(255,0,0),-1)
+			# cv2.imshow('t',frame)
+			# print (tSq.getLevel())
+			# print "UL"
+			# cv2.waitKey(0)
 			found = True
-			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl+1,frame)
 
 		# LOWER RIGHT
 		elif (distance( tActSqr.getTopLeftC()[0]+tActSqr.getW(), tActSqr.getTopLeftC()[1] + tActSqr.getH(), tSq.getTopLeftC()[0] , tSq.getTopLeftC()[1] ) < eps):
+			tSq.setLevel(lvl-1)
 			tissue.append(tSq)
 			tAllSqrs.pop(tAllSqrs.index(tSq))
+			# cv2.circle(frame,(x,y),5,(255,0,0),-1)
+			# cv2.imshow('t',frame)
+			# print (tSq.getLevel())
+			# print "LR"
+			# cv2.waitKey(0)
 			found = True
-			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl-1,frame)
 
 		# LOWER LEFT
 		elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1]+ tActSqr.getH(), tSq.getTopLeftC()[0] + tSq.getW(), tSq.getTopLeftC()[1] ) < eps):
+			tSq.setLevel(lvl-1)
 			tissue.append(tSq)
 			tAllSqrs.pop(tAllSqrs.index(tSq))
+			# cv2.circle(frame,(x,y),5,(255,0,0),-1)
+			# cv2.imshow('t',frame)
+			# print (tSq.getLevel())
+			# print "LL"
+			# cv2.waitKey(0)
 			found = True
-			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+			makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl-1,frame)
 
 	if found == False:
 		tissue.pop(tissue.index(tActSqr))

@@ -22,7 +22,7 @@ from copy import deepcopy
 
 ##-----------GLOBAL VARIABLES-----------##
 
-mainFrame = cv2.imread("/Users/Emilio/Documents/Robotica_Todo/Tissue_2.0/LARC_2.0/photos/cow2.jpg")
+mainFrame = cv2.imread("/photos/image1.jpg")
 mainFrame = cv2.resize(mainFrame,None,fx=0.20,fy=0.20,interpolation=cv2.INTER_AREA)
 
 

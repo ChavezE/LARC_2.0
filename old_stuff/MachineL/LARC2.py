@@ -24,7 +24,6 @@ from copy import deepcopy
 import updates as up
 
 
-
 #############################################
 ##------------------CLASSES----------------##
 #############################################
@@ -147,7 +146,7 @@ class cluster:
 
 
 #############################################
-##----------- IMAGE FUNCTIONS-----------##
+##------------- IMAGE FUNCTIONS------------##
 #############################################
 # To work over the imageS to get them ready, obatain 
 # general data and use it in further algorithms
@@ -236,8 +235,8 @@ def cornersMatch(cnt,corners,minC,eps):
 
 def getGoodSquares2(binFrame,contours,corners):
    # setting constants
-   minArea = 10
-   maxArea = 8500
+   minArea = 150
+   maxArea = 5000
 
    # variable to store the good squares
    goodSqrs = []
@@ -261,7 +260,7 @@ def getGoodSquares2(binFrame,contours,corners):
                   tempSqr = cowSquare(x,y,w,h,area)        
                   goodSqrs.append(tempSqr)
                   
-               elif(extent >= 0.5 and m == True):        # BEST CONSTANT
+               elif(extent >= 0.55 and m == True):        # BEST CONSTANT
                   tempSqr = cowSquare(x,y,w,h,area)
                   goodSqrs.append(tempSqr)
                   #print "here"
@@ -270,11 +269,9 @@ def getGoodSquares2(binFrame,contours,corners):
 
    return goodSqrs
 
-
 # Returns distance between two point in the image.
 def distance(x1,y1,x2,y2):
   return math.sqrt(pow(x2 - x1,2) + pow(y2 - y1,2))
-
 
 #############################################
 ##------------ DESSISION MAKING------------##
@@ -507,32 +504,16 @@ def isThereACow(frame):
       cp0 = cp1 = cp2 = deepcopy(frame)
 
       
-      corners = getCorners(cp0,70,0.1)
+      corners = getCorners(cp0,100,0.1)
       #print (corners)
       thresFrame0 = doThresHold(cp0, binValueT,3,1)
       contours0 = findContours(thresFrame0)
-      #cowRectangles0 = getGoodSquares(contours0,frame,thresFrame0) # From contours, extract possile cow squares
-      cowRectangles0 = getGoodSquares2(thresFrame0,contours0,corners)
+      cowRectangles0 = getGoodSquares(contours0,frame,thresFrame0) # From contours, extract possile cow squares
+      # cowRectangles0 = getGoodSquares2(thresFrame0,contours0,corners)
       findEquals(allSquares,cowRectangles0,15)
 
-      # thresFrame1 = rb.doThresHold(cp1, binValueT,3,3) 
-      # #cv2.imshow('1', thresFrame1)
-      # contours1 = findContours(thresFrame1) 
-      # cowRectangles1 = getGoodSquares(contours1,frame,thresFrame1) # From contours, extract possile cow squares
-      # findEquals(allSquares,cowRectangles1,15)
-
-      # thresFrame2 = doThresHold(cp2, binValueT,5,2) 
-      # #cv2.imshow('2', thresFrame2)
-      # contours2 = findContours(thresFrame2) 
-      # cowRectangles2 = getGoodSquares(contours2,frame,thresFrame2) 
-      # findEquals(allSquares,cowRectangles2,15)
-
       del cp0
-      del cp1
-      del cp2
-      
-      
-    
+
       #cv2.waitKey(100)
 
    print "im done with thres"
@@ -545,18 +526,20 @@ def isThereACow(frame):
       tempAllSquares = deepcopy(allSquares)
       tempAllSquares2 = deepcopy(allSquares)
       maxLenT = rb.makeTissue(tempAllSquares,[],50,0,[0,0],0)
-      maxLenT2 = up.doTissue(tempAllSquares2)
+      tf = deepcopy(frame)
+      maxLenT2 = up.doTissue(tempAllSquares2,tf)
       
       if len(maxLenT) > minNumSquares:
          return True,maxLenT,maxLenT2,allSquares
    
-   return False,[],[]
+   return False,[],[],[]
+   
 
 # INPUT: maximunLengthTissue found in isThereACow
 # OUTPUT : bool to go and milk the cow, limLeft, limRight, limTop
 # if tissue[0].getLevel() != tissue[1].getLevel() and tissue[1].getLevel() == tissue[2].getLevel():
-#  # To remove any noise that is higher than the cow
-#  tissue.pop(0)
+# To remove any noise that is higher than the cow
+# tissue.pop(0)
 def isCowMilkeable(tissue,squares):
 
    if tissue[0].getLevel() == tissue[1].getLevel() and tissue[1].getLevel() == tissue[2].getLevel():
@@ -630,9 +613,9 @@ def isCowMilkeable(tissue,squares):
    #  # Go milk the cow
    #  return True,limLeft,limRight,limTop,theta
 
-###########################################################################
-# THE FOLLOWING WERE CONSIDERABLE APPROACH IDEAD BUT NOT USED IN LARC 2016
-###########################################################################
+############################################################################
+# THE FOLLOWING WERE CONSIDERABLE APPROACH IDEAD BUT NOT USED IN LARC 2016 #
+############################################################################
 
 # This function is to implement the clustering algorithm 
 # PARAMETERS: number of clusters to search for, list of coordinates of the cow
@@ -776,7 +759,6 @@ def boundingRectSort(allRect,criteria):
    return (allRect, boundingBoxes)
 
 
-
 #############################################
 ##--------------  PRINTS ------------##
 #############################################
@@ -821,9 +803,9 @@ def drawGreatestTissue(frame,greatestTissue):
 
 def drawLimits(frame,left,right,y):
    font = cv2.FONT_HERSHEY_SIMPLEX
-   cv2.line(frame,(left,0),(left,480),(0,200,0),3)
-   cv2.line(frame,(right,0),(right,480),(0,200,0),3)
-   cv2.line(frame,(0,y),(640,y),(0,200,0),3)
+   cv2.line(frame,(left,0),(left,480),(0,100,200),3)
+   cv2.line(frame,(right,0),(right,480),(0,100,200),3)
+   cv2.line(frame,(0,y),(640,y),(0,100,200),3)
 
    cv2.putText(frame,("diff L: " + str(left)),(30,20), font, 0.8,(0,0,255),1)
    cv2.putText(frame,("diff R: " + str(640-right)),(30,50), font, 0.8,(0,0,255),1)
