@@ -1,12 +1,10 @@
-## This is version 2.0 of LARC 2016 Module of Mexican Team RoBorregos
+## This is version 3.0 of LARC 2017 Module of Mexican Team RoBorregos
 ## which stores functions used by the computer vision squad. 
 ## All rights reserved by Instituo Tecnologico de Monterrey.
 
 ## AUTHORS:    Emilio Chavez Madero
-##             Sebastian Rivera Gonzalez
-##             Diego Garza Rodriguez
+##             Alejandro Garza Castro
 
-## Updated and commented on December 2016 by Emilio Chavez
 
 #############################################
 ##----------------MAIN LIBS----------------##
@@ -15,16 +13,9 @@ import cv2
 import time
 import math
 import numpy as np
-
 import random
-
-
 from copy import deepcopy
 
-
-#############################################
-##------------------CLASSES----------------##
-#############################################
 
 # Simple class to manage individual squares in the image
 # ATRIBUTES:
@@ -91,7 +82,7 @@ class cowSquare:
 
 
 #############################################
-##----------- IMAGE FUNCTIONS-----------##
+##------------- IMAGE FUNCTIONS------------##
 #############################################
 # To work over the imageS to get them ready, obatain 
 # general data and use it in further algorithms
@@ -254,6 +245,71 @@ def makeTissue(tActSqr,tAllSqrs,tissue,eps):
    if found == False:
       tissue.pop(tissue.index(tActSqr))
 
+# returns a Tissue compossed by cow squares if found, if not empty list
+def isThereACow():
+   global mainFrame
+   maxLenT = [] # maximumLenghtTissue
+   allSquares = [] # Store in each iteration of the binarization the squares found in the image
+   minNumSquares = 4
+   takePicture()
+   # iterate to get max squares from the image
+   # best way so far to counter ligh strokes 
+   filteredFrame = rb.clearImage(mainFrame)
+   equalizedFrame = cv2.equalizeHist(filteredFrame)
+
+   for binValueT in range(5,131,3):
+
+
+      cp0 = deepcopy(equalizedFrame)
+      main_copy2=mainFrame.copy()
+      thresFrame0 = rb.doThresHold(cp0, binValueT,3,1)
+      cv2.imshow("thres0: ", thresFrame0)
+      cv2.waitKey(5)
+      contours0 = rb.findContours(thresFrame0)
+      cowRectangles0,_ = rb.getGoodSquares(contours0,thresFrame0,main_copy2) # From contours, extract possile cow squares
+      # cowRectangles0 = getGoodSquares2(thresFrame0,contours0,corners)
+      rb.findEquals(allSquares,cowRectangles0,15)
+      del cp0
+      
+      # cp0 = cp1 = cp2 = deepcopy(equalizedFrame)
+      # main_copy2=mainFrame.copy()
+
+
+      # thresFrame0 = rb.doThresHold(cp0, binValueT,7,1) 
+      # cv2.imshow("thres0: ", thresFrame0)
+      # cv2.waitKey(5)
+      # contours0 = rb.findContours(thresFrame0) 
+      # cowRectangles0,_ = rb.getGoodSquares(contours0,thresFrame0,main_copy2) 
+      # findEquals(allSquares,cowRectangles0,15)
+
+      # thresFrame1 = rb.doThresHold(cp1, binValueT,3,3) # Thresholds the image and erodes it
+      # contours1 = rb.findContours(thresFrame1) # Finds all the contours inside the image
+      # cowRectangles1,_ = rb.getGoodSquares(contours1,thresFrame1,main_copy2) # From contours, extract possile cow squares
+      # findEquals(allSquares,cowRectangles1,15)
+
+      # thresFrame2 = rb.doThresHold(cp2, binValueT,5,2) 
+      # contours2 = rb.findContours(thresFrame2) 
+      # cowRectangles2,_ = rb.getGoodSquares(contours2,thresFrame2,main_copy2) 
+      # findEquals(allSquares,cowRectangles2,15)
+
+      # del cp0
+      # del cp1
+      # del cp2
+   
+
+   if len(allSquares) > minNumSquares:
+      tempAllSquares = deepcopy(allSquares)
+      maxLenT = rb.doTissue(tempAllSquares)
+      for sqr in maxLenT:
+         cv2.rectangle(main_copy2, (sqr.getTopLeftC()[0],sqr.getTopLeftC()[1]), (sqr.getBotRightC()[0],sqr.getBotRightC()[1]), (127,50,127), 2)
+         cv2.imshow("squares of " + str(binValueT),main_copy2)
+         cv2.waitKey(5)
+
+      if len(maxLenT) > minNumSquares:
+         return True,maxLenT,allSquares
+
+   return False,[],[]
+
 # cSquares is a multidimensional list: [[x1,y1],[x2,y2],...,[xN,yN]]
 # These lists and variables are used to calculate A and B
 # to get a polynomial of 1st grade: y = Ax + B
@@ -330,53 +386,6 @@ def findEquals(allSqrs,partial,epsilon):
             
       if not found:
          allSqrs.append(testSqr)
-
-# Looks after a tissue in the frame and returns the tissue itself and allsquares
-# returns a bolean and empty lists if the squares dont match for a cow 
-# def isThereACow(frame):
-   
-#    maxLenT = [] # maximumLenghtTissue
-#    allSquares = [] # Store in each iteration of the binarization the squares found in the image
-#    minNumSquares = 4
-     
-#    # iterate to get max squares from the image
-#    # best way so far to counter ligh strokes 
-#    for binValueT in range(40,131,3):
-#       cp0 = cp1 = cp2 = deepcopy(frame)
-
-#       thresFrame0 = rb.doThresHold(cp0, binValueT,7,1) 
-#       contours0 = rb.findContours(thresFrame0) 
-#       cowRectangles0 = rb.getGoodSquares(contours0,frame,thresFrame0) 
-#       findEquals(allSquares,cowRectangles0,15)
-
-#       thresFrame1 = rb.doThresHold(cp1, binValueT,3,3) 
-#       contours1 = rb.findContours(thresFrame1) 
-#       cowRectangles1 = rb.getGoodSquares(contours1,frame,thresFrame1) # From contours, extract possile cow squares
-#       findEquals(allSquares,cowRectangles1,15)
-
-#       thresFrame2 = rb.doThresHold(cp2, binValueT,5,2) 
-#       contours2 = rb.findContours(thresFrame2) 
-#       cowRectangles2 = rb.getGoodSquares(contours2,frame,thresFrame2) 
-#       findEquals(allSquares,cowRectangles2,15)
-
-#       del cp0
-#       del cp1
-#       del cp2
-
-#    # print "im done with thres"
-   
-#    # for c in allSquares:
-#    #  cv2.rectangle(mainFrame,(c.getX(),c.getY()),(c.getX()+c.getW(),c.getY()+c.getH()),(255,255,255),4)
-   
-#    # When there are more than 'minNumSquares', it can be found at least one tissue
-#    if len(allSquares) > minNumSquares:
-#       tempAllSquares = deepcopy(allSquares)
-#       maxLenT = rb.makeTissue(tempAllSquares,[],50,0,[0,0],0)
-      
-#       if len(maxLenT) > minNumSquares:
-#          return True,maxLenT,allSquares
-   
-#    return False,[],[]
 
 # INPUT: maximunLengthTissue found in isThereACow
 # OUTPUT : bool to go and milk the cow, limLeft, limRight, limTop
