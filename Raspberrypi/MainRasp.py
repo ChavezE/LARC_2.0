@@ -36,7 +36,6 @@ cap = cv2.VideoCapture(0)
     METODOS
 '''
 
-
 #####Rutinas
 #Go to terrines zone
 def goToTerrines():

@@ -144,6 +144,73 @@ def getGoodSquares(contours,thres,mainC):
                                        
    return cowSquares,final_contours
 
+
+# OUT: list of (x,y) coordenates with >= n strongest corners
+def getCorners(frame,n,quality):
+   corners = cv2.goodFeaturesToTrack(frame,n,quality,10)
+   corners = np.int0(corners)
+   return corners
+
+def cornersMatch(cnt,corners,minC,eps):
+   x,y,w,h = cv2.boundingRect(cnt)
+   matches = 0
+   for i in corners:
+      xc,yc = i.ravel()
+      # upper left
+      if(abs(x - xc) < eps and abs(y - yc) < eps): 
+         matches = matches + 1
+      # upper right
+      if(abs((x+w) - xc) < eps and abs(y - yc) < eps):
+         matches = matches + 1
+      # lower left
+      if(abs(x + xc) < eps and abs((y+h) - yc) < eps):
+         matches = matches + 1
+      # lower right
+      if(abs((x+w) + xc) < eps and abs((y+h) - yc) < eps):
+         matches = matches + 1
+
+
+   return matches >= minC
+
+
+def findSquares(binFrame,contours,corners,mainC):
+   # setting constants
+   minArea = 50
+   maxArea = 3000
+
+   # variable to store the good squares
+   goodSqrs = []
+
+   for cnt in contours:
+      area = cv2.contourArea(cnt)      # area of the contour itself
+      rect = cv2.minAreaRect(cnt)      # rotated rectangle
+      w = int(rect[1][0])
+      h = int(rect[1][1])
+      rect_area = w * h
+      cv2.drawContours(mainC,[cnt],-1,(0,255,0),1)
+      # print area
+      cv2.imshow("individual: " ,mainC)
+
+      if(rect_area > 0):
+         extent = float(area / rect_area)
+         if(area >= minArea and area <= maxArea):
+            x,y,w,h = cv2.boundingRect(cnt)
+
+            if(binFrame[y + h*0.5,x + w*0.5] == 1 and w/h < 3 and h/w < 3):   # is a black rectangle ans sqr
+               m = cornersMatch(cnt,corners,2,10)
+               if(extent >= 0.75):                       # very simetric square
+                  tempSqr = cowSquare(x,y,w,h,area)         # ADD TO LIST
+                  goodSqrs.append(tempSqr)
+                  cv2.drawContours(mainC,[cnt],-1,(255,0,0),2)
+               elif(extent >= 0.55 and m == True):
+                  tempSqr = cowSquare(x,y,w,h,area)
+                  goodSqrs.append(tempSqr)
+                  cv2.drawContours(mainC,[cnt],-1,(255,0,0),2)
+               else:
+                  pass
+
+   return goodSqrs
+
 # Returns distance between two point in the image.
 def distance(x1,y1,x2,y2):
   return math.sqrt(pow(x2 - x1,2) + pow(y2 - y1,2))
@@ -246,50 +313,49 @@ def makeTissue(tActSqr,tAllSqrs,tissue,eps):
       tissue.pop(tissue.index(tActSqr))
 
 # returns a Tissue compossed by cow squares if found, if not empty list
-def isThereACow():
-   global mainFrame
+def isThereACow(mainFrame):
    maxLenT = [] # maximumLenghtTissue
    allSquares = [] # Store in each iteration of the binarization the squares found in the image
    minNumSquares = 4
-   takePicture()
    # iterate to get max squares from the image
    # best way so far to counter ligh strokes 
-   filteredFrame = rb.clearImage(mainFrame)
+   filteredFrame = clearImage(mainFrame)
    equalizedFrame = cv2.equalizeHist(filteredFrame)
 
-   for binValueT in range(5,131,3):
+   for binValueT in range(5,100,3):
 
 
       cp0 = deepcopy(equalizedFrame)
       main_copy2=mainFrame.copy()
-      thresFrame0 = rb.doThresHold(cp0, binValueT,3,1)
+      thresFrame0 = doThresHold(cp0, binValueT,3,1)
+      corners = getCorners(cp0,50,0.1)
       cv2.imshow("thres0: ", thresFrame0)
       cv2.waitKey(5)
-      contours0 = rb.findContours(thresFrame0)
-      cowRectangles0,_ = rb.getGoodSquares(contours0,thresFrame0,main_copy2) # From contours, extract possile cow squares
-      # cowRectangles0 = getGoodSquares2(thresFrame0,contours0,corners)
-      rb.findEquals(allSquares,cowRectangles0,15)
+      contours0 = findContours(thresFrame0)
+      # cowRectangles0,_ = getGoodSquares(contours0,thresFrame0,main_copy2) # From contours, extract possile cow squares
+      cowRectangles0 = findSquares(thresFrame0,contours0,corners,main_copy2)
+      findEquals(allSquares,cowRectangles0,15)
       del cp0
       
       # cp0 = cp1 = cp2 = deepcopy(equalizedFrame)
       # main_copy2=mainFrame.copy()
 
 
-      # thresFrame0 = rb.doThresHold(cp0, binValueT,7,1) 
+      # thresFrame0 = doThresHold(cp0, binValueT,7,1) 
       # cv2.imshow("thres0: ", thresFrame0)
       # cv2.waitKey(5)
-      # contours0 = rb.findContours(thresFrame0) 
-      # cowRectangles0,_ = rb.getGoodSquares(contours0,thresFrame0,main_copy2) 
+      # contours0 = findContours(thresFrame0) 
+      # cowRectangles0,_ = getGoodSquares(contours0,thresFrame0,main_copy2) 
       # findEquals(allSquares,cowRectangles0,15)
 
-      # thresFrame1 = rb.doThresHold(cp1, binValueT,3,3) # Thresholds the image and erodes it
-      # contours1 = rb.findContours(thresFrame1) # Finds all the contours inside the image
-      # cowRectangles1,_ = rb.getGoodSquares(contours1,thresFrame1,main_copy2) # From contours, extract possile cow squares
+      # thresFrame1 = doThresHold(cp1, binValueT,3,3) # Thresholds the image and erodes it
+      # contours1 = findContours(thresFrame1) # Finds all the contours inside the image
+      # cowRectangles1,_ = getGoodSquares(contours1,thresFrame1,main_copy2) # From contours, extract possile cow squares
       # findEquals(allSquares,cowRectangles1,15)
 
-      # thresFrame2 = rb.doThresHold(cp2, binValueT,5,2) 
-      # contours2 = rb.findContours(thresFrame2) 
-      # cowRectangles2,_ = rb.getGoodSquares(contours2,thresFrame2,main_copy2) 
+      # thresFrame2 = doThresHold(cp2, binValueT,5,2) 
+      # contours2 = findContours(thresFrame2) 
+      # cowRectangles2,_ = getGoodSquares(contours2,thresFrame2,main_copy2) 
       # findEquals(allSquares,cowRectangles2,15)
 
       # del cp0
@@ -299,7 +365,7 @@ def isThereACow():
 
    if len(allSquares) > minNumSquares:
       tempAllSquares = deepcopy(allSquares)
-      maxLenT = rb.doTissue(tempAllSquares)
+      maxLenT = doTissue(tempAllSquares)
       for sqr in maxLenT:
          cv2.rectangle(main_copy2, (sqr.getTopLeftC()[0],sqr.getTopLeftC()[1]), (sqr.getBotRightC()[0],sqr.getBotRightC()[1]), (127,50,127), 2)
          cv2.imshow("squares of " + str(binValueT),main_copy2)
@@ -447,7 +513,7 @@ def isCowMilkeable(tissue,squares):
    
    return False,0,0,0,0
    # listMaxLevel = findMaxLevel(tissue)
-   # theta,A,B = rb.ajusteDeCurvas(listMaxLevel)
+   # theta,A,B = ajusteDeCurvas(listMaxLevel)
    # limLeft,limRight,limTop = calcCowLimits(listMaxLevel,tissue)
    
    ##-------PRINTS-------
@@ -464,6 +530,10 @@ def isCowMilkeable(tissue,squares):
    # else:
    #  # Go milk the cow
    #  return True,limLeft,limRight,limTop,theta
+
+
+   # IN: Frame is grayscale image, n is num of corners, quality is 0-1  
+
 
 
 #############################################
