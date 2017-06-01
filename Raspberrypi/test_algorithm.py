@@ -22,8 +22,8 @@ def takePicture(frameNumber):
 	global mainFrame
 	mainFrame=cv2.imread('test_photos/'+str(frameNumber)+'.jpg')
 	mainFrame =  cv2.resize(mainFrame,None,fx=0.5,fy=0.5,interpolation=cv2.INTER_AREA)
-	cv2.imshow("frame: " + str(frameNumber),mainFrame)
-	cv2.waitKey(0)
+	# cv2.imshow("frame: " + str(frameNumber),mainFrame)
+	# cv2.waitKey(0)
 	# for i in range(10):
 	# 	goodFrm, mainFrame = cap.read()
 	# print "I took a pic"
@@ -32,8 +32,8 @@ def takePicture(frameNumber):
 
 def getCowXcenter(maxLenT):
 	left,right,up=rb.calcCowLimits(maxLenT)
-	print "cow x dist: ", right - left
-	print "y: ", up
+	# print "cow x dist: ", right - left
+	# print "y: ", up
 	drawLimits(left,right,up)
 	return (left+right)/2
 
@@ -53,15 +53,22 @@ def drawLimits(left,right,y):
 '''
 if __name__ == "__main__":
 	validation=False
-	for x in range(1,19):
+	for x in range(8,19):
 		frameNumber=x
+		this_time = time.time()
 		takePicture(frameNumber)
 		validation,maxLenT,_ = rb.isThereACow(mainFrame)
-		print validation, len(maxLenT)
-		print "center camera: ",(mainFrame.shape[1])/2
+		# print validation, len(maxLenT)
+		# print "center camera: ",(mainFrame.shape[1])/2
 		if validation:
+			print "COW FOUND"
 			print "center cow: ",getCowXcenter(maxLenT)
+		else:
+			print "COW NOT FOUND"
+		print ("TOTAL TIME: ",time.time() - this_time)
 		cv2.imshow("limits",mainFrame)
-		cv2.waitKey(0)
+		k = cv2.waitKey(0)
+		if k ==27:
+			break
 		cv2.destroyAllWindows()
     
