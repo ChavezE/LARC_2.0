@@ -10,6 +10,7 @@ AUTHORS:
 
 #Stop the robot
 def brake():
+        print("Brake")
 	#Tell the arduino to run brake()
 	arduino.write("a")
 	time.sleep(1);
@@ -18,6 +19,7 @@ def brake():
 		pass;
 
 	if(arduino.read() == "1"):
+                print("True")
 		return True
 
 	print("No Brake")
