@@ -205,10 +205,13 @@ def alignWithCow():
 '''
 if __name__ == "__main__":
 
+    arduino.write("q");
+    time.sleep(1);
+    while(arduino.inWaiting()<=0):
+        pass;
+    print(arduino.read())
+    
+	'''
     goToTerrines();
     walkingDetecting()
-    
-    
-
-    
-    
+    '''

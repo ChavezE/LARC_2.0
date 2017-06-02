@@ -292,6 +292,16 @@ void loop()
         closeClaw();
         Serial.write('1');
         break;
+
+      case 'p':
+        while(Serial.available() < 1);
+        data = Serial.read();
+        Serial.write(getDistance(pinSF));
+        break;
+
+      case 'q':
+        Serial.write(getCompass());
+        break;
     }
   }
 }
