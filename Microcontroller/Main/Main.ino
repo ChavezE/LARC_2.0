@@ -162,9 +162,10 @@ void loop()
 {
   unsigned long data;
   unsigned long data1, data2;
+  char order= '0';
 
-  if(Serial.available()>0){
-    char order= Serial.read();
+  if(Serial.available() > 0){
+    order = Serial.read();
 
     switch(order)
     {
@@ -209,7 +210,7 @@ void loop()
         Serial.write('1');
         break;
 
-      case 'e':
+      case 'f':
         while(Serial.available() < 1);
         data = Serial.read();
         delay(1000);
@@ -217,7 +218,7 @@ void loop()
         Serial.write('1');
         break;
 
-      case 'f':
+      case 'g':
         while(Serial.available() < 1);
         data = Serial.read();
         delay(1000);
@@ -225,7 +226,7 @@ void loop()
         Serial.write('1');
         break;
 
-      case 'g':
+      case 'h':
         while(Serial.available() < 1);
         data = Serial.read();
         delay(1000);
@@ -233,7 +234,7 @@ void loop()
         Serial.write('1');
         break;
 
-      case 'h':
+      case 'i':
         while(Serial.available() < 1);
         data = Serial.read();
         delay(1000);
@@ -241,7 +242,7 @@ void loop()
         Serial.write('1');
         break;
 
-      case 'i':
+      case 'j':
         while(Serial.available() < 1);
         data = Serial.read();
         delay(1000);
@@ -249,7 +250,7 @@ void loop()
         Serial.write('1');
         break;
 
-      case 'j':
+      case 'k':
         while(Serial.available() < 1);
         data = Serial.read();
         delay(1000);
@@ -257,7 +258,7 @@ void loop()
         Serial.write('1');
         break;
 
-      case 'k':
+      case 'l':
         while(Serial.available() < 1);
         data = Serial.read();
         delay(1000);
@@ -265,7 +266,7 @@ void loop()
         Serial.write('1');
         break;
 
-      case 'k':
+      case 'm':
         while(Serial.available() < 1);
         data = Serial.read();
         delay(1000);
@@ -273,33 +274,32 @@ void loop()
         Serial.write('1');
         break;
 
-      case 'l':
+      case 'n':
         platIn();
         Serial.write('1');
         break;
 
-      case 'm':
+      case 'o':
         platOut();
         Serial.write('1');
         break;
 
-      case 'n':
+      case 'p':
         openClaw();
         Serial.write('1');
         break;
 
-      case 'o':
+      case 'q':
         closeClaw();
         Serial.write('1');
         break;
 
-      case 'p':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        Serial.write(getDistance(pinSF));
+      case 'r':
+        Serial.println("Buscar distancia");
+        Serial.print(getDistance(pinSF));
         break;
 
-      case 'q':
+      case 's':
         Serial.write(getCompass());
         break;
     }
