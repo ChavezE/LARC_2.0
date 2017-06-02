@@ -153,8 +153,9 @@ void setup()
   pinMode(pinEncoder, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
 
-  platIn();
-  openClaw();
+  brake();
+  //platIn();
+  //openClaw();
   encoderState = 1;
 }
 
@@ -163,13 +164,15 @@ void loop()
   unsigned long data;
   unsigned long data1, data2;
   char order= '0';
+  forward(70, 70);
 
   if(Serial.available() > 0){
     order = Serial.read();
-
+    //order = 'a';
     switch(order)
     {
       case 'a':
+        //Serial.println("Brake Arduino");
         brake();
         Serial.write('1');
         break;
@@ -180,6 +183,7 @@ void loop()
         delay(1000);
         while(Serial.available() < 1);
         data2 = Serial.read();
+        delay(1000);
         forward(data1, data2);
         Serial.write('1');
         break;
