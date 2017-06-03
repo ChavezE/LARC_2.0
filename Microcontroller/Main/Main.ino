@@ -268,17 +268,23 @@ void loop()
 
       case 'k':
         while(Serial.available() < 1);
-        data = Serial.read();
+        data1 = Serial.read();
         delay(1000);
-        turnToDegree(data);
+        while(Serial.available() < 1);
+        data2 = Serial.read();
+        delay(1000);
+        turnToDegree(((data1<<8)|data2)*100UL);
         Serial.write('1');
         break;
 
       case 'l':
-        while(Serial.available() < 1);
-        data = Serial.read();
+         while(Serial.available() < 1);
+        data1 = Serial.read();
         delay(1000);
-        turnRightNDegrees(data);
+        while(Serial.available() < 1);
+        data2 = Serial.read();
+        delay(1000);
+        turnRightNDegrees(((data1<<8)|data2)*100UL);
         Serial.write('1');
         break;
 
