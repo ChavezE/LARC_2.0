@@ -68,7 +68,7 @@ def forward(left, right):
 
 #Go backward, the parameters are the velocity of the motors
 def backward(left, right):
-        print("forward")
+        print("backward")
         #Left speed limit
         if left > 255:
                 left = 255
@@ -94,14 +94,14 @@ def backward(left, right):
                 return False
 
 
-#Turn right to an exact angle
-def turnRight(angle):
-        print("forward")
+#Turn right at a given specific speed
+def turnRight(speed):
+        print("turn Right")
         #Send the case for forward
         arduino.write("d")
         time.sleep(1)
         #Send the
-        arduino.write(chr(angle))
+        arduino.write(chr(speed))
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -112,14 +112,14 @@ def turnRight(angle):
                 print("False")
                 return False
 
-#Turn left to an exact angle
-def turnLeft(angle):
-        print("forward")
+#Turn left at a specific speed
+def turnLeft(speed):
+        print("turnLeft")
         #Send the case for forward
         arduino.write("e")
         time.sleep(1)
         #Send velocity for left motor
-        arduino.write(chr(angle))
+        arduino.write(chr(speed))
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -130,14 +130,14 @@ def turnLeft(angle):
                 print("False")
                 return False
 
-#Turn to an exact angle
-def turn(angle):
-        print("forward")
+#Turn in a specific speed, negative turn right and positive turn left
+def turn(speed):
+        print("Turn")
         #Send the case for forward
         arduino.write("f")
         time.sleep(1)
         #Send velocity for left motor
-        arduino.write(chr(angle))
+        arduino.write(chr(speed))
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -150,7 +150,7 @@ def turn(angle):
 
 #Go Forward an x amount of cm
 def forwardNCm(cm):
-        print("forward")
+        print("forward n cm")
         #Send the case for forward
         arduino.write("g")
         time.sleep(1)
@@ -168,7 +168,7 @@ def forwardNCm(cm):
 
 #Go backward an x amount of cm
 def backwardNCm(cm):
-        print("forward")
+        print("backward n cm")
         #Send the case for forward
         arduino.write("h")
         time.sleep(1)
@@ -186,7 +186,7 @@ def backwardNCm(cm):
 
 #Go Forward until it found a wall at a certain distance
 def forwardUntilWall(cm):
-        print("forward")
+        print("forward until wall")
         #Send the case for forward
         arduino.write("i")
         time.sleep(1)
@@ -204,7 +204,7 @@ def forwardUntilWall(cm):
 
 #Go backward until it found a wall at a certain distance
 def backwardUntilWall(cm):
-        print("forward")
+        print("backward until wall")
         #Send the case for forward
         arduino.write("j")
         time.sleep(1)
@@ -220,7 +220,7 @@ def backwardUntilWall(cm):
 
 #Turn to an specific angle
 def turnToDegree(angle):
-        print("forward")
+        print("Turn To Degree")
         #Send the case for forward
         arduino.write("k")
         time.sleep(1)
@@ -236,7 +236,7 @@ def turnToDegree(angle):
 
 #Turn right a certain amount of degrees
 def turnRightNDegrees(angle):
-        print("forward")
+        print("turnRightNDegrees")
         #Send the case for forward
         arduino.write("l")
         time.sleep(1)
@@ -252,7 +252,7 @@ def turnRightNDegrees(angle):
 
 #Turn left a certain amount of degrees
 def turnLeftNDegrees(angle):
-        print("forward")
+        print("Turn Left N Degrees")
         #Send the case for forward
         arduino.write("m")
         time.sleep(1)

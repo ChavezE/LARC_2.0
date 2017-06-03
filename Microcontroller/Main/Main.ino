@@ -129,10 +129,11 @@ void setup()
   //Check BNO
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_NDOF))
   {
-    //NO BNO!!
+    //Serial.println("NO BNO");
   }
   bno.setExtCrystalUse(true);
 
+  //Initialize lcd, turn backlight on and clear the display
   lcd.init();
   lcd.backlight();
   lcd.clear();
@@ -166,8 +167,10 @@ void setup()
   //platIn();
   //openClaw();
   encoderState = 1;
+
+  //Display the finish of the setup
   lcd.clear();
-  writeLCD("START FENIX 2.0");
+  writeLCD("START FENIX 2.0", 0, 0);
 }
 
 void loop()

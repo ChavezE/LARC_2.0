@@ -5,8 +5,9 @@
 //Get the distance of the sharp given in the parameters
 int getDistance(byte sharp)
 {
+  //Display function in LCD
   lcd.clear();
-  writeLCD("GETTING DISTANCE");
+  writeLCD("GETTING DISTANCE", 0, 0);
   //Number of reads
   byte numReads = 7;
 
@@ -57,14 +58,16 @@ int getDistance(byte sharp)
   }
 
   //Return the median of the distances
+  writeLCD(String(values[numReturn]), 0, 1);
   return values[numReturn];
 }
 
 //Return the lecture of the BNO in eulers
 int getCompass()
 {
-lcd.clear();
-  writeLCD("GETTING ANGLE");
+  //Display function in LCD
+  lcd.clear();
+  writeLCD("GETTING ANGLE", 0, 0);
   return bno.getVector(Adafruit_BNO055::VECTOR_EULER).x() * 100;
 }
 
@@ -83,10 +86,8 @@ void encoderStep()
   }
 }
 
-void writeLCD(String word)
+void writeLCD(String word, int iCol, int iRow)
 {
-  int iRow = 0;
-  int iCol = 0;
   bool firstLine = true;
   for(int iI = 0; iI < word.length(); iI++)
   {
