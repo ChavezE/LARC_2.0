@@ -30,7 +30,7 @@ def brake():
         #Wait for something to happen
         while(arduino.inWaiting() <= 0):
                 pass;
-
+        #Completed
         if(arduino.read() == "1"):
                 print("True")
                 return True
@@ -38,11 +38,15 @@ def brake():
                 print("False")
                 return False
 
-        print("No Brake")
-
 #Go Forward, the parameters are the velocity of the motors
 def forward(left, right):
         print("forward")
+        #Left speed limit
+        if left > 255:
+                left = 255
+        #Right speed limit
+        if right > 255:
+                right = 255
         #Send the case for forward
         arduino.write("b")
         time.sleep(1)
@@ -54,6 +58,7 @@ def forward(left, right):
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
+        #Completed
         if(arduino.read() == "1"):
                 print("True")
                 return True
@@ -64,6 +69,12 @@ def forward(left, right):
 #Go backward, the parameters are the velocity of the motors
 def backward(left, right):
         print("forward")
+        #Left speed limit
+        if left > 255:
+                left = 255
+        #Right speed limit
+        if right > 255:
+                right = 255
         #Send the case for forward
         arduino.write("c")
         time.sleep(1)
@@ -89,7 +100,7 @@ def turnRight(angle):
         #Send the case for forward
         arduino.write("d")
         time.sleep(1)
-        #Send velocity for left motor
+        #Send the
         arduino.write(chr(angle))
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
