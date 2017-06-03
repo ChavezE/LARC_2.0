@@ -1,14 +1,14 @@
 Funciones que se van a llamar desde la raspberryPi:
 
-Nombre en Arduino												Nombre en Rasp
+Nombre en Arduino												
 
 void brake(); = 'a'
 void forward(int left, int right);
 void backward(int left, int right);
-void turnRight(int vel);										turnRight(angle)
-void turnLeft(int vel);											turnLeft(angle)
+void turnRight(int vel);										
+void turnLeft(int vel);											
 //Positivo gira a la izquierda, negativo a la derecha
-void turn(int vel); 											turnTo()
+void turn(int vel); 											
 void forwardNCm(long cm);
 void backwardUntilWall(int cmFromWall);							
 void turnToDegree(int obj);
@@ -27,3 +27,4 @@ void forwardTillNoLeft();
 int getDistance(byte sharp);
 int getCompass();
 void encoderStep();
+

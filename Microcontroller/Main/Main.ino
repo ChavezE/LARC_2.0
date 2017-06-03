@@ -1,5 +1,7 @@
 #include <Adafruit_BNO055.h>
 #include <Servo.h>
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>
 
 ///////////////////////
 //        PINS       //
@@ -115,6 +117,9 @@ volatile unsigned long steps = 0;
 //0->Stop   1->Forward    2->Backwards
 volatile byte encoderState = 0;
 
+//LCD
+LiquidCrystal_I2C lcd(0x27,16,2);
+
 void setup()
 {
   //Delay to establish connection with raspberry
@@ -128,6 +133,10 @@ void setup()
   }
   bno.setExtCrystalUse(true);
 
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
+  
   pinMode(pinMFRA , OUTPUT);
   pinMode(pinMFRB , OUTPUT);
   pinMode(pinPWMFR, OUTPUT);
@@ -157,6 +166,8 @@ void setup()
   //platIn();
   //openClaw();
   encoderState = 1;
+  lcd.clear();
+  writeLCD("START FENIX 2.0");
 }
 
 void loop()
@@ -164,11 +175,9 @@ void loop()
   unsigned long data;
   unsigned long data1, data2;
   char order= '0';
-  forward(70, 70);
 
   if(Serial.available() > 0){
     order = Serial.read();
-    //order = 'a';
     switch(order)
     {
       case 'a':

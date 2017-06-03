@@ -5,6 +5,8 @@
 //Move plattaform In
 void platIn()
 {
+  lcd.clear();
+  writeLCD("PLAT IN");
   //Check the inner limit switch of the robot
   while (digitalRead(pinLI) == 0)
   {
@@ -18,6 +20,8 @@ void platIn()
 //Move plattaform Out
 void platOut()
 {
+  lcd.clear();
+  writeLCD("PLAT OUT");
   //Check the inner limit switch of the robot
   while (digitalRead(pinLO) == 0)
   {
@@ -31,11 +35,15 @@ void platOut()
 //Open Claw of the robot
 void openClaw()
 {
+  lcd.clear();
+  writeLCD("OPEN CLAW");
   sClaw.write(30);
 }
 
 //Close claw of the robot
 void closeClaw()
 {
+  lcd.clear();
+  writeLCD("CLOSE CLAW");
   sClaw.write(60);
 }

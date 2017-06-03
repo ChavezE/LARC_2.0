@@ -5,6 +5,8 @@
 //Go forward the cm given in the parameter
 void forwardNCm(long cm)
 {
+  lcd.clear();
+  writeLCD("FORWARD N CM");
   //Change precision
   cm *= 100;
   
@@ -73,6 +75,8 @@ void forwardNCm(long cm)
 //Go backward the cm given in the parameter
 void backwardNCm(long cm)
 {
+  lcd.clear();
+  writeLCD("BACKWARD N CM");
   //Change precision
   cm *= 100;
   //Reset steps counts
@@ -131,6 +135,8 @@ void backwardNCm(long cm)
 //Go forward until it detect a wall at a given cm
 void forwardUntilWall(int cmFromWall)
 {
+  lcd.clear();
+  writeLCD("FORWARD UNTIL WALL");
   //Distance detected
   int dist;
   //Faced direction at start
@@ -218,6 +224,8 @@ void forwardUntilWall(int cmFromWall)
 //Go backs until wall the given parameters
 void backwardUntilWall(int cmFromWall)
 {
+  lcd.clear();
+  writeLCD("BACKWARD UNTIL WALL");
   //Distance
   int dist;
   //Direction at start
@@ -297,6 +305,8 @@ void backwardUntilWall(int cmFromWall)
 //Turn to a given degree
 void turnToDegree(int obj)
 {
+  lcd.clear();
+  writeLCD("TURN TO DEGREE");
   //Actual angle
   int degrees;
   int times = 0;
@@ -347,6 +357,8 @@ void turnToDegree(int obj)
 //turn n andegrees to the right
 void turnRightNDegrees(long degrees)
 {
+  lcd.clear();
+  writeLCD("TURN RIGHT N DEGREES");
   int obj = (getCompass() + degrees) % 36000L;
   turnToDegree(obj);
 }
@@ -354,6 +366,8 @@ void turnRightNDegrees(long degrees)
 //Turn n degrees to the left
 void turnLeftNDegrees(long degrees)
 {
+  lcd.clear();
+  writeLCD("TURN LEFT N DEGREES");
   int obj = getCompass() - degrees;
   if (obj < 0L)
   {
