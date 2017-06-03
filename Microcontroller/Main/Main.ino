@@ -122,8 +122,8 @@ LiquidCrystal_I2C lcd(0x27,16,2);
 
 void setup()
 {
+  delay(1000);
   //Delay to establish connection with raspberry
-  //delay(5000);
   Serial.begin(9600);
 
   //Check BNO

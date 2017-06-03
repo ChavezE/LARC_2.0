@@ -1,9 +1,16 @@
+try:
+        arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 1);
+except serial.SerialException:
+        print("Desconecta y reconecta el arduino");
+        while(True):
+                pass;
+
 #Stop the robot
 def brake():
         print("Brake")
         #Tell the arduino to run brake()
         arduino.write("a")
-        time.sleep(1);
+        #time.sleep(1);
         #Wait for something to happen
         while(arduino.inWaiting() <= 0):
                 pass;
