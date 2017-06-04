@@ -1,5 +1,8 @@
+import serial
+import time
 try:
-        arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 1);
+        arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
+	time.sleep(3)
 except serial.SerialException:
         print("Desconecta y reconecta el arduino");
         while(True):
@@ -33,10 +36,10 @@ def forward(left, right):
                 right = 255
         #Send the case for forward
         arduino.write("b")
-        time.sleep(1)
+        #time.sleep(1)
         #Send velocity for left motor
         arduino.write(chr(left))
-        time.sleep(1)
+        #time.sleep(1)
         #send velocity for right motor
         arduino.write(chr(right))
         #Wait for arduino response
