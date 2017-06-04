@@ -13,15 +13,6 @@ import communication as com
 '''
 VARIABLES GLOBALES
 '''
-#Inicializar el Serial
-time.sleep(5);
-try:
-    arduino= serial.Serial('/dev/ttyUSB0', 9600, timeout=1);
-except serial.SerialException:
-    print "Desconecta y reconecta el arduino";
-    while(True):
-        pass;
-time.sleep(10);
 
 terrinesZone = "c" #Terrines Position; c = unknown, r = right, l = left
 cowPos = 0  #Position where we find the Cow; 0 = unknown, 1 = right, 2 = center, 3 = left
