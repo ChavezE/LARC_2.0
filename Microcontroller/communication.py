@@ -34,14 +34,15 @@ def forward(left, right):
         #Right speed limit
         if right > 255:
                 right = 255
+
         #Send the case for forward
         arduino.write("b")
-        #time.sleep(1)
+
         #Send velocity for left motor
         arduino.write(chr(left))
-        #time.sleep(1)
         #send velocity for right motor
         arduino.write(chr(right))
+
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -64,12 +65,12 @@ def backward(left, right):
                 right = 255
         #Send the case for forward
         arduino.write("c")
-        time.sleep(1)
+
         #Send velocity for left motor
         arduino.write(chr(left))
-        time.sleep(1)
         #send velocity for right motor
         arduino.write(chr(right))
+
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -89,9 +90,10 @@ def turnRight(speed):
                 speed = 255
         #Send the case for forward
         arduino.write("d")
-        time.sleep(1)
-        #Send the
+
+        #Send the speed to turn
         arduino.write(chr(speed))
+
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -110,9 +112,10 @@ def turnLeft(speed):
                 speed = 255
         #Send the case for forward
         arduino.write("e")
-        time.sleep(1)
+
         #Send velocity for left motor
         arduino.write(chr(speed))
+
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -126,20 +129,38 @@ def turnLeft(speed):
 #Turn in a specific speed, negative turn right and positive turn left
 def turn(speed):
         print("Turn")
-        if speed > 0:
-                turnLeft(speed)
-        elif speed < 0:
-                turnRight(speed)
-        
+
+        #Tell arduino to run turn()
+        arduino.write("f")
+
+        part1 = (speed>>8)&255
+        part2 = speed&255
+
+        arduino.write(chr(part1))
+        arduino.write(chr(part2))
+
+        #Wait for arduino response
+        while(arduino.inWaiting() <= 0):
+                pass;
+        if(arduino.read() == "1"):
+                print("True")
+                return True
+        else:
+                print("False")
+                return False
 
 #Go Forward an x amount of cm
 def forwardNCm(cm):
-        print("forward n cm")
-        #Send the case for forward
+        print("ForwardNCm")
+        #Tell arduino to run turn()
         arduino.write("g")
-        time.sleep(1)
-        #Send velocity for left motor
-        arduino.write(chr(cm))
+
+        part1 = (speed>>8)&255
+        part2 = speed&255
+
+        arduino.write(chr(part1))
+        arduino.write(chr(part2))
+
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -152,12 +173,16 @@ def forwardNCm(cm):
 
 #Go backward an x amount of cm
 def backwardNCm(cm):
-        print("backward n cm")
-        #Send the case for forward
+        print("BackwardNCm")
+        #Tell arduino to run turn()
         arduino.write("h")
-        time.sleep(1)
-        #Send velocity for left motor
-        arduino.write(chr(cm))
+
+        part1 = (speed>>8)&255
+        part2 = speed&255
+
+        arduino.write(chr(part1))
+        arduino.write(chr(part2))
+
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -170,12 +195,16 @@ def backwardNCm(cm):
 
 #Go Forward until it found a wall at a certain distance
 def forwardUntilWall(cm):
-        print("forward until wall")
-        #Send the case for forward
+        print("forwardUntilWall")
+        #Tell arduino to run turn()
         arduino.write("i")
-        time.sleep(1)
-        #Send velocity for left motor
-        arduino.write(chr(cm))
+
+        part1 = (speed>>8)&255
+        part2 = speed&255
+
+        arduino.write(chr(part1))
+        arduino.write(chr(part2))
+
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -189,80 +218,93 @@ def forwardUntilWall(cm):
 #Go backward until it found a wall at a certain distance
 def backwardUntilWall(cm):
         print("backward until wall")
-        #Send the case for forward
+        #Tell arduino to run turn()
         arduino.write("j")
-        time.sleep(1)
-        #Send velocity for left motor
-        arduino.write(chr(cm))
+
+        part1 = (speed>>8)&255
+        part2 = speed&255
+
+        arduino.write(chr(part1))
+        arduino.write(chr(part2))
+
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
         if(arduino.read() == "1"):
                 print("True")
                 return True
+        else:
+                print("False")
+                return False
 
 
 #Turn to an specific angle
 def turnToDegree(angle):
-        print("Turn To Degree")
-        #Send the case for forward
+        print("turnToDegree")
+        #Tell arduino to run turn()
         arduino.write("k")
-        time.sleep(1)
-        part1= (angle>>8)&255;#Upper
-        part2= angle&255;#down
-        #Send velocity for left motor
+
+        part1 = (speed>>8)&255
+        part2 = speed&255
+
         arduino.write(chr(part1))
-        time.sleep(1);
         arduino.write(chr(part2))
-        time.sleep(1);
+
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
         if(arduino.read() == "1"):
                 print("True")
                 return True
+        else:
+                print("False")
+                return False
 
 
 #Turn right a certain amount of degrees
 def turnRightNDegrees(angle):
         print("turnRightNDegrees")
-        #Send the case for forward
+        #Tell arduino to run turn()
         arduino.write("l")
-        time.sleep(1)
-        part1= (angle>>8)&255;#Upper
-        part2= angle&255;#down
-        #Send velocity for left motor
+
+        part1 = (speed>>8)&255
+        part2 = speed&255
+
         arduino.write(chr(part1))
-        time.sleep(1);
         arduino.write(chr(part2))
-        time.sleep(1);
+
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
         if(arduino.read() == "1"):
                 print("True")
                 return True
+        else:
+                print("False")
+                return False
 
 
 #Turn left a certain amount of degrees
 def turnLeftNDegrees(angle):
         print("Turn Left N Degrees")
-        #Send the case for forward
+        #Tell arduino to run turn()
         arduino.write("m")
-        time.sleep(1)
-        part1= (angle>>8)&255;#Upper
-        part2= angle&255;#down
-        #Send velocity for left motor
+
+        part1 = (speed>>8)&255
+        part2 = speed&255
+
         arduino.write(chr(part1))
-        time.sleep(1);
         arduino.write(chr(part2))
-        time.sleep(1);
+
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
         if(arduino.read() == "1"):
                 print("True")
                 return True
+        else:
+                print("False")
+                return False
 
 
 #Move Platafform In
@@ -270,7 +312,6 @@ def platIn():
         print("platIn")
         #Tell the arduino to run brake()
         arduino.write("n")
-        time.sleep(1);
         #Wait for something to happen
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -288,7 +329,6 @@ def platOut():
         print("platOut")
         #Tell the arduino to run brake()
         arduino.write("o")
-        time.sleep(1);
         #Wait for something to happen
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -307,7 +347,6 @@ def openClaw():
         print("openClaw")
         #Tell the arduino to run brake()
         arduino.write("p")
-        time.sleep(1);
         #Wait for something to happen
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -325,7 +364,6 @@ def closeClaw():
         print("closeClaw")
         #Tell the arduino to run brake()
         arduino.write("q")
-        time.sleep(1);
         #Wait for something to happen
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -338,38 +376,45 @@ def closeClaw():
                 print("False")
                 return False
 
-'''
-Aun falta hacer que el arduino regrese la inf de un sensor a la rasp
-#Move Platafform In
-def closeClaw():
-        print("closeClaw")
-        #Tell the arduino to run brake()
+#Get angle with BNO, the string in the parameter set wich sharp to use
+def getDistance(sharp):
+        sharps = {
+        "pinSF" : 0,
+        "pinSB" : 1,
+        "pinSRF" : 2,
+        "pinSRC" : 3,
+        "pinSRB" : 4,
+        "pinSLF" : 5,
+        "pinSLC" : 6,
+        "pinSLB" : 7,
+        "pinSC" : 8
+        }
+        print("getDistance")
+        #Tell the arduino to run getCompass()
         arduino.write("r")
-        time.sleep(1);
+        #Tell the arduino what sharp to use
+        arduino.write(chr(sharps[sharp]))
         #Wait for something to happen
         while(arduino.inWaiting() <= 0):
                 pass;
 
-        if(arduino.read() == "1"):
-                print("True")
-                return True
+        distance = arduino.readline()
 
-        print("No Brake")
+        print(distance)
 
+        return distance
 
-#Move Platafform In
-def closeClaw():
-        print("closeClaw")
-        #Tell the arduino to run brake()
+#Get angle with BNO
+def getCompass():
+        print("Getting angle")
+        #Tell the arduino to run getCompass()
         arduino.write("s")
-        time.sleep(1);
         #Wait for something to happen
         while(arduino.inWaiting() <= 0):
                 pass;
 
-        if(arduino.read() == "1"):
-                print("True")
-                return True
+        angle = arduino.readline()
 
-        print("No Brake")
-'''
+        print(angle)
+
+        return angle

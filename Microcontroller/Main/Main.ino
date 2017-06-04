@@ -1,6 +1,6 @@
 #include <Adafruit_BNO055.h>
 #include <Servo.h>
-#include <Wire.h> 
+#include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
 ///////////////////////
@@ -118,11 +118,11 @@ volatile unsigned long steps = 0;
 volatile byte encoderState = 0;
 
 //LCD
-LiquidCrystal_I2C lcd(0x27,16,2);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void setup()
 {
-  delay(1000);
+  //delay(1000);
   //Delay to establish connection with raspberry
   Serial.begin(9600);
 
@@ -137,7 +137,7 @@ void setup()
   lcd.init();
   lcd.backlight();
   lcd.clear();
-  
+
   pinMode(pinMFRA , OUTPUT);
   pinMode(pinMFRB , OUTPUT);
   pinMode(pinPWMFR, OUTPUT);
@@ -177,122 +177,121 @@ void loop()
 {
   unsigned long data;
   unsigned long data1, data2;
-  char order= '0';
-
-  if(Serial.available() > 0){
+  char order = '0';
+  char sharp = 'A';
+  
+  if (Serial.available() > 0) {
     order = Serial.read();
-    switch(order)
+    switch (order)
     {
       case 'a':
-        //Serial.println("Brake Arduino");
         brake();
         Serial.write('1');
         break;
 
       case 'b':
-        while(Serial.available() < 1);
+        while (Serial.available() < 2);
         data1 = Serial.read();
-        delay(1000);
-        while(Serial.available() < 1);
         data2 = Serial.read();
-        delay(1000);
+
         forward(data1, data2);
         Serial.write('1');
         break;
 
       case 'c':
-        while(Serial.available() < 1);
+        while (Serial.available() < 2);
         data1 = Serial.read();
-        delay(1000);
-        while(Serial.available() < 1);
         data2 = Serial.read();
+
         backward(data1, data2);
         Serial.write('1');
         break;
 
       case 'd':
-        while(Serial.available() < 1);
+        while (Serial.available() < 1);
         data = Serial.read();
-        delay(1000);
+
         turnRight(data);
         Serial.write('1');
         break;
 
       case 'e':
-        while(Serial.available() < 1);
+        while (Serial.available() < 1);
         data = Serial.read();
-        delay(1000);
+
         turnLeft(data);
         Serial.write('1');
         break;
 
       case 'f':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        turn(data);
+        while (Serial.available() < 2);
+        data1 = Serial.read();
+        data2 = Serial.read();
+
+        turn(((data1 << 8) | data2) * 100UL);
         Serial.write('1');
         break;
 
       case 'g':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        forwardNCm(data);
+        while (Serial.available() < 2);
+        data1 = Serial.read();
+        data2 = Serial.read();
+
+        forwardNCm(((data1 << 8) | data2) * 100UL);
         Serial.write('1');
         break;
 
       case 'h':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        backwardNCm(data);
+        while (Serial.available() < 2);
+        data1 = Serial.read();
+        data2 = Serial.read();
+
+        backwardNCm(((data1 << 8) | data2) * 100UL);
         Serial.write('1');
         break;
 
       case 'i':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        forwardUntilWall(data);
+        while (Serial.available() < 2);
+        data1 = Serial.read();
+        data2 = Serial.read();
+
+        forwardUntilWall(((data1 << 8) | data2) * 100UL);
         Serial.write('1');
         break;
 
       case 'j':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        backwardUntilWall(data);
+        while (Serial.available() < 2);
+        data1 = Serial.read();
+        data2 = Serial.read();
+
+        backwardUntilWall(((data1 << 8) | data2) * 100UL);
         Serial.write('1');
         break;
 
       case 'k':
-        while(Serial.available() < 1);
+        while (Serial.available() < 2);
         data1 = Serial.read();
-        delay(1000);
-        while(Serial.available() < 1);
         data2 = Serial.read();
-        delay(1000);
-        turnToDegree(((data1<<8)|data2)*100UL);
+
+        turnToDegree(((data1 << 8) | data2) * 100UL);
         Serial.write('1');
         break;
 
       case 'l':
-         while(Serial.available() < 1);
+        while (Serial.available() < 2);
         data1 = Serial.read();
-        delay(1000);
-        while(Serial.available() < 1);
         data2 = Serial.read();
-        delay(1000);
-        turnRightNDegrees(((data1<<8)|data2)*100UL);
+
+        turnRightNDegrees(((data1 << 8) | data2) * 100UL);
         Serial.write('1');
         break;
 
       case 'm':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        turnLeftNDegrees(data);
+        while (Serial.available() < 2);
+        data1 = Serial.read();
+        data2 = Serial.read();
+
+        turnLeftNDegrees(((data1 << 8) | data2) * 100UL);
         Serial.write('1');
         break;
 
@@ -317,12 +316,79 @@ void loop()
         break;
 
       case 'r':
-        Serial.println("Buscar distancia");
-        Serial.print(getDistance(pinSF));
+        while (Serial.available() < 1);
+        sharp = Serial.read();
+
+        switch (sharp)
+        {
+          case 0:
+            {
+              int dist = getDistance(pinSF);
+              Serial.println(dist);
+              break;
+            }
+          case 1:
+            {
+              int dist = getDistance(pinSB);
+              Serial.println(dist);
+              break;
+            }
+
+          case 2:
+            {
+              int dist = getDistance(pinSRF);
+              Serial.println(dist);
+              break;
+            }
+
+          case 3:
+            {
+              int dist = getDistance(pinSRC);
+              Serial.println(dist);
+              break;
+            }
+
+          case 4:
+            {
+              int dist = getDistance(pinSRB);
+              Serial.println(dist);
+              break;
+            }
+
+          case 5:
+            {
+              int dist = getDistance(pinSLF);
+              Serial.println(dist);
+              break;
+            }
+
+          case 6:
+            {
+              int dist = getDistance(pinSLC);
+              Serial.println(dist);
+              break;
+            }
+
+          case 7:
+            {
+              int dist = getDistance(pinSLB);
+              Serial.println(dist);
+              break;
+            }
+
+          case 8:
+            {
+              int dist = getDistance(pinSC);
+              Serial.println(dist);
+              break;
+            }
+        }
+
         break;
 
       case 's':
-        Serial.write(getCompass());
+        int angle = getCompass();
+        Serial.println(angle);
         break;
     }
   }

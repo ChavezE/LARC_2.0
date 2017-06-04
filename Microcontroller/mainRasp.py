@@ -13,4 +13,4 @@ import communication as com
 
 
 if __name__ == "__main__":
-        com.brake()
+	com.getDistance("pinSB")
