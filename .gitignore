@@ -3,5 +3,6 @@
 ../Microcontroller/.AppleDouble/
 .AppleDouble/
 .DS_Store
+*.glue
 
 
