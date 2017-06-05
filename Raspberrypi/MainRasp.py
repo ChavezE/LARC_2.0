@@ -8,7 +8,7 @@ from copy import deepcopy
 
 # Roborregos libs
 import Larc_vision_2017 as rb
-import communication as cm
+import communication as com
 
 '''
 VARIABLES GLOBALES

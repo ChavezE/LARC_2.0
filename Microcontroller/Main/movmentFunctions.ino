@@ -5,6 +5,10 @@
 //Go forward the cm given in the parameter
 void forwardNCm(long cm)
 {
+  //Display function in LCD
+  lcd.clear();
+  writeLCD("FORWARD N CM", 0, 0);
+  writeLCD(String(cm), 0, 1);
   //Change precision
   cm *= 100;
   
@@ -73,6 +77,10 @@ void forwardNCm(long cm)
 //Go backward the cm given in the parameter
 void backwardNCm(long cm)
 {
+  //Display function in LCD
+  lcd.clear();
+  writeLCD("BACKWARD N CM", 0, 0);
+  writeLCD(String(cm), 0, 1);
   //Change precision
   cm *= 100;
   //Reset steps counts
@@ -131,6 +139,10 @@ void backwardNCm(long cm)
 //Go forward until it detect a wall at a given cm
 void forwardUntilWall(int cmFromWall)
 {
+  //Display function in LCD
+  lcd.clear();
+  writeLCD("FORWARD UNTIL WALL", 0, 0);
+  writeLCD(String(cmFromWall), 0, 1);
   //Distance detected
   int dist;
   //Faced direction at start
@@ -218,6 +230,10 @@ void forwardUntilWall(int cmFromWall)
 //Go backs until wall the given parameters
 void backwardUntilWall(int cmFromWall)
 {
+  //Display function in LCD
+  lcd.clear();
+  writeLCD("BACKWARD UNTIL WALL", 0, 0);
+  writeLCD(String(cmFromWall), 0, 1);
   //Distance
   int dist;
   //Direction at start
@@ -297,6 +313,10 @@ void backwardUntilWall(int cmFromWall)
 //Turn to a given degree
 void turnToDegree(int obj)
 {
+  //Display function in LCD
+  lcd.clear();
+  writeLCD("TURN TO DEGREE", 0, 0);
+  writeLCD(String(obj), 0, 1);
   //Actual angle
   int degrees;
   int times = 0;
@@ -347,6 +367,10 @@ void turnToDegree(int obj)
 //turn n andegrees to the right
 void turnRightNDegrees(long degrees)
 {
+  //Display function in LCD
+  lcd.clear();
+  writeLCD("TURN RIGHT N DEGREES", 0, 0);
+  writeLCD(String(degrees), 0, 1);
   int obj = (getCompass() + degrees) % 36000L;
   turnToDegree(obj);
 }
@@ -354,6 +378,10 @@ void turnRightNDegrees(long degrees)
 //Turn n degrees to the left
 void turnLeftNDegrees(long degrees)
 {
+  //Display function in LCD
+  lcd.clear();
+  writeLCD("TURN LEFT N DEGREES", 0, 0);
+  writeLCD(String(degrees), 0, 1);
   int obj = getCompass() - degrees;
   if (obj < 0L)
   {

@@ -57,6 +57,9 @@ void setVelocity(int left, int right)
 void brake()
 {
   setVelocity(0, 0);
+  lcd.clear();
+  //Display fucntion in the LCD
+  writeLCD("BRAKE", 0, 0);
 }
 
 //Go Forward, with speed set in parameters
@@ -68,6 +71,10 @@ void forward(int left, int right)
   checkVel(left, right);
   //Set velocity to the motors
   setVelocity(left, right);
+  lcd.clear();
+  //Display fucntion in the LCD
+  writeLCD("FORWARD", 0, 0);
+  writeLCD(String(String(left) + " " + String(right)), 0, 1);
 }
 
 //Go Backward, with speed set in parameters
@@ -79,6 +86,10 @@ void backward(int left, int right)
   checkVel(left, right);
   //Set velocity to the motors
   setVelocity(left, right);
+  lcd.clear();
+  //Display fucntion in the LCD
+  writeLCD("BACKWARD", 0, 0);
+  writeLCD(String(String(left) + " " + String(right)), 0, 1);
 }
 
 //Turn right, with speed set in parameter
@@ -90,6 +101,10 @@ void turnRight(int vel)
   checkVel(vel, vel);
   //Set velocity to the motors
   setVelocity(vel, vel);
+  lcd.clear();
+  //Display fucntion in the LCD
+  writeLCD("TURN RIGHT", 0, 0);
+  writeLCD(String(vel), 0, 1);
 }
 
 //Turn left, with speed set in parameter
@@ -101,6 +116,10 @@ void turnLeft(int vel)
   checkVel(vel, vel);
   //Set velocity to the motors
   setVelocity(vel, vel);
+  lcd.clear();
+  //Display fucntion in the LCD
+  writeLCD("TURN LEFT", 0, 0);
+  writeLCD(String(vel), 0, 1);
 }
 
 //Turn left or right depending on the symbol of the velocity
