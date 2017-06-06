@@ -120,6 +120,11 @@ volatile byte encoderState = 0;
 //LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
+int velLF = 70;
+int velLB = 70;
+int velRF = 70;
+int velRB = 70;
+
 void setup()
 {
   //delay(1000);
@@ -127,16 +132,16 @@ void setup()
   Serial.begin(9600);
 
   //Check BNO
-  if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_NDOF))
+  //if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_NDOF))
   {
     //Serial.println("NO BNO");
   }
-  bno.setExtCrystalUse(true);
+  //bno.setExtCrystalUse(true);
 
   //Initialize lcd, turn backlight on and clear the display
-  lcd.init();
-  lcd.backlight();
-  lcd.clear();
+  //lcd.init();
+  //lcd.backlight();
+  //lcd.clear();
 
   pinMode(pinMFRA , OUTPUT);
   pinMode(pinMFRB , OUTPUT);
@@ -169,12 +174,15 @@ void setup()
   encoderState = 1;
 
   //Display the finish of the setup
-  lcd.clear();
-  writeLCD("START FENIX 2.0", 0, 0);
+  //lcd.clear();
+  //writeLCD("START FENIX 2.0", 0, 0);
 }
 
 void loop()
 {
+  forwardCalibration(velLF, velLB, velRF, velRB);
+  //forward(0, 80, 0, 0);
+  /*
   unsigned long data;
   unsigned long data1, data2;
   char order = '0';
@@ -392,4 +400,5 @@ void loop()
         break;
     }
   }
+  */
 }
