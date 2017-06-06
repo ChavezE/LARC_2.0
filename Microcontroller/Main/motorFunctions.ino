@@ -45,7 +45,7 @@ void checkVel(int& left, int& right)
 }
 
 //Check if the velocity given in the parameters doesn't pass 255 or be less than 0
-void checkVel(int& leftFront, int leftBack, int rightFront, int& rightBack)
+void checkVel(int& leftFront, int& leftBack, int& rightFront, int& rightBack)
 {
   if (rightFront > 255)
   {
@@ -145,7 +145,7 @@ void forward(int leftFront, int leftBack, int rightFront, int rightBack)
 //Go Backward, with speed set in parameters
 void backward(int left, int right)
 {
-  //Set enables of motors to go forward
+  //Set enables of motors to go backward
   setMotor(0, 1, 0, 1, 0, 1, 0, 1);
   //Check the velocity
   checkVel(left, right);
@@ -155,6 +155,21 @@ void backward(int left, int right)
   //Display fucntion in the LCD
   writeLCD("BACKWARD", 0, 0);
   writeLCD(String(String(left) + " " + String(right)), 0, 1);
+}
+
+//Go Backward, with speed set in parameters
+void backward(int leftFront, int leftBack, int rightFront, int rightBack)
+{
+  //Set enables of motors to go backward
+  setMotor(0, 1, 0, 1, 0, 1, 0, 1);
+  //Check the velocity
+  checkVel(leftFront, leftBack, rightFront, rightBack);
+  //Set velocity to the motors
+  setVelocity(leftFront, leftBack, rightFront, rightBack);
+  lcd.clear();
+  //Display fucntion in the LCD
+  writeLCD("BACKWARD", 0, 0);
+  writeLCD(String(String(leftFront) + " " + String(leftBack) + " " + String(rightFront)+ " " + String(rightBack)), 0, 1);
 }
 
 //Turn right, with speed set in parameter
@@ -172,10 +187,25 @@ void turnRight(int vel)
   writeLCD(String(vel), 0, 1);
 }
 
+//Turn right, with speed set in parameter
+void turnRight(int leftFront, int leftBack, int rightFront, int rightBack)
+{
+  //Set enables of motors to go forward
+  setMotor(0, 1, 1, 0, 0, 1, 1, 0);
+  //Check the velocity
+  checkVel(leftFront, leftBack, rightFront, rightBack);
+  //Set velocity to the motors
+  setVelocity(leftFront, leftBack, rightFront, rightBack);
+  lcd.clear();
+  //Display fucntion in the LCD
+  writeLCD("TURN RIGHT", 0, 0);
+  writeLCD(String(String(leftFront) + " " + String(leftBack) + " " + String(rightFront)+ " " + String(rightBack)), 0, 1);
+}
+
 //Turn left, with speed set in parameter
 void turnLeft(int vel)
 {
-  //Set enables of motors to go forward
+  //Set enables of motors to turn left
   setMotor(1, 0, 0, 1, 1, 0, 0, 1);
   //Check the velocity
   checkVel(vel, vel);
@@ -185,6 +215,21 @@ void turnLeft(int vel)
   //Display fucntion in the LCD
   writeLCD("TURN LEFT", 0, 0);
   writeLCD(String(vel), 0, 1);
+}
+
+//Turn right, with speed set in parameter
+void turnLeft(int leftFront, int leftBack, int rightFront, int rightBack)
+{
+  //Set enables of motors to turn left
+  setMotor(1, 0, 0, 1, 1, 0, 0, 1);
+  //Check the velocity
+  checkVel(leftFront, leftBack, rightFront, rightBack);
+  //Set velocity to the motors
+  setVelocity(leftFront, leftBack, rightFront, rightBack);
+  lcd.clear();
+  //Display fucntion in the LCD
+  writeLCD("TURN LEFT", 0, 0);
+  writeLCD(String(String(leftFront) + " " + String(leftBack) + " " + String(rightFront)+ " " + String(rightBack)), 0, 1);
 }
 
 //Turn left or right depending on the symbol of the velocity

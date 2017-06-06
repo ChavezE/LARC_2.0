@@ -28,11 +28,11 @@ void backwardTillNoLeft()
   lcd.clear();
   writeLCD("BACKWARD TILL NO LEFT", 0, 0);
   //Actual angle to stay in
-  long direction = getCompass();
+  long direction = getCompassX100();
 
   do {
     //Actual angle
-    int degrees = getCompass();
+    int degrees = getCompassX100();
     degrees = degrees - direction;
 
     degreesCorrections(degrees);
@@ -57,11 +57,11 @@ void backwardTillNoRight()
   lcd.clear();
   writeLCD("BACKWARD TILL NO RIGHT", 0, 0);
   //Actual angle to stay in
-  long direction = getCompass();
+  long direction = getCompassX100();
 
   do {
     //Actual angle
-    int degrees = getCompass();
+    int degrees = getCompassX100();
     degrees = degrees - direction;
 
     degreesCorrections(degrees);
@@ -86,11 +86,11 @@ void forwardTillNoRight()
   lcd.clear();
   writeLCD("FORWARD TILL NO RIGHT", 0, 0);
   //Actual angle to stay in
-  long direction = getCompass();
+  long direction = getCompassX100();
 
   do {
     //Actual angle
-    int degrees = getCompass();
+    int degrees = getCompassX100();
     degrees = degrees - direction;
 
     degreesCorrections(degrees);
@@ -115,11 +115,11 @@ void forwardTillNoLeft()
   lcd.clear();
   writeLCD("FORWARD TILL NO LEFT", 0, 0);
   //Actual angle to stay in
-  long direction = getCompass();
+  long direction = getCompassX100();
 
   do {
     //Actual angle
-    int degrees = getCompass();
+    int degrees = getCompassX100();
     degrees = degrees - direction;
 
     degreesCorrections(degrees);

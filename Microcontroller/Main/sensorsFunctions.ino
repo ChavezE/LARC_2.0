@@ -63,9 +63,20 @@ int getDistance(byte sharp)
 }
 
 //Return the lecture of the BNO in eulers
+long getCompassX100()
+{
+  long angle = bno.getVector(Adafruit_BNO055::VECTOR_EULER).x() * 100;
+  //Display function in LCD
+  lcd.clear();
+  writeLCD("GETTING ANGLE", 0, 0);
+  writeLCD(String(angle), 0, 1);
+  return angle;
+}
+
+//Return the lecture of the BNO in eulers
 int getCompass()
 {
-  int angle = bno.getVector(Adafruit_BNO055::VECTOR_EULER).x() * 100;
+  int angle = bno.getVector(Adafruit_BNO055::VECTOR_EULER).x();
   //Display function in LCD
   lcd.clear();
   writeLCD("GETTING ANGLE", 0, 0);

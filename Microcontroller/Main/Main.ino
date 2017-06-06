@@ -95,11 +95,29 @@ const long constPCorrect = 30L;
 //Correction P in distance
 const long constPDist = 110L;
 
+//Constants of motors when the robot is treated as a tank
+
 //Velocity for motors when moving forward or backwards
 const long velForward = 70L;
 
 //Velocity for motor when turning
 const long velTurn = 60L;
+
+//Constants of the motors when the motor is treated as  a 4x4
+
+//Cosntants of motors when going forward
+const int velForwardLF = 0;
+const int velForwardLB = 0;
+
+const int velForwardRF = 0;
+const int velForwardRB = 0;
+
+//Cosntants of motors when going backward
+const int velBackwardLF = 0;
+const int velBackwardLB = 0;
+
+const int velBackwardRF = 0;
+const int velBackwardRB = 0;
 
 /////////////////////
 //    Variables    //
@@ -136,14 +154,14 @@ void setup()
   //Check BNO
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_NDOF))
   {
-    //Serial.println("NO BNO");
+    Serial.println("NO BNO");
   }
   bno.setExtCrystalUse(true);
 
   //Initialize lcd, turn backlight on and clear the display
-  //lcd.init();
-  //lcd.backlight();
-  //lcd.clear();
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
 
   pinMode(pinMFRA , OUTPUT);
   pinMode(pinMFRB , OUTPUT);
@@ -171,8 +189,8 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
 
   brake();
-  platIn();
-  openClaw();
+  //platIn();
+  //openClaw();
   encoderState = 1;
 
   //Display the finish of the setup
@@ -182,10 +200,8 @@ void setup()
 
 void loop()
 {
-  //forward(velLF, velLB, velRF, velRB);
-  //sharpCalibration();
-  //delay(500);
-  Serial.println(steps);
+  turnToObjective(90);
+  delay(10000);
   /*
   //forwardCalibration(velLF, velLB, velRF, velRB);
   unsigned long data;
@@ -400,7 +416,7 @@ void loop()
         break;
 
       case 's':
-        int angle = getCompass();
+        int angle = getCompassX100();
         Serial.println(angle);
         break;
     }
