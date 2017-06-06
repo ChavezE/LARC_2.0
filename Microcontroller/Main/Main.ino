@@ -35,19 +35,19 @@ const byte pinEncoder = 18;
 //-------Sharps--------//
 
 //Front Sharp
-const byte pinSF = A4;
+const byte pinSF = A3;
 
 //Back Sharp
-const byte pinSB = A1;
+const byte pinSB = A2;
 
 //Sharp Right Front
-const byte pinSRF = A3;
+const byte pinSRF = A4;
 
 //Sharp Right Center
 const byte pinSRC;
 
 //Sharp Right Back
-const byte pinSRB = A2;
+const byte pinSRB = A1;
 
 //Sharp Left Front
 const byte pinSLF = A5;
@@ -56,10 +56,10 @@ const byte pinSLF = A5;
 const byte pinSLC;
 
 //Sharp Left Back
-const byte pinSLB = A6;
+const byte pinSLB = A0;
 
 //Sharp Claw
-const byte pinSC = A0;
+const byte pinSC = A9;
 
 //----LimitSwithces----//
 
@@ -182,6 +182,11 @@ void setup()
 
 void loop()
 {
+  //forward(velLF, velLB, velRF, velRB);
+  //sharpCalibration();
+  //delay(500);
+  Serial.println(steps);
+  /*
   //forwardCalibration(velLF, velLB, velRF, velRB);
   unsigned long data;
   unsigned long data1, data2;
@@ -400,4 +405,5 @@ void loop()
         break;
     }
   }
+  */
 }
