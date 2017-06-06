@@ -16,6 +16,18 @@ import numpy as np
 import random
 from copy import deepcopy
 
+#-------------------GLOBAL FOR CALIBRATION-------------------
+#Cow square area  #si detecta muchos cuadros
+maxSquareArea=1000
+minSquareArea=25
+#Thresh range for cow squares  #si no detecta suficientes cuadros
+minThresh=5
+maxThresh=150
+steps=5
+#Tissue Parameters 
+eps=15
+eps2=25
+
 
 # Simple class to manage individual squares in the image
 # ATRIBUTES:
@@ -119,8 +131,6 @@ def getGoodSquares(contours,thres,mainC):
    # ----VARIABLES----
    cowSquares = []   # This list is the one that is going to being returned
    # -----------------
-   minArea = 40
-   maxArea = 2000
 
    for cnt in contours:
       area = cv2.contourArea(cnt)
@@ -136,7 +146,7 @@ def getGoodSquares(contours,thres,mainC):
       
       if(rect_area > 0): # sometimes this value is found
          extent = float(area / rect_area)
-         if (extent >= 0.75 and area >= minArea and area <= maxArea):   # tolerance #previos range: 400-8500
+         if (extent >= 0.75 and area >= minSquareArea and area <= maxSquareArea):   # tolerance #previos range: 400-8500
             x,y,w,h = cv2.boundingRect(cnt)
             if thres[y + h*0.5,x + w*0.5] == 1.0 and w/h < 3 and h/w < 3:
                tempCowSquare = cowSquare(x,y,w,h,area)    # Create an objet from the 'cowSquare' class
@@ -188,7 +198,7 @@ def doTissue(goodSqrs):
    # setting constants #
    tissue = []
    biggestTissue = []
-   eps = 30
+   #eps = 30
    # ------------------ #
    # for i in range(len(goodSqrs)):
    #    print(goodSqrs[i].getTopLeftC())
@@ -217,28 +227,28 @@ def makeTissue(tActSqr,tAllSqrs,tissue,eps):
    for tSq in (tAllSqrs):
 
       # UPPER 
-      if (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] - 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps):
+      if (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] - 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
          makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
 
       # LOWER 
-      elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] + 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps):
+      elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] + 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
          makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
 
       # RIGHT
-      elif (distance( tActSqr.getTopLeftC()[0] + 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps):
+      elif (distance( tActSqr.getTopLeftC()[0] + 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
          makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
 
       # LEFT
-      elif (distance( tActSqr.getTopLeftC()[0] - 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps):
+      elif (distance( tActSqr.getTopLeftC()[0] - 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
@@ -286,14 +296,14 @@ def isThereACow(mainFrame):
    equalizedFrame = cv2.equalizeHist(filteredFrame)
    print "starting bin values"
 
-   for binValueT in range(5,180,5):
+   for binValueT in range(minThresh,maxThresh,steps):
       
       cp0 = cp1 = cp2 = deepcopy(equalizedFrame)
       main_copy2=mainFrame.copy()
 
       thresFrame0 = doThresHold(cp0, binValueT,7,1) 
-      # cv2.imshow("thres0: ", thresFrame0)
-      # cv2.waitKey(5)
+      cv2.imshow("thres0: ", thresFrame0)
+      cv2.waitKey(5)
       contours0 = findContours(thresFrame0) 
       cowRectangles0,_ = getGoodSquares(contours0,thresFrame0,mainFrame) 
       findEquals(allSquares,cowRectangles0,15)
