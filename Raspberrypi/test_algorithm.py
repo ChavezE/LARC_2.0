@@ -21,7 +21,7 @@ mainFrame = []	# frame
 def takePicture(frameNumber):
 	global mainFrame
 	mainFrame=cv2.imread('test_photos/'+str(frameNumber)+'.jpg')
-	mainFrame =  cv2.resize(mainFrame,None,fx=0.5,fy=0.5,interpolation=cv2.INTER_AREA)
+	#mainFrame =  cv2.resize(mainFrame,None,fx=0.5,fy=0.5,interpolation=cv2.INTER_AREA)
 	# cv2.imshow("frame: " + str(frameNumber),mainFrame)
 	# cv2.waitKey(0)
 	# for i in range(10):

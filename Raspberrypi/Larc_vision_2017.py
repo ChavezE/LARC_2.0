@@ -15,6 +15,15 @@ import math
 import numpy as np
 import random
 from copy import deepcopy
+#---------Global for calibration-----------#
+#Cow square area
+maxSquareArea=40
+minSquareArea=2000
+#Thresh range for cow squares
+minThresh=5
+maxThresh=180
+steps=5
+
 
 
 # Simple class to manage individual squares in the image
@@ -146,6 +155,39 @@ def getGoodSquares(contours,thres,mainC):
                                        
    return cowSquares,final_contours
 
+# def getGoodSquares(contours,thres,mainC):
+
+#    # ----VARIABLES----
+#    cowSquares = []   # This list is the one that is going to being returned
+#    # -----------------
+
+#    for cnt in contours:
+#       area = cv2.contourArea(cnt)
+#       rect = cv2.minAreaRect(cnt)
+#       w = int(rect[1][0])
+#       h = int(rect[1][1])
+#       rect_area = w * h
+#       final_contours=[]
+
+#       cv2.drawContours(mainC,[cnt],-1,(0,255,0),1)
+#       # print area
+#       cv2.imshow("individual: " ,mainC)
+#       # cv2.waitKey(200)
+#       if(rect_area > 0): # sometimes this value is found
+#          extent = float(area / rect_area)
+#          if (extent >= 0.75 and area >= minSquareArea and area <= maxSquareArea):   # tolerance #previos range: 400-8500
+#             x,y,w,h = cv2.boundingRect(cnt)
+#             if thres[y + h*0.5,x + w*0.5] == 1.0 and w/h < 1.5:
+#                tempCowSquare = cowSquare(x,y,w,h,area)    # Create an objet from the 'cowSquare' class
+#                cowSquares.append(tempCowSquare) # Insert object 'cowSquare' into a list  
+#                cv2.drawContours(mainC,[cnt],-1,(255,0,0),2)
+#                final_contours.append(cnt)                                       
+#    return cowSquares,final_contours
+
+
+
+
+
 
 # OUT: list of (x,y) coordenates with >= n strongest corners
 def getCorners(frame,n,quality):
@@ -275,6 +317,7 @@ def makeTissue(tActSqr,tAllSqrs,tissue,eps):
    if found == False:
       tissue.pop(tissue.index(tActSqr))
 
+
 # returns a Tissue compossed by cow squares if found, if not empty list
 def isThereACow(mainFrame):
    maxLenT = [] # maximumLenghtTissue
@@ -286,7 +329,7 @@ def isThereACow(mainFrame):
    equalizedFrame = cv2.equalizeHist(filteredFrame)
    print "starting bin values"
 
-   for binValueT in range(5,180,5):
+   for binValueT in range(minThresh,maxThresh,steps):
       
       cp0 = cp1 = cp2 = deepcopy(equalizedFrame)
       main_copy2=mainFrame.copy()
