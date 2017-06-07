@@ -302,8 +302,8 @@ def isThereACow(mainFrame):
       main_copy2=mainFrame.copy()
 
       thresFrame0 = doThresHold(cp0, binValueT,7,1) 
-      cv2.imshow("thres0: ", thresFrame0)
-      cv2.waitKey(5)
+      #cv2.imshow("thres0: ", thresFrame0)
+      #cv2.waitKey(150)
       contours0 = findContours(thresFrame0) 
       cowRectangles0,_ = getGoodSquares(contours0,thresFrame0,mainFrame) 
       findEquals(allSquares,cowRectangles0,15)
