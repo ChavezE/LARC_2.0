@@ -21,7 +21,9 @@ mainFrame = []	# frame
 def takePicture(frameNumber):
 	global mainFrame
 	mainFrame=cv2.imread('test_photos/'+str(frameNumber)+'.jpg')
-	mainFrame =  cv2.resize(mainFrame,None,fx=0.5,fy=0.5,interpolation=cv2.INTER_AREA)
+	mainFrame=cv2.pyrDown(mainFrame)
+	#mainFrame=cv2.pyrDown(mainFrame)
+	#mainFrame =  cv2.resize(mainFrame,None,fx=0.5,fy=0.5,interpolation=cv2.INTER_AREA)
 	# cv2.imshow("frame: " + str(frameNumber),mainFrame)
 	# cv2.waitKey(0)
 	# for i in range(10):
@@ -67,6 +69,7 @@ if __name__ == "__main__":
 			print "COW NOT FOUND"
 		print ("TOTAL TIME: ",time.time() - this_time)
 		cv2.imshow("limits",mainFrame)
+		print( mainFrame.shape)
 		k = cv2.waitKey(0)
 		if k ==27:
 			break
