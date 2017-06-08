@@ -64,19 +64,23 @@ const byte pinSC = A9;
 //----LimitSwithces----//
 
 //In Limit Switch
-const byte pinLI = 45;
+const byte pinLI = 43;
 
 //Out Limit Switch
-const byte pinLO = 43;
+const byte pinLO = 45;
+
+const byte pinLR = 7;
+
+const byte pinLL = 6;
 
 //-------Servos-------//
 
 //Claw Servo
-const byte pinServoC = 6;
+const byte pinServoC = 8;
 Servo sClaw;
 
 //Plattaform Servo
-const byte pinServoP = 7;
+const byte pinServoP = 9;
 Servo sPlattaform;
 
 /////////////////////
@@ -95,6 +99,9 @@ const long constPCorrect = 30L;
 //Correction P in distance
 const long constPDist = 110L;
 
+//P correction Nestor
+const double constPCorrectN = 0.1;
+
 //Constants of motors when the robot is treated as a tank
 
 //Velocity for motors when moving forward or backwards
@@ -105,19 +112,19 @@ const long velTurn = 60L;
 
 //Constants of the motors when the motor is treated as  a 4x4
 
-//Cosntants of motors when going forward
-const int velForwardLF = 0;
-const int velForwardLB = 0;
+//Cosntants of motors velocity
+const int velLF = 61;
+const int velLB = 63;
 
-const int velForwardRF = 0;
-const int velForwardRB = 0;
+const int velRF = 53;
+const int velRB = 70;
 
-//Cosntants of motors when going backward
-const int velBackwardLF = 0;
-const int velBackwardLB = 0;
+//Cosntants of motors velocity for going slow
+const int velSlowLF = 41;
+const int velSlowLB = 43;
 
-const int velBackwardRF = 0;
-const int velBackwardRB = 0;
+const int velSlowRF = 33;
+const int velSlowRB = 50;
 
 /////////////////////
 //    Variables    //
@@ -135,15 +142,11 @@ volatile unsigned long steps = 0;
 //0->Stop   1->Forward    2->Backwards
 volatile byte encoderState = 0;
 
+//Counts of encoder
+const int encoder30Cm = 1500;
+
 //LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
-
-
-//Variables para calibraciones, comentar si no se va a calibrar
-int velLF = 70;
-int velLB = 70;
-int velRF = 70;
-int velRB = 70;
 
 void setup()
 {
@@ -184,32 +187,35 @@ void setup()
 
   pinMode(pinLI, INPUT);
   pinMode(pinLO, INPUT);
+  pinMode(pinLL, INPUT);
+  pinMode(pinLR, INPUT);
 
   pinMode(pinEncoder, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
 
   brake();
-  //platIn();
-  //openClaw();
+  platIn();
+  openClaw();
   encoderState = 1;
 
   //Display the finish of the setup
   lcd.clear();
   writeLCD("START FENIX 2.0", 0, 0);
+
+  //Stop plattaform for security
+  sPlattaform.write(90);
 }
 
 void loop()
 {
-  turnToObjective(90);
-  delay(10000);
   /*
-  //forwardCalibration(velLF, velLB, velRF, velRB);
-  unsigned long data;
-  unsigned long data1, data2;
-  char order = '0';
-  char sharp = 'A';
-  
-  if (Serial.available() > 0) {
+    //forwardCalibration(velLF, velLB, velRF, velRB);
+    unsigned long data;
+    unsigned long data1, data2;
+    char order = '0';
+    char sharp = 'A';
+
+    if (Serial.available() > 0) {
     order = Serial.read();
     switch (order)
     {
@@ -420,6 +426,6 @@ void loop()
         Serial.println(angle);
         break;
     }
-  }
+    }
   */
 }

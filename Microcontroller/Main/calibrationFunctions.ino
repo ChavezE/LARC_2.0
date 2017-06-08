@@ -59,3 +59,66 @@ void sharpCalibration()
   Serial.print("RB: ");
   Serial.println(sharpRB);
 }
+
+void tryForwardP()
+{
+  //Stay in zero
+  int angle = getCompass();
+
+  //Set speed to default
+  int leftFront = velLF;
+  int leftBack = velLB;
+  int rightFront = velRF;
+  int rightBack = velRB;
+
+  //Start moving
+  forward(leftFront, leftBack, rightFront, rightBack);
+  
+  //Stay in forwardP forever
+  while(true)
+  {
+    //P correction
+    forwardP(angle, leftFront, leftBack, rightFront, rightBack, false);
+    //delay(100);
+  }
+}
+
+void tryBackwardP()
+{
+  //Stay in zero
+  int angle = getCompass();
+
+  //Set speed to default
+  int leftFront = velLF;
+  int leftBack = velLB;
+  int rightFront = velRF;
+  int rightBack = velRB;
+
+  //Start moving
+  backward(leftFront, leftBack, rightFront, rightBack);
+  
+  //Stay in forwardP forever
+  while(true)
+  {
+    //P correction
+    backwardP(angle, leftFront, leftBack, rightFront, rightBack, false);
+    //delay(100);
+  }
+}
+
+void limitSwitchesCalibration()
+{
+  Serial.print("LI: ");
+  Serial.print(digitalRead(pinLI));
+  Serial.print("\t");
+  Serial.print("LO: ");
+  Serial.print(digitalRead(pinLO));
+  Serial.print("\t");
+  Serial.print("LR: ");
+  Serial.print(digitalRead(pinLR));
+  Serial.print("\t");
+  Serial.print("LL: ");
+  Serial.print(digitalRead(pinLL));
+  Serial.print("\t");
+  Serial.println();
+}

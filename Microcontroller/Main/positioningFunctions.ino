@@ -1,32 +1,9 @@
-void degreesCorrections(int &degrees)
-{
-  //Corrections
-  if (degrees > 18000L)
-  {
-    degrees = -(18000L - (degrees - 18000L));
-  }
-  else if (degrees < -18000L)
-  {
-    degrees = (18000L - ((-degrees) - 18000L));
-  }
-
-  //Corrections
-  if (degrees > 600L)
-  {
-    degrees = 600L;
-  }
-  else if (degrees < -600L)
-  {
-    degrees = -600L;
-  }
-}
-
 //Go back till there is no wall at the left
 void backwardTillNoLeft()
 {
   //Display function in LCD
   lcd.clear();
-  writeLCD("BACKWARD TILL NO LEFT", 0, 0);
+  // writeLCD("BACKWARD TILL NO LEFT", 0, 0);
   //Actual angle to stay in
   long direction = getCompassX100();
 
@@ -55,7 +32,7 @@ void backwardTillNoRight()
 {
   //Display function in LCD
   lcd.clear();
-  writeLCD("BACKWARD TILL NO RIGHT", 0, 0);
+  // writeLCD("BACKWARD TILL NO RIGHT", 0, 0);
   //Actual angle to stay in
   long direction = getCompassX100();
 
@@ -84,7 +61,7 @@ void forwardTillNoRight()
 {
   //Display function in LCD
   lcd.clear();
-  writeLCD("FORWARD TILL NO RIGHT", 0, 0);
+  // writeLCD("FORWARD TILL NO RIGHT", 0, 0);
   //Actual angle to stay in
   long direction = getCompassX100();
 
@@ -113,7 +90,7 @@ void forwardTillNoLeft()
 {
   //Display function in LCD
   lcd.clear();
-  writeLCD("FORWARD TILL NO LEFT", 0, 0);
+  // writeLCD("FORWARD TILL NO LEFT", 0, 0);
   //Actual angle to stay in
   long direction = getCompassX100();
 

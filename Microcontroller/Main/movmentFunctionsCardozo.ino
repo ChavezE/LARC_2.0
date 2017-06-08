@@ -1,14 +1,37 @@
 ////////////////////////////////////////
-//  Falta  hacer funcinoar los giros  //
+//  Cardozo Movment Functions         //
 ////////////////////////////////////////
 
-//Go forward the cm given in the parameter
-void forwardNCm(long cm)
+void degreesCorrections(int &degrees)
+{
+  //Corrections
+  if (degrees > 18000L)
+  {
+    degrees = -(18000L - (degrees - 18000L));
+  }
+  else if (degrees < -18000L)
+  {
+    degrees = (18000L - ((-degrees) - 18000L));
+  }
+
+  //Corrections
+  if (degrees > 600L)
+  {
+    degrees = 600L;
+  }
+  else if (degrees < -600L)
+  {
+    degrees = -600L;
+  }
+}
+
+//Go forward the cm given in the parameter, Cardozo style
+void forwardCCm(long cm)
 {
   //Display function in LCD
   lcd.clear();
-  writeLCD("FORWARD N CM", 0, 0);
-  writeLCD(String(cm), 0, 1);
+  // // // writeLCD("FORWARD N CM", 0, 0);
+  // // // writeLCD(String(cm), 0, 1);
   //Change precision
   cm *= 100;
 
@@ -74,13 +97,13 @@ void forwardNCm(long cm)
   } while (true);
 }
 
-//Go backward the cm given in the parameter
-void backwardNCm(long cm)
+//Go backward the cm given in the parameter, Cardozo style
+void backwardCCm(long cm)
 {
   //Display function in LCD
   lcd.clear();
-  writeLCD("BACKWARD N CM", 0, 0);
-  writeLCD(String(cm), 0, 1);
+  // // writeLCD("BACKWARD N CM", 0, 0);
+  // // writeLCD(String(cm), 0, 1);
   //Change precision
   cm *= 100;
   //Reset steps counts
@@ -141,8 +164,8 @@ void forwardUntilWall(int cmFromWall)
 {
   //Display function in LCD
   lcd.clear();
-  writeLCD("FORWARD UNTIL WALL", 0, 0);
-  writeLCD(String(cmFromWall), 0, 1);
+  // // writeLCD("FORWARD UNTIL WALL", 0, 0);
+  // // writeLCD(String(cmFromWall), 0, 1);
   //Distance detected
   int dist;
   //Faced direction at start
@@ -232,8 +255,8 @@ void backwardUntilWall(int cmFromWall)
 {
   //Display function in LCD
   lcd.clear();
-  writeLCD("BACKWARD UNTIL WALL", 0, 0);
-  writeLCD(String(cmFromWall), 0, 1);
+  // // writeLCD("BACKWARD UNTIL WALL", 0, 0);
+  // // writeLCD(String(cmFromWall), 0, 1);
   //Distance
   int dist;
   //Direction at start
@@ -310,168 +333,84 @@ void backwardUntilWall(int cmFromWall)
   } while (true);
 }
 
-//Turn to an exact angle
-void turnToObjective(int obj)
-{
-  //Times to try getting in position
-  int iTimes = 0;
-  do {
-    //Get facing angle
-    int actualAngle = getCompass();
-    
-    //Debug info
-    //Serial.print("Wanted: ");
-    //Serial.print(obj);
-    //Serial.print("\t");
-    //Serial.print("Actual: ");
-    //Serial.println(actualAngle);
-    
-    //If objective is bigger than actual angle
-    if (obj > actualAngle)
-    {
-      //If is closer to get to objective by turning left
-      if (obj > actualAngle + 180)
-      {
-        //Turn left while the robot doesn't face the obj angle
-        turnLeft(velBackwardLF, velBackwardLB, velForwardRF, velForwardRB);
-        while (actualAngle != obj || actualAngle != obj + 1 || actualAngle != obj - 1)
-        {
-          actualAngle = getCompass();
-        }
-      }
-      else
-      {
-        turnLeft(velForwardLF, velForwardLB, velBackwardRF, velBackwardRB);
-        while (actualAngle != obj || actualAngle != obj + 1 || actualAngle != obj - 1)
-        {
-          actualAngle = getCompass();
-        }
-      }
-    }
-    else if (obj < actualAngle)
-    {
-      if (obj < actualAngle - 180)
-      {
-        turnLeft(velForwardLF, velForwardLB, velBackwardRF, velBackwardRB);
-        while (actualAngle != obj || actualAngle != obj + 1 || actualAngle != obj - 1)
-        {
-          actualAngle = getCompass();
-        }
-      }
-      else
-      {
-        turnLeft(velBackwardLF, velBackwardLB, velForwardRF, velForwardRB);
-        while (actualAngle != obj || actualAngle != obj + 1 || actualAngle != obj - 1)
-        {
-          actualAngle = getCompass();
-        }
-      }
-    }
-
-    brake();
-    iTimes++;
-  } while (iTimes < 3);
-}
-
-//Turn n amount of degrees, positive turn right, negative turn left
-void turnDegrees(int n)
-{
-  //Get objective angle
-  int obj = getCompass() + n;
-
-  //angle correction
-  if(obj > 359)
-  {
-    obj -= 360;
-  }
-  else if(obj < 0)
-  {
-    obj += 360;
-  }
-
-  //Turn to degree
-  turnToObjective(obj);
-}
-
-
 //Code with getCompassX100()
-// //Turn to a given degree
-// void turnToDegree(int obj)
-// {
-//   //Display function in LCD
-//   lcd.clear();
-//   writeLCD("TURN TO DEGREE", 0, 0);
-//   writeLCD(String(obj), 0, 1);
-//   //Actual angle
-//   int degrees;
-//   int times = 0;
+//Turn to a given degree
+void turnToDegree(int obj)
+{
+  //Display function in LCD
+  lcd.clear();
+  // // writeLCD("TURN TO DEGREE", 0, 0);
+  // // writeLCD(String(obj), 0, 1);
+  //Actual angle
+  int degrees;
+  int times = 0;
 
-//   do {
-//     //Actual angle
-//     degrees = getCompassX100();
+  do {
+    //Actual angle
+    degrees = getCompassX100();
 
-//     degreesCorrections(degrees);
-//     Serial.print("Degrees: ");
-//     Serial.print(degrees);
-//     Serial.print("\t");
-//     Serial.print("obj: ");
-//     Serial.println(obj);
+    degreesCorrections(degrees);
+    Serial.print("Degrees: ");
+    Serial.print(degrees);
+    Serial.print("\t");
+    Serial.print("obj: ");
+    Serial.println(obj);
 
-//     //Diff of where we are and where we want to be
-//     degrees = degrees - obj;
+    //Diff of where we are and where we want to be
+    degrees = degrees - obj;
 
-//     //Set vel of turn
-//     //Left
-//     if (degrees < - 50)
-//     {
-//       Serial.println("Izquierda");
-//       degrees =  degrees / constPTurn - velTurn;
-//       times = 0;
-//     }
-//     //Right
-//     else if (degrees > 50)
-//     {
-//       Serial.println("DERECHA");
-//       degrees = degrees / constPTurn + velTurn;
-//       times = 0;
-//     }
-//     else
-//     {
-//       Serial.println("EEY");
-//       degrees = 0L;
-//       times++;
-//     }
+    //Set vel of turn
+    //Left
+    if (degrees < - 50)
+    {
+      Serial.println("Izquierda");
+      degrees =  degrees / constPTurn - velTurn;
+      times = 0;
+    }
+    //Right
+    else if (degrees > 50)
+    {
+      Serial.println("DERECHA");
+      degrees = degrees / constPTurn + velTurn;
+      times = 0;
+    }
+    else
+    {
+      Serial.println("EEY");
+      degrees = 0L;
+      times++;
+    }
 
-//     turn(degrees);
+    turn(degrees);
 
-//     delay(90);
-//   } while (times < 1);
-//   brake();
-// }
+    delay(90);
+  } while (times < 1);
+  brake();
+}
 
-// //turn n andegrees to the right
-// void turnRightNDegrees(long degrees)
-// {
-//   //Display function in LCD
-//   lcd.clear();
-//   writeLCD("TURN RIGHT N DEGREES", 0, 0);
-//   writeLCD(String(degrees), 0, 1);
-//   int obj = (getCompassX100() + degrees) % 36000L;
-//   turnToDegree(obj);
-// }
+//turn n andegrees to the right
+void turnRightNDegrees(long degrees)
+{
+  //Display function in LCD
+  lcd.clear();
+  // // writeLCD("TURN RIGHT N DEGREES", 0, 0);
+  // // writeLCD(String(degrees), 0, 1);
+  int obj = (getCompassX100() + degrees) % 36000L;
+  turnToDegree(obj);
+}
 
-// //Turn n degrees to the left
-// void turnLeftNDegrees(long degrees)
-// {
-//   //Display function in LCD
-//   lcd.clear();
-//   writeLCD("TURN LEFT N DEGREES", 0, 0);
-//   writeLCD(String(degrees), 0, 1);
-//   int obj = getCompassX100() - degrees;
-//   if (obj < 0L)
-//   {
-//     obj += 36000;
-//   }
+//Turn n degrees to the left
+void turnLeftNDegrees(long degrees)
+{
+  //Display function in LCD
+  lcd.clear();
+  // // writeLCD("TURN LEFT N DEGREES", 0, 0);
+  // // writeLCD(String(degrees), 0, 1);
+  int obj = getCompassX100() - degrees;
+  if (obj < 0L)
+  {
+    obj += 36000;
+  }
 
-//   turnToDegree(obj);
-// }
+  turnToDegree(obj);
+}
