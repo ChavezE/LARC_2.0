@@ -1,3 +1,29 @@
+forwardNCm(int cm)
+
+backwardNCm(int cm)
+
+forwardUntilWallN(int dist)
+
+backwardUntilWallN(int dist)
+
+turnToObjectiveN(int iWant)
+
+turnNDegrees(int n)
+
+forwardUntilNoRight()
+
+forwardUntilNoLeft()
+
+backwardUntilNoRight()
+
+backwardUntilNoLeft()
+
+
+
+
+
+
+
 Funciones que se van a llamar desde la raspberryPi:
 
 Nombre en Arduino												

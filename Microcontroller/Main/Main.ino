@@ -208,224 +208,91 @@ void setup()
 
 void loop()
 {
-  /*
-    //forwardCalibration(velLF, velLB, velRF, velRB);
-    unsigned long data;
-    unsigned long data1, data2;
-    char order = '0';
-    char sharp = 'A';
+  forwardUntilNoLeft();
+  delay(5000);
+  //forwardCalibration(velLF, velLB, velRF, velRB);
+  unsigned long data;
+  unsigned long data1, data2;
+  char order = '0';
+  char sharp = 'A';
 
-    if (Serial.available() > 0) {
+  if (Serial.available() > 0) 
+  {
     order = Serial.read();
     switch (order)
     {
       case 'a':
-        brake();
+        while(Serial.available() < 1);
+
+        int cm = Serail.read();
+        forwardNCm(cm);
         Serial.write('1');
         break;
 
       case 'b':
-        while (Serial.available() < 2);
-        data1 = Serial.read();
-        data2 = Serial.read();
+        while(Serial.available() < 1);
 
-        forward(data1, data2);
+        int cm = Serail.read();
+        backwardNCm(cm);
         Serial.write('1');
         break;
 
       case 'c':
-        while (Serial.available() < 2);
-        data1 = Serial.read();
-        data2 = Serial.read();
+        while(Serial.available() < 1);
 
-        backward(data1, data2);
+        int cm = Serail.read();
+        forwardUntilWallN(cm);
         Serial.write('1');
         break;
 
       case 'd':
-        while (Serial.available() < 1);
-        data = Serial.read();
+        while(Serial.available() < 1);
 
-        turnRight(data);
+        int cm = Serail.read();
+        backwardUntilWallN(cm);
         Serial.write('1');
         break;
 
       case 'e':
-        while (Serial.available() < 1);
-        data = Serial.read();
+        while (Serial.available() < 2);
+        int data1 = Serial.read();
+        int data2 = Serial.read();
 
-        turnLeft(data);
+        turnToObjectiveN(((data1 << 8) | data2) * 100UL);
         Serial.write('1');
-        break;
 
       case 'f':
-        while (Serial.available() < 2);
-        data1 = Serial.read();
-        data2 = Serial.read();
+        while(Serial.available() < 2);
 
-        turn(((data1 << 8) | data2) * 100UL);
+        int degrees = Serail.read();
+        int direction = Serial.read();
+        if(direction == 1)
+        {
+          degrees * - 1;
+        }
+        turnNDegrees(degrees);
         Serial.write('1');
         break;
 
       case 'g':
-        while (Serial.available() < 2);
-        data1 = Serial.read();
-        data2 = Serial.read();
-
-        forwardNCm(((data1 << 8) | data2) * 100UL);
+        forwardUntilNoRight();
         Serial.write('1');
         break;
 
       case 'h':
-        while (Serial.available() < 2);
-        data1 = Serial.read();
-        data2 = Serial.read();
-
-        backwardNCm(((data1 << 8) | data2) * 100UL);
+        forwardUntilNoLeft();
         Serial.write('1');
         break;
 
       case 'i':
-        while (Serial.available() < 2);
-        data1 = Serial.read();
-        data2 = Serial.read();
-
-        forwardUntilWall(((data1 << 8) | data2) * 100UL);
+        backwardUntilNoRight();
         Serial.write('1');
         break;
 
       case 'j':
-        while (Serial.available() < 2);
-        data1 = Serial.read();
-        data2 = Serial.read();
-
-        backwardUntilWall(((data1 << 8) | data2) * 100UL);
+        backwardUntilNoLeft();
         Serial.write('1');
-        break;
-
-      case 'k':
-        while (Serial.available() < 2);
-        data1 = Serial.read();
-        data2 = Serial.read();
-
-        turnToDegree(((data1 << 8) | data2) * 100UL);
-        Serial.write('1');
-        break;
-
-      case 'l':
-        while (Serial.available() < 2);
-        data1 = Serial.read();
-        data2 = Serial.read();
-
-        turnRightNDegrees(((data1 << 8) | data2) * 100UL);
-        Serial.write('1');
-        break;
-
-      case 'm':
-        while (Serial.available() < 2);
-        data1 = Serial.read();
-        data2 = Serial.read();
-
-        turnLeftNDegrees(((data1 << 8) | data2) * 100UL);
-        Serial.write('1');
-        break;
-
-      case 'n':
-        platIn();
-        Serial.write('1');
-        break;
-
-      case 'o':
-        platOut();
-        Serial.write('1');
-        break;
-
-      case 'p':
-        openClaw();
-        Serial.write('1');
-        break;
-
-      case 'q':
-        closeClaw();
-        Serial.write('1');
-        break;
-
-      case 'r':
-        while (Serial.available() < 1);
-        sharp = Serial.read();
-
-        switch (sharp)
-        {
-          case 0:
-            {
-              int dist = getDistance(pinSF);
-              Serial.println(dist);
-              break;
-            }
-          case 1:
-            {
-              int dist = getDistance(pinSB);
-              Serial.println(dist);
-              break;
-            }
-
-          case 2:
-            {
-              int dist = getDistance(pinSRF);
-              Serial.println(dist);
-              break;
-            }
-
-          case 3:
-            {
-              int dist = getDistance(pinSRC);
-              Serial.println(dist);
-              break;
-            }
-
-          case 4:
-            {
-              int dist = getDistance(pinSRB);
-              Serial.println(dist);
-              break;
-            }
-
-          case 5:
-            {
-              int dist = getDistance(pinSLF);
-              Serial.println(dist);
-              break;
-            }
-
-          case 6:
-            {
-              int dist = getDistance(pinSLC);
-              Serial.println(dist);
-              break;
-            }
-
-          case 7:
-            {
-              int dist = getDistance(pinSLB);
-              Serial.println(dist);
-              break;
-            }
-
-          case 8:
-            {
-              int dist = getDistance(pinSC);
-              Serial.println(dist);
-              break;
-            }
-        }
-
-        break;
-
-      case 's':
-        int angle = getCompassX100();
-        Serial.println(angle);
         break;
     }
-    }
-  */
+  }
 }

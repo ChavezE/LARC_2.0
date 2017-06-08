@@ -262,7 +262,6 @@ void forwardUntilWallN(int dist)
     //To far from wall
     if (actualDist > dist)
     {
-      brake();
       forward(LF, LB, RF, RB);
       forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
     }
@@ -270,7 +269,6 @@ void forwardUntilWallN(int dist)
     //To close from wall
     if (actualDist < dist)
     {
-      brake();
       backward(LF, LB, RF, RB);
       backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
     }
@@ -409,6 +407,172 @@ void turnNDegrees(int n)
   turnToObjectiveN(obj);
 }
 
+void forwardUntilNoRight()
+{
+  encoderState = 1;
+
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  //Start at default velocity
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //Distance by right back sharp
+  int distBack = getDistance(pinSRB);
+
+  //Distance by right front sharp
+  int distFront = getDistance(pinSRF);
+
+  //Check if the the robot should go slower
+  bool bSlow = distFront > 30 ? true : false;
+
+  if(distBack < 30)
+  {
+    //Start moving
+    forward(LF, LB, RF, RB);
+
+    //While not at ceratin distance from wall
+    while (distBack < 30)
+    {
+      forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+
+      distFront = getDistance(pinSRF);
+      bSlow = distFront > 30 ? true : false;
+
+      distBack = getDistance(pinSRB);
+    }
+  }
+
+  brake();
+}
+
+void forwardUntilNoLeft()
+{
+  encoderState = 1;
+
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  //Start at default velocity
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //Distance by left back sharp
+  int distBack = getDistance(pinSLB);
+
+  //Distance by left front sharp
+  int distFront = getDistance(pinSLF);
+
+  //Check if the the robot should go slower
+  bool bSlow = distFront > 30 ? true : false;
+
+  if(distBack < 30)
+  {
+    //Start moving
+    forward(LF, LB, RF, RB);
+
+    //While not at ceratin distance from wall
+    while (distBack < 30)
+    {
+      forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+
+      distFront = getDistance(pinSLF);
+      bSlow = distFront > 30 ? true : false;
+
+      distBack = getDistance(pinSLB);
+      Serial.println(distBack);
+    }
+  }
+  brake();
+}
+
+void backwardUntilNoRight()
+{
+  encoderState = 1;
+
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  //Start at default velocity
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //Distance by right back sharp
+  int distBack = getDistance(pinSRB);
+
+  //Distance by right front sharp
+  int distFront = getDistance(pinSRF);
+
+  //Check if the the robot should go slower
+  bool bSlow = distBack > 30 ? true : false;
+
+  if(distFront < 30)
+  {
+    //Start moving
+    backward(LF, LB, RF, RB);
+
+    //While not at ceratin distance from wall
+    while (distFront < 30)
+    {
+      backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+
+      distBack = getDistance(pinSRB);
+      bSlow = distBack > 30 ? true : false;
+
+      distFront = getDistance(pinSRF);
+    }
+  }
+  brake();
+}
+
+void backwardUntilNoLeft()
+{
+  encoderState = 1;
+
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  //Start at default velocity
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //Distance by left back sharp
+  int distBack = getDistance(pinSLB);
+
+  //Distance by left front sharp
+  int distFront = getDistance(pinSLF);
+
+  //Check if the the robot should go slower
+  bool bSlow = distBack > 30 ? true : false;
+
+  if(distFront < 30)
+  {
+    //Start moving
+    backward(LF, LB, RF, RB);
+
+    //While not at ceratin distance from wall
+    while (distFront < 30)
+    {
+      backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+
+      distBack = getDistance(pinSLB);
+      bSlow = distBack > 30 ? true : false;
+
+      distFront = getDistance(pinSLF);
+    }
+  }
+
+  brake();
+}
 
 ////////////////////////////////////////////////////
 //                    Faltarian:                  //
