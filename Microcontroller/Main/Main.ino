@@ -208,9 +208,6 @@ void setup()
 
 void loop()
 {
-  forwardUntilNoLeft();
-  delay(5000);
-  //forwardCalibration(velLF, velLB, velRF, velRB);
   unsigned long data;
   unsigned long data1, data2;
   char order = '0';
@@ -224,39 +221,39 @@ void loop()
       case 'a':
         while(Serial.available() < 1);
 
-        int cm = Serail.read();
-        forwardNCm(cm);
+        data = Serial.read();
+        forwardNCm(data);
         Serial.write('1');
         break;
 
       case 'b':
         while(Serial.available() < 1);
 
-        int cm = Serail.read();
-        backwardNCm(cm);
+        data = Serial.read();
+        backwardNCm(data);
         Serial.write('1');
         break;
 
       case 'c':
         while(Serial.available() < 1);
 
-        int cm = Serail.read();
-        forwardUntilWallN(cm);
+        data = Serial.read();
+        forwardUntilWallN(data);
         Serial.write('1');
         break;
 
       case 'd':
         while(Serial.available() < 1);
 
-        int cm = Serail.read();
-        backwardUntilWallN(cm);
+        data = Serial.read();
+        backwardUntilWallN(data);
         Serial.write('1');
         break;
 
       case 'e':
         while (Serial.available() < 2);
-        int data1 = Serial.read();
-        int data2 = Serial.read();
+        data1 = Serial.read();
+        data2 = Serial.read();
 
         turnToObjectiveN(((data1 << 8) | data2) * 100UL);
         Serial.write('1');
@@ -264,13 +261,13 @@ void loop()
       case 'f':
         while(Serial.available() < 2);
 
-        int degrees = Serail.read();
-        int direction = Serial.read();
-        if(direction == 1)
+        data1 = Serial.read();
+        data2 = Serial.read();
+        if(data2 == 1)
         {
-          degrees * - 1;
+          data1 * - 1;
         }
-        turnNDegrees(degrees);
+        turnNDegrees(data1);
         Serial.write('1');
         break;
 
