@@ -1,364 +1,581 @@
 ////////////////////////////////////////
-//  Falta  hacer funcinoar los giros  //
+//  Nestor Movment Functions          //
 ////////////////////////////////////////
 
-//Go forward the cm given in the parameter
-void forwardNCm(long cm)
-{
-  //Change precision
-  cm *= 100;
-  
-  //set steps to zero to start counting
-  steps = 0UL;
-  //get direction we faced at start
-  int direction = getCompass();
-
-
-  do {
-    //Check the faced direction
-    int degrees = getCompass();
-    //Difference of where it is and where it should be
-    degrees = degrees - direction;
-
-    degreesCorrections(degrees);
-
-    //cm left to get where it want
-    long e = cm - (steps * 10000L) / constEncoder;
-    //Vel of motors
-    long go;
-    
-    //If it pass
-    if (e < -50)
-    {
-      //set encoder to substract
-      encoderState = 2;
-      //Velocity
-      go = velForward - e / constPDist;
-      //Velocity can't go faster than 110
-      if (go > 110L)
-      {
-        go = 110L;
-      }
-      //P correction
-      backward(go + degrees / constPCorrect, go - degrees / constPCorrect);
-    }
-    //If it still have cm to go
-    else if (e > 50)
-    {
-      //set encoder to add
-      encoderState = 1;
-      //Velocity
-      go = velForward + e / constPDist;
-      //Velocity can't go faster than 110
-      if (go > 110L)
-      {
-        go = 110L;
-      }
-      //P correction
-      forward(go - degrees / constPCorrect, go + degrees / constPCorrect);
-    }
-    //Completed
-    else
-    {
-      encoderState = 1;
-      brake();
-      //Get out of do while
-      break;
-    }
-
-    delay(10);
-  } while (true);
-}
-
-//Go backward the cm given in the parameter
-void backwardNCm(long cm)
-{
-  //Change precision
-  cm *= 100;
-  //Reset steps counts
-  steps = 0L;
-  //Get direction at start
-  int direction = getCompass();
-
-  do {
-    //Check faced directions
-    int degrees = getCompass();
-
-    //Difference of where it is and where it should be
-    degrees = degrees - direction;
-
-    degreesCorrections(degrees);
-
-    //cm left to get where it want
-    long e = cm - (steps * 10000L) / constEncoder;
-    //Vel of motors
-    long go;
-    //If it pass
-    if (e < -50)
-    {
-      encoderState = 2;
-      go = velForward - e / constPDist;
-      if (go > 110L)
-      {
-        go = 110L;
-      }
-      //P correction
-      forward(go - degrees / constPCorrect, go + degrees / constPCorrect);
-    }
-    //If there are cm left
-    else if (e > 50)
-    {
-      encoderState = 1;
-      go = velForward + e / constPDist;
-      if (go > 110L)
-      {
-        go = 110L;
-      }
-      //P correction
-      backward(go + degrees / constPCorrect, go - degrees / constPCorrect);
-    }
-    else
-    {
-      encoderState = 1;
-      forward(0, 0);
-      break;
-    }
-
-    delay(10);
-  } while (true);
-}
-
-//Go forward until it detect a wall at a given cm
-void forwardUntilWall(int cmFromWall)
-{
-  //Distance detected
-  int dist;
-  //Faced direction at start
-  int direction = getCompass();
-
-  dist = getDistance(pinSF);
-  //move forward until it detect a wall
-  while (dist > 30)
-  {
-    //Check actual diection
-    int degrees = getCompass();
-    //Difference of angles
-    degrees = degrees - direction;
-
-    degreesCorrections(degrees);
-    //P correction
-    forward(velForward + 1000 / constPDist - degrees / constPCorrect, velForward + 1000 / constPDist + degrees / constPCorrect);
-    delay(10);
-    //Check distance
-    dist = getDistance(pinSF);
-  }
-
-  int times = 0;
-  //forward checking distance
-  do {
-    //Direction
-    int degrees = getCompass();
-    //Differences of angles
-    degrees = degrees - direction;
-
-    degreesCorrections(degrees);
-    //Actual distane
-    dist = getDistance(pinSF) - 4;
-
-    //Distance left
-    long e = cmFromWall - dist;
-    //velocity
-    long go;
-    //Still distance to go
-    if (e < -1)
-    {
-      //Velocity
-      go = velForward + 180 / e;
-      //doesn't go slower than 50
-      if (go < 50)
-      {
-        go = 50L;
-      }
-
-      forward(go, go);
-      //Check again from scratch
-      times = 0;
-    }
-    //We get too close
-    else if (e > 1)
-    {
-      //Velocity
-      go = velForward - 180 / e;
-      //Doesn't fo slower than 50
-      if (go < 50)
-      {
-        go = 50L;
-      }
-
-      backward(go, go);
-      //Check again from scratch
-      times = 0;
-    }
-    //Everything perfect
-    else
-    {
-      forward(0, 0);
-      times++;
-      //Three times perfect
-      if (times == 2)
-      {
-        break;
-      }
-
-      delay(10);
-    }
-  } while (true);
-}
-
-//Go backs until wall the given parameters
-void backwardUntilWall(int cmFromWall)
-{
-  //Distance
-  int dist;
-  //Direction at start
-  int direction = getCompass();
-
-  dist = getDistance(pinSB);
-  //Get close to the wall
-  while (dist > 30)
-  {
-    //angles
-    int degrees = getCompass();
-    //Diff of angles
-    degrees = degrees - direction;
-
-    degreesCorrections(degrees);
-    //P correction
-    backward(velForward + 1000 / constPDist + degrees / constPCorrect, velForward + 1000 / constPDist - degrees / constPCorrect);
-    delay(10);
-
-    dist = getDistance(pinSB);
-  }
-
-  int times = 0;
-  do {
-    //Angle
-    int degrees = getCompass();
-    //Diff of direction
-    degrees = degrees - direction;
-
-    degreesCorrections(degrees);
-
-    dist = getDistance(pinSB) - 4;
-
-    //Distance left
-    long e = cmFromWall - dist;
-    //Velocity
-    long go;
-    //Get closer to the wall
-    if (e < -1)
-    {
-      go = velForward + 180 / e;
-      if (go < 50)
-      {
-        go = 50L;
-      }
-
-      backward(go, go); //forward(go - degrees / constPCorrect, go + degrees / constPCorrect);
-      times = 0;
-    }
-    //Get farther from the wall
-    else if (e > 1)
-    {
-      go = velForward - 180 / e;
-      if (go < 50)
-      {
-        go = 50L;
-      }
-
-      forward(go, go); //backward(go + degrees / constPCorrect, go - degrees / constPCorrect);
-      times = 0;
-    }
-    //Perfect distance
-    else
-    {
-      brake();
-      times++;
-      if (times == 1)
-      {
-        break;
-      }
-    }
-
-    delay(10);
-  } while (true);
-}
-
-//Turn to a given degree
-void turnToDegree(int obj)
+//forward with P correction
+void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& rightBack, bool bSlow)
 {
   //Actual angle
-  int degrees;
-  int times = 0;
+  int iAm = getCompass();
+  //Know limits
+  int iAux = iWant - iAm;
 
-  do {
-    //Actual angle
-    degrees = getCompass();
-    
-    degreesCorrections(degrees);
-    Serial.print("Degrees: ");
-    Serial.print(degrees);
-    Serial.print("\t");
-    Serial.print("obj: ");
-    Serial.println(obj);
-    
-    //Diff of where we are and where we want to be
-    degrees = degrees - obj;
+  //Reset vel to default
+  leftFront = bSlow == false ? velLF : velSlowLF;
+  leftBack = bSlow == false ? velLB : velSlowLB;
+  rightFront = bSlow == false ? velRF : velSlowRF;
+  rightBack = bSlow == false ? velRB : velSlowRB;
 
-    //Set vel of turn
-    //Left
-    if (degrees < - 50)
+  //Debug info
+  // Serial.print("iAm: ");
+  // Serial.print(iAm);
+  // Serial.print("\t");
+  // Serial.print("iWant: ");
+  // Serial.print(iWant);
+  // Serial.print("\t");
+  // Serial.print("iAux (iWant - iAm): ");
+  // Serial.print(iAux);
+
+  //Change speed if needed
+  if (iAux > -180 && iAux < 180)
+  {
+    // Serial.print("\t");
+    // Serial.print("Normal");
+    if (iWant > iAm)
     {
-      Serial.println("Izquierda");
-      degrees =  degrees / constPTurn - velTurn;
-      times = 0;
-    }
-    //Right
-    else if (degrees > 50)
-    {
-      Serial.println("DERECHA");
-      degrees = degrees / constPTurn + velTurn;
-      times = 0;
-    }
-    else
-    {
-      Serial.println("EEY");
-      degrees = 0L;
-      times++;
-    }
+      //Turn right
+      leftFront += abs(iAux) / constPCorrectN;
+      leftBack += abs(iAux) / constPCorrectN;
 
-    turn(degrees);
+      // Serial.print("\t");
+      // Serial.print("Mayor: ");
+      // Serial.print(abs(iAux) / constPCorrectN);
 
-    delay(90);
-  } while (times < 1);
+      //Not needed
+      // rightFront -= abs(iAux) / constPCorrectN;
+      // rightBack -= abs(iAux) / constPCorrectN;
+    }
+    else if (iWant < iAm)
+    {
+      //Turn left
+      rightFront += abs(iAux) / constPCorrectN;
+      rightBack += abs(iAux) / constPCorrectN;
+
+      // Serial.print("\t");
+      // Serial.print("Menor: ");
+      // Serial.print(abs(iAux) / constPCorrectN);
+
+      //Not needed
+      // leftFront -= abs(iAux) / constPCorrectN;
+      // leftBack -= abs(iAux) / constPCorrectN;
+    }
+  }
+  else if (iAux > 180 || iAux < -180)
+  {
+    // Serial.print("\t");
+    // Serial.print("Anormal");
+    if (iAux > 0)
+    {
+      //Ther shouldn't be any operation inside abs
+      int iA = iAux - 360;
+
+      // Serial.print("\t");
+      // Serial.print("iA: ");
+      // Serial.print(iA);
+      // Serial.print("\t");
+      // Serial.print("Mayor: ");
+      // Serial.print(abs(iA) / constPCorrectN);
+
+      //Turn left
+      rightFront += abs(iA) / constPCorrectN;
+      rightBack += abs(iA) / constPCorrectN;
+      //Not needed
+      // leftFront -= abs(iA) / constPCorrectN;
+      // leftBack -= abs(iA) / constPCorrectN;
+    }
+    else if (iAux < 0)
+    {
+      //Ther shouldn't be any operation inside abs
+      int iA = iAux + 360;
+
+      // Serial.print("\t");
+      // Serial.print("iA: ");
+      // Serial.print(iA);
+      // Serial.print("\t");
+      // Serial.print("Menor: ");
+      // Serial.print(abs(iA) / constPCorrectN);
+
+      //Turn right
+      leftFront += abs(iA) / constPCorrectN;
+      leftBack += abs(iA) / constPCorrectN;
+      //Not needed
+      // rightFront -= abs(iA) / constPCorrectN;
+      // rightBack -= abs(iA) / constPCorrectN;
+    }
+  }
+  // Serial.println();
+  // writeLCD(String(leftFront), 0, 0);
+  // writeLCD(String(leftBack), 0, 1);
+  // writeLCD(String(rightFront), 8, 0);
+  // writeLCD(String(rightBack), 8, 1);
+  //delay(300);
+  setVelocity(leftFront, leftBack, rightFront, rightBack);
+}
+
+//forward with P correction
+void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& rightBack, bool bSlow)
+{
+  //Actual angle
+  int iAm = getCompass();
+  //Know limits
+  int iAux = iWant - iAm;
+
+  //Reset vel to default
+  leftFront = bSlow == false ? velLF : velSlowLF;
+  leftBack = bSlow == false ? velLB : velSlowLB;
+  rightFront = bSlow == false ? velRF : velSlowRF;
+  rightBack = bSlow == false ? velRB : velSlowRB;
+
+  //Change speed if needed
+  if (iAux > -180 && iAux < 180)
+  {
+    if (iWant > iAm)
+    {
+      //Turn right
+      rightFront += abs(iAux) / constPCorrectN;
+      rightBack += abs(iAux) / constPCorrectN;
+      //Not needed
+      // leftFront -= abs(iAux) / constPCorrect;
+      // leftBack -= abs(iAux) / constPCorrect;
+    }
+    else if (iWant < iAm)
+    {
+      //Turn left
+      leftFront += abs(iAux) / constPCorrectN;
+      leftBack += abs(iAux) / constPCorrectN;
+      //Not needed
+      // rightFront -= abs(iAux) / constPCorrect;
+      // rightBack -= abs(iAux) / constPCorrect;
+    }
+  }
+  else if (iAux > 180 || iAux < -180)
+  {
+    if (iAux > 0)
+    {
+      //Ther shouldn't be any operation inside abs
+      int iA = iAux - 360;
+      //Turn left
+      leftFront += abs(iA) / constPCorrectN;
+      leftBack += abs(iA) / constPCorrectN;
+      //Not needed
+      // rightFront -= abs(iA) / constPCorrect;
+      // rightBack -= abs(iA) / constPCorrect;
+    }
+    else if (iAux < 0)
+    {
+      //Ther shouldn't be any operation inside abs
+      int iA = iAux + 360;
+      //Turn right
+      rightFront += abs(iA) / constPCorrectN;
+      rightBack += abs(iA) / constPCorrectN;
+      //Not needed
+      // leftFront -= abs(iA) / constPCorrect;
+      // leftBack -= abs(iA) / constPCorrect;
+    }
+  }
+  setVelocity(leftFront, leftBack, rightFront, rightBack);
+}
+
+//Go forward the cm given in the parameter, Nestor style
+void forwardNCm(int cm)
+{
+  //writeLCD("ForwardNCm", 0, 0);
+  //writeLCD(String(cm), 0, 1);
+  encoderState = 1;
+  //Counts of encoder to get to the objective
+  int untilSteps = (encoder30Cm / 30) * cm;
+  //Restart encoder counts
+  steps = 0;
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  //Start at default velocity
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //Start moving
+  forward(LF, LB, RF, RB);
+
+  //Move with p correction until the encoder read the cm
+  while (steps < untilSteps)
+  {
+    forwardP(iStayAngle, LF, LB, RF, RB, false);
+  }
+  //Stop
   brake();
 }
 
-//turn n andegrees to the right
-void turnRightNDegrees(long degrees)
+//Go backward the cm given in the parameter, Nestor style
+void backwardNCm(int cm)
 {
-  int obj = (getCompass() + degrees) % 36000L;
-  turnToDegree(obj);
-}
+  encoderState = 1;
+  //Counts of encoder to get to the objective
+  int untilSteps = (encoder30Cm / 30) * cm;
+  //Restart encoder counts
+  steps = 0;
+  //Angle to stay in
+  int iStayAngle = getCompass();
 
-//Turn n degrees to the left
-void turnLeftNDegrees(long degrees)
-{
-  int obj = getCompass() - degrees;
-  if (obj < 0L)
+  //Start at default velocity
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //Start moving
+  backward(LF, LB, RF, RB);
+
+  while (steps < untilSteps)
   {
-    obj += 36000;
+    backwardP(iStayAngle, LF, LB, RF, RB, false);
   }
 
-  turnToDegree(obj);
+  brake();
 }
+
+//Go forward until finding a wall at a certain distance
+void forwardUntilWallN(int dist)
+{
+  encoderState = 1;
+
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  //Start at default velocity
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //Distance by front sharp
+  int actualDist = getDistance(pinSF);
+
+  //Check if the function
+  bool ready = actualDist == dist ? true : false;
+  bool bSlow = actualDist >= 30 ? false : true;
+
+  //While not at ceratin distance from wall
+  while (!ready)
+  {
+    //To far from wall
+    if (actualDist > dist)
+    {
+      forward(LF, LB, RF, RB);
+      forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+    }
+
+    //To close from wall
+    if (actualDist < dist)
+    {
+      backward(LF, LB, RF, RB);
+      backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+    }
+    
+    actualDist = getDistance(pinSF);
+    bSlow = actualDist >= 30 ? false : true;
+    
+    //Already at the distance with an error of +- 2 cm.
+    if (actualDist > dist - 2 && actualDist < dist + 2)
+    {
+      ready = true;
+    }
+  }
+
+  brake();
+}
+
+//Go forward until finding a wall at a certain distance
+void backwardUntilWallN(int dist)
+{
+  encoderState = 1;
+
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  //Start at default velocity
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //Distance by front sharp
+  int actualDist = getDistance(pinSB);
+
+  //Check if the function
+  bool ready = actualDist == dist ? true : false;
+
+  bool bSlow = actualDist >= 30 ? false : true;
+
+  //While not at ceratin distance from wall
+  while (!ready)
+  {
+    //To far from wall
+    if (actualDist > dist)
+    {
+      backward(LF, LB, RF, RB);
+      backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+    }
+
+    //To close from wall
+    if (actualDist < dist)
+    {
+      forward(LF, LB, RF, RB);
+      forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+    }
+
+    actualDist = getDistance(pinSB);
+    bSlow = actualDist >= 30 ? false : true;
+
+
+    //Already at the distance with an error of +- 2 cm.
+    if (actualDist > dist - 2 && actualDist < dist + 2)
+    {
+      ready = true;
+    }
+  }
+
+  brake();
+}
+
+//Turn to an exact angle
+void turnToObjectiveN(int iWant)
+{
+  //Actual Angle
+  int iAm = getCompass();
+  //Auxiliar to know limits
+  int iAux = iWant - iAm;
+
+  // +- Error
+  int iError = 1;
+
+  while(!(iAm > iWant - iError && iAm < iWant + iError))
+  {
+    //Move to the angle in the shorter path
+    if (iAux > -180 && iAux < 180)
+    {
+      if (iWant > iAm)
+      {
+        //Turn right
+        turnRight(velLF, velLB, velRF, velRB);
+      }
+      else if (iWant < iAm)
+      {
+        //Turn left
+        turnLeft(velLF, velLB, velRF, velRB);
+      }
+    }
+    else if (iAux > 180 || iAux < -180)
+    {
+      if (iAux > 0)
+      {
+        //Turn left
+        turnLeft(velLF, velLB, velRF, velRB);
+      }
+      else if (iAux < 0)
+      {
+        //Turn right
+        turnRight(velLF, velLB, velRF, velRB);
+      }
+    }
+    
+    //check angle
+    iAm = getCompass();
+    iAux = iWant - iAm;
+  }
+  brake();
+}
+
+//Turn n amount of degrees, positive turn right, negative turn left
+void turnNDegrees(int n)
+{
+  //Get objective angle
+  int obj = getCompass() + n;
+
+  //angle correction
+  if (obj > 359)
+  {
+    obj -= 360;
+  }
+  else if (obj < 0)
+  {
+    obj += 360;
+  }
+
+  //Turn to degree
+  turnToObjectiveN(obj);
+}
+
+void forwardUntilNoRight()
+{
+  encoderState = 1;
+
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  //Start at default velocity
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //Distance by right back sharp
+  int distBack = getDistance(pinSRB);
+
+  //Distance by right front sharp
+  int distFront = getDistance(pinSRF);
+
+  //Check if the the robot should go slower
+  bool bSlow = distFront > 30 ? true : false;
+
+  if(distBack < 30)
+  {
+    //Start moving
+    forward(LF, LB, RF, RB);
+
+    //While not at ceratin distance from wall
+    while (distBack < 30)
+    {
+      forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+
+      distFront = getDistance(pinSRF);
+      bSlow = distFront > 30 ? true : false;
+
+      distBack = getDistance(pinSRB);
+    }
+  }
+
+  brake();
+}
+
+void forwardUntilNoLeft()
+{
+  encoderState = 1;
+
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  //Start at default velocity
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //Distance by left back sharp
+  int distBack = getDistance(pinSLB);
+
+  //Distance by left front sharp
+  int distFront = getDistance(pinSLF);
+
+  //Check if the the robot should go slower
+  bool bSlow = distFront > 30 ? true : false;
+
+  if(distBack < 30)
+  {
+    //Start moving
+    forward(LF, LB, RF, RB);
+
+    //While not at ceratin distance from wall
+    while (distBack < 30)
+    {
+      forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+
+      distFront = getDistance(pinSLF);
+      bSlow = distFront > 30 ? true : false;
+
+      distBack = getDistance(pinSLB);
+      Serial.println(distBack);
+    }
+  }
+  brake();
+}
+
+void backwardUntilNoRight()
+{
+  encoderState = 1;
+
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  //Start at default velocity
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //Distance by right back sharp
+  int distBack = getDistance(pinSRB);
+
+  //Distance by right front sharp
+  int distFront = getDistance(pinSRF);
+
+  //Check if the the robot should go slower
+  bool bSlow = distBack > 30 ? true : false;
+
+  if(distFront < 30)
+  {
+    //Start moving
+    backward(LF, LB, RF, RB);
+
+    //While not at ceratin distance from wall
+    while (distFront < 30)
+    {
+      backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+
+      distBack = getDistance(pinSRB);
+      bSlow = distBack > 30 ? true : false;
+
+      distFront = getDistance(pinSRF);
+    }
+  }
+  brake();
+}
+
+void backwardUntilNoLeft()
+{
+  encoderState = 1;
+
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  //Start at default velocity
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //Distance by left back sharp
+  int distBack = getDistance(pinSLB);
+
+  //Distance by left front sharp
+  int distFront = getDistance(pinSLF);
+
+  //Check if the the robot should go slower
+  bool bSlow = distBack > 30 ? true : false;
+
+  if(distFront < 30)
+  {
+    //Start moving
+    backward(LF, LB, RF, RB);
+
+    //While not at ceratin distance from wall
+    while (distFront < 30)
+    {
+      backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+
+      distBack = getDistance(pinSLB);
+      bSlow = distBack > 30 ? true : false;
+
+      distFront = getDistance(pinSLF);
+    }
+  }
+
+  brake();
+}
+
+////////////////////////////////////////////////////
+//                    Faltarian:                  //
+//                                                //
+//    (Forward/Backward)(TillNoLeft/TillNoRight)  //
+////////////////////////////////////////////////////

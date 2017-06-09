@@ -1,35 +1,15 @@
-void degreesCorrections(int &degrees)
-{
-  //Corrections
-  if (degrees > 18000L)
-  {
-    degrees = -(18000L - (degrees - 18000L));
-  }
-  else if (degrees < -18000L)
-  {
-    degrees = (18000L - ((-degrees) - 18000L));
-  }
-
-  //Corrections
-  if (degrees > 600L)
-  {
-    degrees = 600L;
-  }
-  else if (degrees < -600L)
-  {
-    degrees = -600L;
-  }
-}
-
 //Go back till there is no wall at the left
 void backwardTillNoLeft()
 {
+  //Display function in LCD
+  lcd.clear();
+  // writeLCD("BACKWARD TILL NO LEFT", 0, 0);
   //Actual angle to stay in
-  long direction = getCompass();
+  long direction = getCompassX100();
 
   do {
     //Actual angle
-    int degrees = getCompass();
+    int degrees = getCompassX100();
     degrees = degrees - direction;
 
     degreesCorrections(degrees);
@@ -50,12 +30,15 @@ void backwardTillNoLeft()
 //Go back till there is no wall at the right
 void backwardTillNoRight()
 {
+  //Display function in LCD
+  lcd.clear();
+  // writeLCD("BACKWARD TILL NO RIGHT", 0, 0);
   //Actual angle to stay in
-  long direction = getCompass();
+  long direction = getCompassX100();
 
   do {
     //Actual angle
-    int degrees = getCompass();
+    int degrees = getCompassX100();
     degrees = degrees - direction;
 
     degreesCorrections(degrees);
@@ -76,12 +59,15 @@ void backwardTillNoRight()
 //Go forward till there is no wall at right
 void forwardTillNoRight()
 {
+  //Display function in LCD
+  lcd.clear();
+  // writeLCD("FORWARD TILL NO RIGHT", 0, 0);
   //Actual angle to stay in
-  long direction = getCompass();
+  long direction = getCompassX100();
 
   do {
     //Actual angle
-    int degrees = getCompass();
+    int degrees = getCompassX100();
     degrees = degrees - direction;
 
     degreesCorrections(degrees);
@@ -102,12 +88,15 @@ void forwardTillNoRight()
 //Go forward till there is no wall at left
 void forwardTillNoLeft()
 {
+  //Display function in LCD
+  lcd.clear();
+  // writeLCD("FORWARD TILL NO LEFT", 0, 0);
   //Actual angle to stay in
-  long direction = getCompass();
+  long direction = getCompassX100();
 
   do {
     //Actual angle
-    int degrees = getCompass();
+    int degrees = getCompassX100();
     degrees = degrees - direction;
 
     degreesCorrections(degrees);

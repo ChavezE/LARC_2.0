@@ -1,5 +1,7 @@
 #include <Adafruit_BNO055.h>
 #include <Servo.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
 ///////////////////////
 //        PINS       //
@@ -33,19 +35,19 @@ const byte pinEncoder = 18;
 //-------Sharps--------//
 
 //Front Sharp
-const byte pinSF = A4;
+const byte pinSF = A3;
 
 //Back Sharp
-const byte pinSB = A1;
+const byte pinSB = A2;
 
 //Sharp Right Front
-const byte pinSRF = A3;
+const byte pinSRF = A4;
 
 //Sharp Right Center
 const byte pinSRC;
 
 //Sharp Right Back
-const byte pinSRB = A2;
+const byte pinSRB = A1;
 
 //Sharp Left Front
 const byte pinSLF = A5;
@@ -54,27 +56,31 @@ const byte pinSLF = A5;
 const byte pinSLC;
 
 //Sharp Left Back
-const byte pinSLB = A6;
+const byte pinSLB = A0;
 
 //Sharp Claw
-const byte pinSC = A0;
+const byte pinSC = A6;
 
 //----LimitSwithces----//
 
 //In Limit Switch
-const byte pinLI = 45;
+const byte pinLI = 43;
 
 //Out Limit Switch
-const byte pinLO = 43;
+const byte pinLO = 45;
+
+const byte pinLR = 7;
+
+const byte pinLL = 6;
 
 //-------Servos-------//
 
 //Claw Servo
-const byte pinServoC = 6;
+const byte pinServoC = 8;
 Servo sClaw;
 
 //Plattaform Servo
-const byte pinServoP = 7;
+const byte pinServoP = 9;
 Servo sPlattaform;
 
 /////////////////////
@@ -93,11 +99,32 @@ const long constPCorrect = 30L;
 //Correction P in distance
 const long constPDist = 110L;
 
+//P correction Nestor
+const double constPCorrectN = 0.1;
+
+//Constants of motors when the robot is treated as a tank
+
 //Velocity for motors when moving forward or backwards
 const long velForward = 70L;
 
 //Velocity for motor when turning
 const long velTurn = 60L;
+
+//Constants of the motors when the motor is treated as  a 4x4
+
+//Cosntants of motors velocity
+const int velLF = 61;
+const int velLB = 63;
+
+const int velRF = 53;
+const int velRB = 70;
+
+//Cosntants of motors velocity for going slow
+const int velSlowLF = 41;
+const int velSlowLB = 43;
+
+const int velSlowRF = 33;
+const int velSlowRB = 50;
 
 /////////////////////
 //    Variables    //
@@ -115,18 +142,29 @@ volatile unsigned long steps = 0;
 //0->Stop   1->Forward    2->Backwards
 volatile byte encoderState = 0;
 
+//Counts of encoder
+const int encoder30Cm = 1500;
+
+//LCD
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
 void setup()
 {
+  //delay(1000);
   //Delay to establish connection with raspberry
-  //delay(5000);
   Serial.begin(9600);
 
   //Check BNO
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_NDOF))
   {
-    //NO BNO!!
+    Serial.println("NO BNO");
   }
   bno.setExtCrystalUse(true);
+
+  //Initialize lcd, turn backlight on and clear the display
+  lcd.init();
+  lcd.backlight();
+  lcd.clear();
 
   pinMode(pinMFRA , OUTPUT);
   pinMode(pinMFRB , OUTPUT);
@@ -149,147 +187,110 @@ void setup()
 
   pinMode(pinLI, INPUT);
   pinMode(pinLO, INPUT);
+  pinMode(pinLL, INPUT);
+  pinMode(pinLR, INPUT);
 
   pinMode(pinEncoder, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
 
+  brake();
   platIn();
   openClaw();
   encoderState = 1;
+
+  //Display the finish of the setup
+  lcd.clear();
+  writeLCD("START FENIX 2.0", 0, 0);
+
+  //Stop plattaform for security
+  sPlattaform.write(90);
 }
 
 void loop()
 {
+  forwardUntilNoLeft();
+  delay(5000);
+  //forwardCalibration(velLF, velLB, velRF, velRB);
   unsigned long data;
   unsigned long data1, data2;
+  char order = '0';
+  char sharp = 'A';
 
-  if(Serial.available()>0){
-    char order= Serial.read();
-
-    switch(order)
+  if (Serial.available() > 0) 
+  {
+    order = Serial.read();
+    switch (order)
     {
       case 'a':
-        brake();
+        while(Serial.available() < 1);
+
+        int cm = Serail.read();
+        forwardNCm(cm);
         Serial.write('1');
         break;
 
       case 'b':
         while(Serial.available() < 1);
-        data1 = Serial.read();
-        delay(1000);
-        while(Serial.available() < 1);
-        data2 = Serial.read();
-        forward(data1, data2);
+
+        int cm = Serail.read();
+        backwardNCm(cm);
         Serial.write('1');
         break;
 
       case 'c':
         while(Serial.available() < 1);
-        data1 = Serial.read();
-        delay(1000);
-        while(Serial.available() < 1);
-        data2 = Serial.read();
-        backward(data1, data2);
+
+        int cm = Serail.read();
+        forwardUntilWallN(cm);
         Serial.write('1');
         break;
 
       case 'd':
         while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        turnRight(data);
+
+        int cm = Serail.read();
+        backwardUntilWallN(cm);
         Serial.write('1');
         break;
 
       case 'e':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        turnLeft(data);
-        Serial.write('1');
-        break;
+        while (Serial.available() < 2);
+        int data1 = Serial.read();
+        int data2 = Serial.read();
 
-      case 'e':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        turn(data);
+        turnToObjectiveN(((data1 << 8) | data2) * 100UL);
         Serial.write('1');
-        break;
 
       case 'f':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        forwardNCm(data);
+        while(Serial.available() < 2);
+
+        int degrees = Serail.read();
+        int direction = Serial.read();
+        if(direction == 1)
+        {
+          degrees * - 1;
+        }
+        turnNDegrees(degrees);
         Serial.write('1');
         break;
 
       case 'g':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        backwardNCm(data);
+        forwardUntilNoRight();
         Serial.write('1');
         break;
 
       case 'h':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        forwardUntilWall(data);
+        forwardUntilNoLeft();
         Serial.write('1');
         break;
 
       case 'i':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        backwardUntilWall(data);
+        backwardUntilNoRight();
         Serial.write('1');
         break;
 
       case 'j':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        turnToDegree(data);
-        Serial.write('1');
-        break;
-
-      case 'k':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        turnRightNDegrees(data);
-        Serial.write('1');
-        break;
-
-      case 'k':
-        while(Serial.available() < 1);
-        data = Serial.read();
-        delay(1000);
-        turnLeftNDegrees(data);
-        Serial.write('1');
-        break;
-
-      case 'l':
-        platIn();
-        Serial.write('1');
-        break;
-
-      case 'm':
-        platOut();
-        Serial.write('1');
-        break;
-
-      case 'n':
-        openClaw();
-        Serial.write('1');
-        break;
-
-      case 'o':
-        closeClaw();
+        backwardUntilNoLeft();
         Serial.write('1');
         break;
     }
