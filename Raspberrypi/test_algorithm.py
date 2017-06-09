@@ -41,9 +41,9 @@ def getCowXcenter(maxLenT):
 def drawLimits(left,right,y):
 	global mainFrame
 	font = cv2.FONT_HERSHEY_SIMPLEX
-	cv2.line(mainFrame,(left,0),(left,480),(255,0,0),3)
-	cv2.line(mainFrame,(right,0),(right,480),(255,0,0),3)
-	cv2.line(mainFrame,(0,y),(640,y),(255,0,0),3)
+	cv2.line(mainFrame,(left,0),(left,480),(0,0,255),2)
+	cv2.line(mainFrame,(right,0),(right,480),(0,0,255),2)
+	cv2.line(mainFrame,(0,y),(640,y),(0,0,255),2)
 	# cv2.putText(mainFrame,("diff L: " + str(left)),(30,20), font, 0.8,(0,0,255),1,cv2.LINE_AA)
 	# cv2.putText(mainFrame,("diff R: " + str(640-right)),(30,50), font, 0.8,(0,0,255),1,cv2.LINE_AA)
 	# cv2.putText(mainFrame,("diff Top: " + str(y)),(30,80), font, 0.8,(0,0,255),1,cv2.LINE_AA)
@@ -63,6 +63,10 @@ if __name__ == "__main__":
 		# print "center camera: ",(mainFrame.shape[1])/2
 		if validation:
 			print "COW FOUND"
+			# tLevel = rb.getTissueTopLevel(maxLenT)
+			# rb.drawCowSquares(mainFrame,100,100,100,tLevel)
+			# A,B,theta = rb.ajusteDeCurvas(tLevel)
+			# rb.drawSlope(mainFrame,A,B)
 			print "center cow: ",getCowXcenter(maxLenT)
 		else:
 			print "COW NOT FOUND"

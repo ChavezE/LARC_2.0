@@ -160,7 +160,7 @@ def getGoodSquares(contours,thres,mainC):
             if thres[y + h*0.5,x + w*0.5] == 1.0 and w/h < 3 and h/w < 3:
                tempCowSquare = cowSquare(x,y,w,h,area)    # Create an objet from the 'cowSquare' class
                cowSquares.append(tempCowSquare) # Insert object 'cowSquare' into a list  
-               cv2.drawContours(mainC,[cnt],-1,(255,0,0),2)
+               cv2.drawContours(mainC,[cnt],-1,(255,0,0),1)
                final_contours.append(cnt)
                                        
    return cowSquares,final_contours
@@ -370,7 +370,7 @@ def isThereACow(mainFrame):
       tempAllSquares = deepcopy(allSquares)
       maxLenT = doTissue(tempAllSquares)
       for sqr in maxLenT:
-         cv2.rectangle(mainFrame, (sqr.getTopLeftC()[0],sqr.getTopLeftC()[1]), (sqr.getBotRightC()[0],sqr.getBotRightC()[1]), (127,50,127), 2)
+         cv2.rectangle(mainFrame, (sqr.getTopLeftC()[0],sqr.getTopLeftC()[1]), (sqr.getBotRightC()[0],sqr.getBotRightC()[1]), (0,255,0), 2)
       #    cv2.imshow("squares of " + str(binValueT),main_copy2)
       #    cv2.waitKey(5)
 
@@ -537,6 +537,27 @@ def isCowMilkeable(tissue,squares):
 
    # IN: Frame is grayscale image, n is num of corners, quality is 0-1  
 
+def getTissueTopLevel(tissue):
+
+   tissue = sorted(tissue, key=lambda x:x.getLevel(), reverse = True)
+   minLength = 3
+   validLevel = False
+   levelTissue = []
+
+   currLevel = tissue[0].getLevel()
+   levelTissue.append(tissue[0])
+   for x in range(len(tissue)):
+      if currLevel == tissue[x].getLevel():
+         levelTissue.append(tissue[x])
+      else:
+         if len(levelTissue >= minLength):
+            break
+         currLevel = tissue[x].getLevel()
+         levelTissue = []
+         levelTissue.append(tissue[x])
+
+
+   return levelTissue 
 
 
 #############################################
@@ -597,8 +618,6 @@ def drawSlope(frame,A,B):
    y1 = int(A*x1 + B)
    y2 = int(A*x2 + B)
    cv2.line(frame,(x1,y1),(x2,y2),(0,255,255),3)
-
-   return frame
 
 def drawGreatestTissue(frame,greatestTissue):
    
