@@ -90,8 +90,8 @@ def turnToObjective(angle):
         #Tell arduino to run turn()
         arduino.write("e")
 
-        part1 = (speed>>8)&255
-        part2 = speed&255
+        part1 = (angle>>8)&255
+        part2 = angle&255
 
         arduino.write(chr(part1))
         arduino.write(chr(part2))
