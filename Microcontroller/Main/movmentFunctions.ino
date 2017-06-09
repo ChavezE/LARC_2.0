@@ -348,7 +348,7 @@ void turnToObjectiveN(int iWant)
   int iAux = iWant - iAm;
 
   // +- Error
-  int iError = 1;
+  int iError = 2;
 
   while(!(iAm > iWant - iError && iAm < iWant + iError))
   {
@@ -390,6 +390,7 @@ void turnToObjectiveN(int iWant)
 //Turn n amount of degrees, positive turn right, negative turn left
 void turnNDegrees(int n)
 {
+  writeLCD(String(n), 0, 0);
   //Get objective angle
   int obj = getCompass() + n;
 
