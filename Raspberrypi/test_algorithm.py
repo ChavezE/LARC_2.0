@@ -21,11 +21,7 @@ mainFrame = []	# frame
 def takePicture(frameNumber):
 	global mainFrame
 	mainFrame=cv2.imread('test_photos/'+str(frameNumber)+'.jpg')
-<<<<<<< HEAD
 	mainFrame=cv2.pyrDown(mainFrame)
-	#mainFrame=cv2.pyrDown(mainFrame)
-=======
->>>>>>> ff84538059ac831089c67ff051b6cc22968e2435
 	#mainFrame =  cv2.resize(mainFrame,None,fx=0.5,fy=0.5,interpolation=cv2.INTER_AREA)
 	# cv2.imshow("frame: " + str(frameNumber),mainFrame)
 	# cv2.waitKey(0)
