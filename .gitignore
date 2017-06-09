@@ -4,5 +4,4 @@
 .AppleDouble/
 .DS_Store
 *.glue
-
-
+*.pyc

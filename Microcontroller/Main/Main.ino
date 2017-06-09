@@ -59,7 +59,7 @@ const byte pinSLC;
 const byte pinSLB = A0;
 
 //Sharp Claw
-const byte pinSC = A9;
+const byte pinSC = A6;
 
 //----LimitSwithces----//
 
