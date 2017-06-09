@@ -253,7 +253,7 @@ def doTissue(goodSqrs):
       # print (goodSqrs[0].getTopLeftC())
       tActSqr = goodSqrs.pop(0)
       tissue.append(tActSqr)
-      makeTissue(tActSqr,goodSqrs,tissue,eps)
+      makeTissue(tActSqr,goodSqrs,tissue,eps,0)
 
       if(len(tissue) > len(biggestTissue)):
          biggestTissue = deepcopy(tissue)
@@ -263,66 +263,74 @@ def doTissue(goodSqrs):
    return biggestTissue
 
 # build the tissue
-def makeTissue(tActSqr,tAllSqrs,tissue,eps):
+def makeTissue(tActSqr,tAllSqrs,tissue,eps,lvl):
       
    found = False
    for tSq in (tAllSqrs):
 
       # UPPER 
       if (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] - 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
+         tSq.setLevel(lvl+2)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl+2)
 
       # LOWER 
       elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] + 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
+         tSq.setLevel(lvl-2)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl-2)
 
       # RIGHT
       elif (distance( tActSqr.getTopLeftC()[0] + 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
+         tSq.setLevel(lvl)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl)
 
       # LEFT
       elif (distance( tActSqr.getTopLeftC()[0] - 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
+         tSq.setLevel(lvl)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl)
 
       # UPPER RIGHT
       elif (distance( tActSqr.getTopLeftC()[0] + tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1] + tSq.getH()) < eps):
+         tSq.setLevel(lvl+1)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl+1)
 
       # UPPER LEFT
       elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0] + tSq.getW(), tSq.getTopLeftC()[1] + tSq.getH()) < eps):
+         tSq.setLevel(lvl+1)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl+1)
 
       # LOWER RIGHT
       elif (distance( tActSqr.getTopLeftC()[0]+tActSqr.getW(), tActSqr.getTopLeftC()[1] + tActSqr.getH(), tSq.getTopLeftC()[0] , tSq.getTopLeftC()[1] ) < eps):
+         tSq.setLevel(lvl-1)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl-1)
 
       # LOWER LEFT
       elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1]+ tActSqr.getH(), tSq.getTopLeftC()[0] + tSq.getW(), tSq.getTopLeftC()[1] ) < eps):
+         tSq.setLevel(lvl-1)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl-1)
 
    if found == False:
       tissue.pop(tissue.index(tActSqr))
@@ -550,7 +558,7 @@ def getTissueTopLevel(tissue):
       if currLevel == tissue[x].getLevel():
          levelTissue.append(tissue[x])
       else:
-         if len(levelTissue >= minLength):
+         if len(levelTissue) >= minLength:
             break
          currLevel = tissue[x].getLevel()
          levelTissue = []
