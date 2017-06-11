@@ -42,9 +42,9 @@ def getCowXcenter(maxLenT):
 def drawLimits(left,right,y):
 	global mainFrame
 	font = cv2.FONT_HERSHEY_SIMPLEX
-	cv2.line(mainFrame,(left,0),(left,480),(255,0,0),3)
-	cv2.line(mainFrame,(right,0),(right,480),(255,0,0),3)
-	cv2.line(mainFrame,(0,y),(640,y),(255,0,0),3)
+	cv2.line(mainFrame,(left,0),(left,480),(255,100,0),3)
+	cv2.line(mainFrame,(right,0),(right,480),(255,100,0),3)
+	cv2.line(mainFrame,(0,y),(640,y),(255,100,0),3)
 	# cv2.putText(mainFrame,("diff L: " + str(left)),(30,20), font, 0.8,(0,0,255),1,cv2.LINE_AA)
 	# cv2.putText(mainFrame,("diff R: " + str(640-right)),(30,50), font, 0.8,(0,0,255),1,cv2.LINE_AA)
 	# cv2.putText(mainFrame,("diff Top: " + str(y)),(30,80), font, 0.8,(0,0,255),1,cv2.LINE_AA)
@@ -69,7 +69,6 @@ if __name__ == "__main__":
 			print "COW NOT FOUND"
 		print ("TOTAL TIME: ",time.time() - this_time)
 		cv2.imshow("limits",mainFrame)
-		print( mainFrame.shape)
 		k = cv2.waitKey(0)
 		if k ==27:
 			break

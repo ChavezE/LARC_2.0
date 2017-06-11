@@ -26,7 +26,8 @@ maxThresh=150
 steps=5
 #Tissue Parameters 
 eps=15
-eps2=25
+alpha=20
+beta=10
 
 
 # Simple class to manage individual squares in the image
@@ -188,6 +189,11 @@ def cornersMatch(cnt,corners,minC,eps):
 def distance(x1,y1,x2,y2):
   return math.sqrt(pow(x2 - x1,2) + pow(y2 - y1,2))
 
+def distanceSplit(x1,y1,x2,y2):
+  return abs(x1-x2), abs(y1-y2)
+
+\
+
 
 #############################################
 ##------------ DESSISION MAKING------------##
@@ -226,61 +232,79 @@ def makeTissue(tActSqr,tAllSqrs,tissue,eps):
    found = False
    for tSq in (tAllSqrs):
 
-      # UPPER 
-      if (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] - 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
-         tissue.append(tSq)
-         tAllSqrs.pop(tAllSqrs.index(tSq))
-         found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+      Continue = True
 
-      # LOWER 
-      elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] + 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
-         tissue.append(tSq)
-         tAllSqrs.pop(tAllSqrs.index(tSq))
-         found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+      # # UPPER 
+      # distX,distY = distanceSplit( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] - 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1])
+      # if (distX < beta and distY < alpha and Continue):
+      #    tissue.append(tSq)
+      #    tAllSqrs.pop(tAllSqrs.index(tSq))
+      #    found = True
+      #    makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+      #    Continue = False
 
-      # RIGHT
-      elif (distance( tActSqr.getTopLeftC()[0] + 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
-         tissue.append(tSq)
-         tAllSqrs.pop(tAllSqrs.index(tSq))
-         found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+      # # LOWER 
+      # distX,distY = distanceSplit(tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] + 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) 
+      # if (distX < beta and distY < alpha and Continue):
+      #    tissue.append(tSq)
+      #    tAllSqrs.pop(tAllSqrs.index(tSq))
+      #    found = True
+      #    makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+      #    Continue = False
 
-      # LEFT
-      elif (distance( tActSqr.getTopLeftC()[0] - 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
-         tissue.append(tSq)
-         tAllSqrs.pop(tAllSqrs.index(tSq))
-         found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+      # # RIGHT
+      # distX,distY = distanceSplit(tActSqr.getTopLeftC()[0] + 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) 
+      # if (distX < alpha and distY < beta and Continue):
+      #    tissue.append(tSq)
+      #    tAllSqrs.pop(tAllSqrs.index(tSq))
+      #    found = True
+      #    makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+      #    Continue = False
+
+      # # LEFT
+      # distX,distY = distanceSplit( tActSqr.getTopLeftC()[0] - 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1])
+      # if (distX < alpha and distY < beta and Continue):
+      #    tissue.append(tSq)
+      #    tAllSqrs.pop(tAllSqrs.index(tSq))
+      #    found = True
+      #    makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+      #    Continue = False
 
       # UPPER RIGHT
-      elif (distance( tActSqr.getTopLeftC()[0] + tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1] + tSq.getH()) < eps):
+      dist=distance( tActSqr.getTopLeftC()[0] + tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1] + tSq.getH())
+      if (dist < eps and Continue):
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
          makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         Continue = False
 
       # UPPER LEFT
-      elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0] + tSq.getW(), tSq.getTopLeftC()[1] + tSq.getH()) < eps):
+      dist=distance( tActSqr.getTopLeftC()[0] + tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1] + tSq.getH())
+      if (dist < eps and Continue):
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
          makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         Continue = False
 
       # LOWER RIGHT
-      elif (distance( tActSqr.getTopLeftC()[0]+tActSqr.getW(), tActSqr.getTopLeftC()[1] + tActSqr.getH(), tSq.getTopLeftC()[0] , tSq.getTopLeftC()[1] ) < eps):
+      dist=distance( tActSqr.getTopLeftC()[0]+tActSqr.getW(), tActSqr.getTopLeftC()[1] + tActSqr.getH(), tSq.getTopLeftC()[0] , tSq.getTopLeftC()[1] ) 
+      if (dist < eps and Continue):
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
          makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         Continue = False
 
       # LOWER LEFT
-      elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1]+ tActSqr.getH(), tSq.getTopLeftC()[0] + tSq.getW(), tSq.getTopLeftC()[1] ) < eps):
+      dist=distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] + tActSqr.getH(), tSq.getTopLeftC()[0] + tSq.getW(), tSq.getTopLeftC()[1] )
+      if (dist < eps+10 and Continue):
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
          makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         Continue = False
 
    if found == False:
       tissue.pop(tissue.index(tActSqr))
