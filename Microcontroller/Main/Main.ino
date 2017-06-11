@@ -265,7 +265,7 @@ void loop()
         data2 = Serial.read();
         if(data2 == 1)
         {
-          data1 * - 1;
+          data1 *= - 1;
         }
         turnNDegrees(data1);
         Serial.write('1');

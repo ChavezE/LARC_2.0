@@ -19,12 +19,18 @@ from copy import deepcopy
 
 #-------------------GLOBAL FOR CALIBRATION-------------------
 #Cow square area  #si detecta muchos cuadros
-maxSquareArea=1000
+maxSquareArea=5000
 minSquareArea=25
 #Thresh range for cow squares  #si no detecta suficientes cuadros
+<<<<<<< HEAD
 minThresh=50
 maxThresh=200
 steps=5
+=======
+minThresh=5
+maxThresh=170
+steps=3
+>>>>>>> 074cfe6848b255558609872b6adcb2310e404711
 #Tissue Parameters 
 eps=15
 eps2=25
@@ -152,7 +158,7 @@ def getGoodSquares(contours,thres,mainC):
             if thres[y + h*0.5,x + w*0.5] == 1.0 and w/h < 3 and h/w < 3:
                tempCowSquare = cowSquare(x,y,w,h,area)    # Create an objet from the 'cowSquare' class
                cowSquares.append(tempCowSquare) # Insert object 'cowSquare' into a list  
-               cv2.drawContours(mainC,[cnt],-1,(255,0,0),2)
+               cv2.drawContours(mainC,[cnt],-1,(255,0,0),1)
                final_contours.append(cnt)
                                        
    return cowSquares,final_contours
@@ -232,20 +238,13 @@ def doTissue(goodSqrs):
    # setting constants #
    tissue = []
    biggestTissue = []
-   #eps = 30
-   # ------------------ #
-   # for i in range(len(goodSqrs)):
-   #    print(goodSqrs[i].getTopLeftC())
+
    print("buling form now on")
-
    goodSqrs = sorted(goodSqrs, key=lambda x:x.getY(), reverse = False)
-
    while( len(goodSqrs) > 0):
-      # print ("here i am")
-      # print (goodSqrs[0].getTopLeftC())
       tActSqr = goodSqrs.pop(0)
       tissue.append(tActSqr)
-      makeTissue(tActSqr,goodSqrs,tissue,eps)
+      makeTissue(tActSqr,goodSqrs,tissue,eps,0)
 
       if(len(tissue) > len(biggestTissue)):
          biggestTissue = deepcopy(tissue)
@@ -255,66 +254,74 @@ def doTissue(goodSqrs):
    return biggestTissue
 
 # build the tissue
-def makeTissue(tActSqr,tAllSqrs,tissue,eps):
+def makeTissue(tActSqr,tAllSqrs,tissue,eps,lvl):
       
    found = False
    for tSq in (tAllSqrs):
 
       # UPPER 
       if (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] - 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
+         tSq.setLevel(lvl+2)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl+2)
 
       # LOWER 
       elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] + 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
+         tSq.setLevel(lvl-2)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl-2)
 
       # RIGHT
       elif (distance( tActSqr.getTopLeftC()[0] + 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
+         tSq.setLevel(lvl)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl)
 
       # LEFT
       elif (distance( tActSqr.getTopLeftC()[0] - 2*tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
+         tSq.setLevel(lvl)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl)
 
       # UPPER RIGHT
       elif (distance( tActSqr.getTopLeftC()[0] + tActSqr.getW(), tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0], tSq.getTopLeftC()[1] + tSq.getH()) < eps):
+         tSq.setLevel(lvl+1)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl+1)
 
       # UPPER LEFT
       elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1], tSq.getTopLeftC()[0] + tSq.getW(), tSq.getTopLeftC()[1] + tSq.getH()) < eps):
+         tSq.setLevel(lvl+1)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl+1)
 
       # LOWER RIGHT
       elif (distance( tActSqr.getTopLeftC()[0]+tActSqr.getW(), tActSqr.getTopLeftC()[1] + tActSqr.getH(), tSq.getTopLeftC()[0] , tSq.getTopLeftC()[1] ) < eps):
+         tSq.setLevel(lvl-1)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl-1)
 
       # LOWER LEFT
       elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1]+ tActSqr.getH(), tSq.getTopLeftC()[0] + tSq.getW(), tSq.getTopLeftC()[1] ) < eps):
+         tSq.setLevel(lvl-1)
          tissue.append(tSq)
          tAllSqrs.pop(tAllSqrs.index(tSq))
          found = True
-         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps)
+         makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl-1)
 
    if found == False:
       tissue.pop(tissue.index(tActSqr))
@@ -362,7 +369,7 @@ def isThereACow(mainFrame):
       tempAllSquares = deepcopy(allSquares)
       maxLenT = doTissue(tempAllSquares)
       for sqr in maxLenT:
-         cv2.rectangle(mainFrame, (sqr.getTopLeftC()[0],sqr.getTopLeftC()[1]), (sqr.getBotRightC()[0],sqr.getBotRightC()[1]), (127,50,127), 2)
+         cv2.rectangle(mainFrame, (sqr.getTopLeftC()[0],sqr.getTopLeftC()[1]), (sqr.getBotRightC()[0],sqr.getBotRightC()[1]), (0,255,0), 2)
       #    cv2.imshow("squares of " + str(binValueT),main_copy2)
       #    cv2.waitKey(5)
 
@@ -529,6 +536,27 @@ def isCowMilkeable(tissue,squares):
 
    # IN: Frame is grayscale image, n is num of corners, quality is 0-1  
 
+def getTissueTopLevel(tissue):
+
+   tissue = sorted(tissue, key=lambda x:x.getLevel(), reverse = True)
+   minLength = 3
+   validLevel = False
+   levelTissue = []
+
+   currLevel = tissue[0].getLevel()
+   levelTissue.append(tissue[0])
+   for x in range(len(tissue)):
+      if currLevel == tissue[x].getLevel():
+         levelTissue.append(tissue[x])
+      else:
+         if len(levelTissue) >= minLength:
+            break
+         currLevel = tissue[x].getLevel()
+         levelTissue = []
+         levelTissue.append(tissue[x])
+
+
+   return levelTissue 
 
 
 #############################################
@@ -589,8 +617,6 @@ def drawSlope(frame,A,B):
    y1 = int(A*x1 + B)
    y2 = int(A*x2 + B)
    cv2.line(frame,(x1,y1),(x2,y2),(0,255,255),3)
-
-   return frame
 
 def drawGreatestTissue(frame,greatestTissue):
    
