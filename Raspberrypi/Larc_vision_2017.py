@@ -15,14 +15,6 @@ import math
 import numpy as np
 import random
 from copy import deepcopy
-#---------Global for calibration-----------#
-#Cow square area
-maxSquareArea=40
-minSquareArea=2000
-#Thresh range for cow squares
-minThresh=5
-maxThresh=180
-steps=5
 
 
 #-------------------GLOBAL FOR CALIBRATION-------------------
@@ -30,8 +22,8 @@ steps=5
 maxSquareArea=1000
 minSquareArea=25
 #Thresh range for cow squares  #si no detecta suficientes cuadros
-minThresh=5
-maxThresh=150
+minThresh=50
+maxThresh=200
 steps=5
 #Tissue Parameters 
 eps=15

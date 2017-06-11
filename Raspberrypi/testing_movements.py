@@ -52,27 +52,30 @@ def drawLimits(left,right,y):
 if __name__ == "__main__":
 	
 	while True:
-		takePicture()
-		cv2.imshow('im',mainFrame)
-		this_time = time.time()
-		validation,maxLenT,_ = rb.isThereACow(mainFrame)
-		# print validation, len(maxLenT)
-		# print "center camera: ",(mainFrame.shape[1])/2
-		if validation:
-			print "COW FOUND"
-			print "center cow: ",getCowXcenter(maxLenT)
-		else:
-			print "COW NOT FOUND"
-		print ("TOTAL TIME: ",time.time() - this_time)
-		cv2.imshow("limits",mainFrame)
-		print( mainFrame.shape)
-		k = cv2.waitKey(0)
-		if k ==27:
-			break
-		cv2.destroyAllWindows()
-		c = cv2.waitKey(0)
-		if c == 27:
-			break
+
+		analyse = raw_input("process photo? ")
+		if analyse == '1':
+			takePicture()
+			cv2.imshow('im',mainFrame)
+			this_time = time.time()
+			validation,maxLenT,_ = rb.isThereACow(mainFrame)
+			# print validation, len(maxLenT)
+			# print "center camera: ",(mainFrame.shape[1])/2
+			if validation:
+				print "COW FOUND"
+				print "center cow: ",getCowXcenter(maxLenT)
+			else:
+				print "COW NOT FOUND"
+			print ("TOTAL TIME: ",time.time() - this_time)
+			cv2.imshow("limits",mainFrame)
+			print( mainFrame.shape)
+			k = cv2.waitKey(0)
+			if k ==27:
+				break
+			cv2.destroyAllWindows()
+			c = cv2.waitKey(0)
+			if c == 27:
+				break
 
 		# navegation instructions
 		mov = raw_input("type instruction ")
