@@ -22,7 +22,7 @@ def takePicture(frameNumber):
 	global mainFrame
 	mainFrame=cv2.imread('test_photos/'+str(frameNumber)+'.jpg')
 	mainFrame=cv2.pyrDown(mainFrame)
-	#mainFrame =  cv2.resize(mainFrame,None,fx=0.5,fy=0.5,interpolation=cv2.INTER_AREA)
+	# mainFrame =  cv2.resize(mainFrame,None,fx=0.25,fy=0.25,interpolation=cv2.INTER_AREA)
 	# cv2.imshow("frame: " + str(frameNumber),mainFrame)
 	# cv2.waitKey(0)
 	# for i in range(10):
@@ -54,11 +54,12 @@ def drawLimits(left,right,y):
 '''
 if __name__ == "__main__":
 	validation=False
-	for x in range(8,19):
+	for x in range(1,9):
 		frameNumber=x
 		this_time = time.time()
 		takePicture(frameNumber)
 		validation,maxLenT,_ = rb.isThereACow(mainFrame)
+
 		# print validation, len(maxLenT)
 		# print "center camera: ",(mainFrame.shape[1])/2
 		if validation:
@@ -68,6 +69,11 @@ if __name__ == "__main__":
 			A,B,theta = rb.ajusteDeCurvas(tLevel)
 			rb.drawSlope(mainFrame,A,B)
 			print "center cow: ",getCowXcenter(maxLenT)
+			# showing level of tissue
+			for sq in maxLenT:
+				x = sq.getTopLeftC()[0]
+				y = sq.getTopLeftC()[1]
+				cv2.putText(mainFrame,str(sq.getLevel()),(x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(0,0,255),1,1)
 		else:
 			print "COW NOT FOUND"
 		print ("TOTAL TIME: ",time.time() - this_time)
@@ -77,4 +83,9 @@ if __name__ == "__main__":
 		if k ==27:
 			break
 		cv2.destroyAllWindows()
+
+
+
+
+
     

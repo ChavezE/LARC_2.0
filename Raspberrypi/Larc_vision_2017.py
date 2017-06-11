@@ -15,24 +15,16 @@ import math
 import numpy as np
 import random
 from copy import deepcopy
-#---------Global for calibration-----------#
-#Cow square area
-maxSquareArea=40
-minSquareArea=2000
-#Thresh range for cow squares
-minThresh=5
-maxThresh=180
-steps=5
 
 
 #-------------------GLOBAL FOR CALIBRATION-------------------
 #Cow square area  #si detecta muchos cuadros
-maxSquareArea=1000
+maxSquareArea=5000
 minSquareArea=25
 #Thresh range for cow squares  #si no detecta suficientes cuadros
 minThresh=5
-maxThresh=150
-steps=5
+maxThresh=170
+steps=3
 #Tissue Parameters 
 eps=15
 eps2=25
@@ -240,17 +232,10 @@ def doTissue(goodSqrs):
    # setting constants #
    tissue = []
    biggestTissue = []
-   #eps = 30
-   # ------------------ #
-   # for i in range(len(goodSqrs)):
-   #    print(goodSqrs[i].getTopLeftC())
+
    print("buling form now on")
-
    goodSqrs = sorted(goodSqrs, key=lambda x:x.getY(), reverse = False)
-
    while( len(goodSqrs) > 0):
-      # print ("here i am")
-      # print (goodSqrs[0].getTopLeftC())
       tActSqr = goodSqrs.pop(0)
       tissue.append(tActSqr)
       makeTissue(tActSqr,goodSqrs,tissue,eps,0)
