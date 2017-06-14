@@ -22,15 +22,10 @@ from copy import deepcopy
 maxSquareArea=5000
 minSquareArea=25
 #Thresh range for cow squares  #si no detecta suficientes cuadros
-<<<<<<< HEAD
-minThresh=50
-maxThresh=200
-steps=5
-=======
 minThresh=5
-maxThresh=170
-steps=3
->>>>>>> 074cfe6848b255558609872b6adcb2310e404711
+maxThresh=150
+steps=5
+
 #Tissue Parameters 
 eps=15
 eps2=25
