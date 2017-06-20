@@ -52,27 +52,41 @@ def drawLimits(left,right,y):
 if __name__ == "__main__":
 	
 	while True:
-		takePicture()
-		cv2.imshow('im',mainFrame)
-		this_time = time.time()
-		validation,maxLenT,_ = rb.isThereACow(mainFrame)
-		# print validation, len(maxLenT)
-		# print "center camera: ",(mainFrame.shape[1])/2
-		if validation:
-			print "COW FOUND"
-			print "center cow: ",getCowXcenter(maxLenT)
-		else:
-			print "COW NOT FOUND"
-		print ("TOTAL TIME: ",time.time() - this_time)
-		cv2.imshow("limits",mainFrame)
-		print( mainFrame.shape)
-		k = cv2.waitKey(0)
-		if k ==27:
-			break
-		cv2.destroyAllWindows()
-		c = cv2.waitKey(0)
-		if c == 27:
-			break
+
+		analyse = raw_input("process photo? ")
+		if analyse == '1':
+			takePicture()
+			cv2.imshow('im',mainFrame)
+			this_time = time.time()
+			validation,maxLenT,_ = rb.isThereACow(mainFrame)
+			# print validation, len(maxLenT)
+			# print "center camera: ",(mainFrame.shape[1])/2
+
+			if validation:
+				print "COW FOUND"
+				print "center cow: ",getCowXcenter(maxLenT)
+				tLevel = rb.getTissueTopLevel(maxLenT)
+				rb.drawCowSquares(mainFrame,100,100,100,tLevel)
+				A,B,theta = rb.ajusteDeCurvas(tLevel)
+				rb.drawSlope(mainFrame,A,B)
+				print "center cow: ",getCowXcenter(maxLenT)
+				# showing level of tissue
+				for sq in maxLenT:
+					x = sq.getTopLeftC()[0]
+					y = sq.getTopLeftC()[1]
+					cv2.putText(mainFrame,str(sq.getLevel()),(x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(0,0,255),1,1)
+
+			else:
+				print "COW NOT FOUND"
+
+				
+			print ("TOTAL TIME: ",time.time() - this_time)
+			cv2.imshow("limits",mainFrame)
+			print( mainFrame.shape)
+			k = cv2.waitKey(0)
+			if k ==27:
+				break
+			cv2.destroyAllWindows()
 
 		# navegation instructions
 		mov = raw_input("type instruction ")

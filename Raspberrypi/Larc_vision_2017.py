@@ -23,8 +23,9 @@ maxSquareArea=5000
 minSquareArea=25
 #Thresh range for cow squares  #si no detecta suficientes cuadros
 minThresh=5
-maxThresh=170
-steps=3
+maxThresh=150
+steps=5
+
 #Tissue Parameters 
 eps=15
 eps2=25
