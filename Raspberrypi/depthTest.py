@@ -43,23 +43,28 @@ from matplotlib import pyplot as plt
 this_time = time.time()
 imgR = cv2.imread('rigth.jpg',0)
 imgL = cv2.imread('mleft.jpg',0)
+otherIm = cv2.imread('hleft.jpg',0)
 stereo = cv2.StereoBM(0,16, 71)
 
-disparity = stereo.compute(imgL, imgR)
+disparity = stereo.compute(imgL, imgR).astype(np.float32) / 16
+disparity = abs(disparity)
+
+print disparity.shape
+print otherIm.shape
+
+
 print ("TOTAL TIME: ",time.time() - this_time)
 
-h,w= imgR.shape
-thes = 180
-eps = 10
-for i in range(h):
-    for j in range (w):
-        if abs(disparity[i,j] - thes) > eps:
-            imgR[i,j] = 255
+threshold = cv2.threshold(disparity, 10, 255, cv2.THRESH_BINARY)[1]
+t2 = cv2.threshold(otherIm,100,255,cv2.THRESH_BINARY)[1]
 
-cv2.imshow('p',disparity)
-cv2.imshow('p',imgR)
-print disparity
+mask_inv = cv2.bitwise_not(threshold)
+result = cv2.bitwise_and(otherIm,otherIm,mask = thr)
+
+cv2.imshow('p',result)
+# cv2.imshow('p',imgR)
+
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-plt.imshow(disparity,'gray')
+plt.imshow(threshold,'gray')
 plt.show()
