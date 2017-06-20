@@ -65,15 +65,15 @@ if __name__ == "__main__":
 		if validation:
 			print "COW FOUND"
 			tLevel = rb.getTissueTopLevel(maxLenT)
-			rb.drawCowSquares(mainFrame,100,100,100,tLevel)
+			# rb.drawCowSquares(mainFrame,100,100,100,tLevel)
 			A,B,theta = rb.ajusteDeCurvas(tLevel)
-			rb.drawSlope(mainFrame,A,B)
+			# rb.drawSlope(mainFrame,A,B)
 			print "center cow: ",getCowXcenter(maxLenT)
 			# showing level of tissue
-			for sq in maxLenT:
-				x = sq.getTopLeftC()[0]
-				y = sq.getTopLeftC()[1]
-				cv2.putText(mainFrame,str(sq.getLevel()),(x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(0,0,255),1,1)
+			# for sq in maxLenT:
+			# 	x = sq.getTopLeftC()[0]
+			# 	y = sq.getTopLeftC()[1]
+			# 	cv2.putText(mainFrame,str(sq.getLevel()),(x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(0,0,255),1,1)
 		else:
 			print "COW NOT FOUND"
 		print ("TOTAL TIME: ",time.time() - this_time)
@@ -83,9 +83,3 @@ if __name__ == "__main__":
 		if k ==27:
 			break
 		cv2.destroyAllWindows()
-
-
-
-
-
-    
