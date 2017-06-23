@@ -22,7 +22,7 @@ from copy import deepcopy
 maxSquareArea=5000
 minSquareArea=25
 #Thresh range for cow squares  #si no detecta suficientes cuadros
-minThresh=5
+minThresh=30
 maxThresh=150
 steps=5
 
