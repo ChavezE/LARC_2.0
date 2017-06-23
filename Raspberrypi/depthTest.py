@@ -1,70 +1,88 @@
-import numpy as np
+# importing external libs
 import cv2
-import time
+import numpy as np
+from copy import deepcopy
 from matplotlib import pyplot as plt
+import serial
+import time
+import math
+import random
+# imporging Roborregos libs
+import Larc_vision_2017 as rb
 
-#
-# cap1 = cv2.VideoCapture(0)
-# cap2 = cv2.VideoCapture(1)
-# Left=[]
-# Right = []
-#
-# imgR = cv2.imread('b.jpg',0)
-# imgL = cv2.imread('a.jpg',0)
-#
-# # def takePicture():
-# # 	global Right,Left
-# #
-# # 	_,frame1= cap1.read()
-# # 	_,frame2= cap2.read()
-# # 	frame1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
-# # 	frame2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
-# # 	Left = cv2.resize(frame1,(600, 800), interpolation = cv2.INTER_CUBIC)
-# # 	Right = cv2.resize(frame2,(600, 800), interpolation = cv2.INTER_CUBIC)
-# # 	print frame1.shape
-# # 	print frame2.shape
-# # 	cv2.imshow('i',Left)
-# # 	cv2.imshow('d',Right)
-# # 	cv2.waitKey(0)
-# # 	cv2.destroyAllWindows()
-#
-#
-#
-# if __name__ == '__main__':
-#
-# 	# takePicture()
-# 	stereo = cv2.StereoBM(0, ndisparities=16, SADWindowSize=15)
-# 	disparity = stereo.compute(imgL,imgR)
-# 	plt.imshow(disparity,'gray')
-# 	plt.show()
+imgR = cv2.imread('./depth_photos/b2_1.jpg',0)
+imgL = cv2.imread('./depth_photos/base2.jpg',0)
+mainFrame = cv2.imread('./depth_photos/base2.jpg')
 
-# imgR = cv2.imread('Yeuna9x.png',0)
-# imgL = cv2.imread('SuXT483.png',0)
+cv2.imshow('derecha',imgR)
+cv2.imshow('main',mainFrame)
+cv2.imshow('izquierda',imgL)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+
+def getCowXcenter(frame,maxLenT):
+	left,right,up=rb.calcCowLimits(maxLenT)
+	# print "cow x dist: ", right - left
+	# print "y: ", up
+	drawLimits(frame,left,right,up)
+	return (left+right)/2
+
+def drawLimits(frame,left,right,y):
+
+	font = cv2.FONT_HERSHEY_SIMPLEX
+	cv2.line(frame,(left,0),(left,480),(0,0,255),2)
+	cv2.line(frame,(right,0),(right,480),(0,0,255),2)
+	cv2.line(frame,(0,y),(640,y),(0,0,255),2)
+	# cv2.putText(mainFrame,("diff L: " + str(left)),(30,20), font, 0.8,(0,0,255),1,cv2.LINE_AA)
+	# cv2.putText(mainFrame,("diff R: " + str(640-right)),(30,50), font, 0.8,(0,0,255),1,cv2.LINE_AA)
+	# cv2.putText(mainFrame,("diff Top: " + str(y)),(30,80), font, 0.8,(0,0,255),1,cv2.LINE_AA)
+
+
+
+# calcultation time
 this_time = time.time()
-imgR = cv2.imread('rigth.jpg',0)
-imgL = cv2.imread('mleft.jpg',0)
-otherIm = cv2.imread('hleft.jpg',0)
-stereo = cv2.StereoBM(0,16, 71)
 
-disparity = stereo.compute(imgL, imgR).astype(np.float32) / 16
-disparity = abs(disparity)
+#stereo obj intializer
+stereo = cv2.StereoBM(0,16,35)
+disparity = abs(stereo.compute(imgL, imgR).astype(np.uint8))
+# plt.imshow(disparity,'gray')
+# plt.show()
 
-print disparity.shape
-print otherIm.shape
+# mask= cv2.threshold(disparity, 170, 255, cv2.THRESH_BINARY)[1]
+mask1= cv2.inRange(disparity,80,110)
+# closing mask erosion ad dilate
+mask2 = cv2.erode(mask1,(11,11),iterations = 5)
+mask2 = cv2.dilate(mask2,(11,11),iterations = 25)
+# putting mask over image
+maskedFrame = cv2.bitwise_and(mainFrame,mainFrame,mask = mask2)
 
+validation,maxLenTMasked,_ = rb.isThereACow(maskedFrame)
+if validation:
+		tLevel = rb.getTissueTopLevel(maxLenTMasked)
+		# rb.drawCowSquares(mainFrame,100,100,100,tLevel)
+		A,B,theta = rb.ajusteDeCurvas(tLevel)
+		# rb.drawSlope(mainFrame,A,B)
+		print "center cow: ",getCowXcenter(maskedFrame,maxLenTMasked)
+
+# validation,maxLenT,_ = rb.isThereACow(mainFrame)
+# if validation:
+# 		tLevel = rb.getTissueTopLevel(maxLenT)
+# 		# rb.drawCowSquares(mainFrame,100,100,100,tLevel)
+# 		A,B,theta = rb.ajusteDeCurvas(tLevel)
+# 		# rb.drawSlope(mainFrame,A,B)
+# 		print "center cow: ",getCowXcenter(mainFrame,maxLenT)
+#
 
 print ("TOTAL TIME: ",time.time() - this_time)
 
-threshold = cv2.threshold(disparity, 10, 255, cv2.THRESH_BINARY)[1]
-t2 = cv2.threshold(otherIm,100,255,cv2.THRESH_BINARY)[1]
+cv2.imshow('maskedFrame',maskedFrame)
+# cv2.imshow('normalFrame',mainFrame)
+cv2.imshow('thereshold closed',mask2)
 
-mask_inv = cv2.bitwise_not(threshold)
-result = cv2.bitwise_and(otherIm,otherIm,mask = thr)
-
-cv2.imshow('p',result)
-# cv2.imshow('p',imgR)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-plt.imshow(threshold,'gray')
+plt.imshow(disparity,'gray')
 plt.show()

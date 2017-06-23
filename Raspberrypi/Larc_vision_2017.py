@@ -1,5 +1,5 @@
 ## This is version 3.0 of LARC 2017 Module of Mexican Team RoBorregos
-## which stores functions used by the computer vision squad. 
+## which stores functions used by the computer vision squad.
 ## All rights reserved by Instituo Tecnologico de Monterrey.
 
 ## AUTHORS:    Emilio Chavez Madero
@@ -26,9 +26,9 @@ minThresh=5
 maxThresh=150
 steps=5
 
-#Tissue Parameters 
-eps=15
-eps2=25
+#Tissue Parameters
+eps=60
+eps2=60
 
 
 # Simple class to manage individual squares in the image
@@ -98,7 +98,7 @@ class cowSquare:
 #############################################
 ##------------- IMAGE FUNCTIONS------------##
 #############################################
-# To work over the imageS to get them ready, obatain 
+# To work over the imageS to get them ready, obatain
 # general data and use it in further algorithms
 
 # Does some guassian filtering to remove noise and converts image to gray scale
@@ -116,10 +116,10 @@ def clearImage(imgOriginal):
 def doThresHold(filteredImage,tVal,k,i):
    _, thres1 = cv2.threshold(filteredImage,tVal,255,cv2.THRESH_BINARY_INV)
    thres1 = cv2.erode(thres1,np.ones((k,k),np.uint8), iterations=i)
-   
+
    return thres1
 
-# Finds contours in the image and returns them as a numpy list. 
+# Finds contours in the image and returns them as a numpy list.
 # Recieves a simple image as a parameter.
 def findContours(img):
    contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
@@ -145,17 +145,17 @@ def getGoodSquares(contours,thres,mainC):
       # cv2.drawContours(mainC,[cnt],-1,(0,255,0),1)
       # print area
       # cv2.imshow("individual: " ,mainC)
-      
+
       if(rect_area > 0): # sometimes this value is found
          extent = float(area / rect_area)
          if (extent >= 0.75 and area >= minSquareArea and area <= maxSquareArea):   # tolerance #previos range: 400-8500
             x,y,w,h = cv2.boundingRect(cnt)
             if thres[y + h*0.5,x + w*0.5] == 1.0 and w/h < 3 and h/w < 3:
                tempCowSquare = cowSquare(x,y,w,h,area)    # Create an objet from the 'cowSquare' class
-               cowSquares.append(tempCowSquare) # Insert object 'cowSquare' into a list  
+               cowSquares.append(tempCowSquare) # Insert object 'cowSquare' into a list
                cv2.drawContours(mainC,[cnt],-1,(255,0,0),1)
                final_contours.append(cnt)
-                                       
+
    return cowSquares,final_contours
 
 # def getGoodSquares(contours,thres,mainC):
@@ -182,9 +182,9 @@ def getGoodSquares(contours,thres,mainC):
 #             x,y,w,h = cv2.boundingRect(cnt)
 #             if thres[y + h*0.5,x + w*0.5] == 1.0 and w/h < 1.5:
 #                tempCowSquare = cowSquare(x,y,w,h,area)    # Create an objet from the 'cowSquare' class
-#                cowSquares.append(tempCowSquare) # Insert object 'cowSquare' into a list  
+#                cowSquares.append(tempCowSquare) # Insert object 'cowSquare' into a list
 #                cv2.drawContours(mainC,[cnt],-1,(255,0,0),2)
-#                final_contours.append(cnt)                                       
+#                final_contours.append(cnt)
 #    return cowSquares,final_contours
 
 
@@ -204,7 +204,7 @@ def cornersMatch(cnt,corners,minC,eps):
    for i in corners:
       xc,yc = i.ravel()
       # upper left
-      if(abs(x - xc) < eps and abs(y - yc) < eps): 
+      if(abs(x - xc) < eps and abs(y - yc) < eps):
          matches = matches + 1
       # upper right
       if(abs((x+w) - xc) < eps and abs(y - yc) < eps):
@@ -250,11 +250,11 @@ def doTissue(goodSqrs):
 
 # build the tissue
 def makeTissue(tActSqr,tAllSqrs,tissue,eps,lvl):
-      
+
    found = False
    for tSq in (tAllSqrs):
 
-      # UPPER 
+      # UPPER
       if (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] - 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
          tSq.setLevel(lvl+2)
          tissue.append(tSq)
@@ -262,7 +262,7 @@ def makeTissue(tActSqr,tAllSqrs,tissue,eps,lvl):
          found = True
          makeTissue(tissue[len(tissue)-1],tAllSqrs,tissue,eps,lvl+2)
 
-      # LOWER 
+      # LOWER
       elif (distance( tActSqr.getTopLeftC()[0], tActSqr.getTopLeftC()[1] + 2*tActSqr.getH(), tSq.getTopLeftC()[0], tSq.getTopLeftC()[1]) < eps2):
          tSq.setLevel(lvl-2)
          tissue.append(tSq)
@@ -328,21 +328,21 @@ def isThereACow(mainFrame):
    allSquares = [] # Store in each iteration of the binarization the squares found in the image
    minNumSquares = 4
    # iterate to get max squares from the image
-   # best way so far to counter ligh strokes 
+   # best way so far to counter ligh strokes
    filteredFrame = clearImage(mainFrame)
    equalizedFrame = cv2.equalizeHist(filteredFrame)
    print "starting bin values"
 
    for binValueT in range(minThresh,maxThresh,steps):
-      
+
       cp0 = cp1 = cp2 = deepcopy(equalizedFrame)
       main_copy2=mainFrame.copy()
 
-      thresFrame0 = doThresHold(cp0, binValueT,7,1) 
+      thresFrame0 = doThresHold(cp0, binValueT,7,1)
       #cv2.imshow("thres0: ", thresFrame0)
       #cv2.waitKey(150)
-      contours0 = findContours(thresFrame0) 
-      cowRectangles0,_ = getGoodSquares(contours0,thresFrame0,mainFrame) 
+      contours0 = findContours(thresFrame0)
+      cowRectangles0,_ = getGoodSquares(contours0,thresFrame0,mainFrame)
       findEquals(allSquares,cowRectangles0,15)
 
       thresFrame1 = doThresHold(cp1, binValueT,3,3) # Thresholds the image and erodes it
@@ -350,15 +350,15 @@ def isThereACow(mainFrame):
       cowRectangles1,_ = getGoodSquares(contours1,thresFrame1,mainFrame) # From contours, extract possile cow squares
       findEquals(allSquares,cowRectangles1,15)
 
-      thresFrame2 = doThresHold(cp2, binValueT,5,2) 
-      contours2 = findContours(thresFrame2) 
-      cowRectangles2,_ = getGoodSquares(contours2,thresFrame2,mainFrame) 
+      thresFrame2 = doThresHold(cp2, binValueT,5,2)
+      contours2 = findContours(thresFrame2)
+      cowRectangles2,_ = getGoodSquares(contours2,thresFrame2,mainFrame)
       findEquals(allSquares,cowRectangles2,15)
 
       del cp0
       del cp1
       del cp2
-   
+
    print "donde with bin values"
    if len(allSquares) > minNumSquares:
       tempAllSquares = deepcopy(allSquares)
@@ -395,19 +395,19 @@ def ajusteDeCurvas(cSquares):
          XiYi.append(c.getX() * c.getY())
          Xi2.append(pow(c.getX(),2))
 
-      # The reason to create lists is to get the sum of all its elements 
+      # The reason to create lists is to get the sum of all its elements
       # so it will be computed the sum of each of the lists
       sXi = sum(Xi)
       sYi = sum(Yi)
       sXiYi = sum(XiYi)
       sXi2 = sum(Xi2)
-      
+
       # Now its time to compute A and B
       A = float((n*sXiYi)-(sXi*sYi))/((n*sXi2)-(pow(sXi,2)))
       B = float(((sXi2*sYi)-(sXiYi*sXi))/((n*sXi2)-(pow(sXi,2))))
       theta = float(math.atan(A))
       theta = float(theta*180/math.pi)
-      
+
    return A,B,theta
 
 # Calculates and returns the limits of the cowlimitLeft, limitRight, topY
@@ -434,7 +434,7 @@ def findEquals(allSqrs,partial,epsilon):
       found = False
       for compSqr in allSqrs:
          if (distanceBCorners(compSqr.getTopLeftC(),testSqr.getTopLeftC()) < epsilon or distanceBCorners(compSqr.getTopRightC(),testSqr.getTopRightC()) < epsilon or distanceBCorners(compSqr.getBotLeftC(),testSqr.getBotLeftC()) < epsilon or distanceBCorners(compSqr.getBotRightC(),testSqr.getBotRightC()) < epsilon) and not found:
-            found = True 
+            found = True
             if testSqr.getArea() > compSqr.getArea():
                compSqr.x = testSqr.x
                compSqr.y = testSqr.y
@@ -446,7 +446,7 @@ def findEquals(allSqrs,partial,epsilon):
                compSqr.topRightC = testSqr.topRightC
                compSqr.botLeftC = testSqr.botLeftC
                compSqr.botRightC = testSqr.botRightC
-            
+
       if not found:
          allSqrs.append(testSqr)
 
@@ -507,12 +507,12 @@ def isCowMilkeable(tissue,squares):
 
                return True,limLeft,limRight,limTop,0
 
-   
+
    return False,0,0,0,0
    # listMaxLevel = findMaxLevel(tissue)
    # theta,A,B = ajusteDeCurvas(listMaxLevel)
    # limLeft,limRight,limTop = calcCowLimits(listMaxLevel,tissue)
-   
+
    ##-------PRINTS-------
    # drawGreatestTissue(tissue)
    # drawSlope(A,B)
@@ -529,7 +529,7 @@ def isCowMilkeable(tissue,squares):
    #  return True,limLeft,limRight,limTop,theta
 
 
-   # IN: Frame is grayscale image, n is num of corners, quality is 0-1  
+   # IN: Frame is grayscale image, n is num of corners, quality is 0-1
 
 def getTissueTopLevel(tissue):
 
@@ -551,7 +551,7 @@ def getTissueTopLevel(tissue):
          levelTissue.append(tissue[x])
 
 
-   return levelTissue 
+   return levelTissue
 
 
 #############################################
@@ -559,18 +559,18 @@ def getTissueTopLevel(tissue):
 #############################################
 
 # This functions sorts a multivaraible list depending on the index specified
-def sortList(index,l): 
+def sortList(index,l):
 
-   l = sorted(l, key=lambda x:x[index], reverse=False) 
-   
+   l = sorted(l, key=lambda x:x[index], reverse=False)
+
    return l
 
 def findMedian(index,l):
    # The length of the list is odd
-   if (len(l) % 2) != 0:     
+   if (len(l) % 2) != 0:
       return l[len(l)/2][index]
    # The lenght of the list is even
-   else:              
+   else:
       return (l[len(l)/2][index] + l[len(l)/2 + 1][index])/2
 
 # This method will sort countours respect to Y or X coord of bounding Rectangle
@@ -578,14 +578,14 @@ def findMedian(index,l):
    # This is always from lef to right of from top to bottom --> Reverse = False
    # Most of this is from here : http://www.pyimagesearch.com/2015/04/20/sorting-contours-using-python-and-opencv/
 def boundingRectSort(allRect,criteria):
-   
+
    i = 1
    if criteria == 'X' or criteria ==  'x':
       i = 0
    boundingBoxes = [cv2.boundingRect(c) for c in allRect]
    (allRect, boundingBoxes) = zip(*sorted(zip(allRect, boundingBoxes),
       key=lambda b:b[1][i], reverse=False))
- 
+
    return (allRect, boundingBoxes)
 
 
@@ -614,7 +614,7 @@ def drawSlope(frame,A,B):
    cv2.line(frame,(x1,y1),(x2,y2),(0,255,255),3)
 
 def drawGreatestTissue(frame,greatestTissue):
-   
+
    font = cv2.FONT_HERSHEY_SIMPLEX
    areaT = 0
    for c in greatestTissue:
@@ -641,5 +641,3 @@ def drawLimits(frame,left,right,y):
    cv2.putText(frame,("diff Top: " + str(y)),(30,80), font, 0.8,(0,0,255),1)
 
    return frame
-
-
