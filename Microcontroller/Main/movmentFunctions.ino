@@ -177,7 +177,7 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
 }
 
 //Go forward the cm given in the parameter, Nestor style
-void forwardNCm(int cm)
+void forwardNCm(int cm, bool slow)
 {
   //writeLCD("ForwardNCm", 0, 0);
   //writeLCD(String(cm), 0, 1);
@@ -189,11 +189,25 @@ void forwardNCm(int cm)
   //Angle to stay in
   int iStayAngle = getCompass();
 
+  int LF;
+  int LB;
+  int RF;
+  int RB;
   //Start at default velocity
-  int LF = velLF;
-  int LB = velLB;
-  int RF = velRF;
-  int RB = velRB;
+  if (slow == false)
+  {
+    LF = velLF;
+    LB = velLB;
+    RF = velRF;
+    RB = velRB;
+  }
+  else
+  {
+    LF = velSlowLF;
+    LB = velSlowLB;
+    RF = velSlowRF;
+    RB = velSlowRB;
+  }
 
   //Start moving
   forward(LF, LB, RF, RB);
@@ -201,14 +215,14 @@ void forwardNCm(int cm)
   //Move with p correction until the encoder read the cm
   while (steps < untilSteps)
   {
-    forwardP(iStayAngle, LF, LB, RF, RB, false);
+    forwardP(iStayAngle, LF, LB, RF, RB, slow);
   }
   //Stop
   brake();
 }
 
 //Go backward the cm given in the parameter, Nestor style
-void backwardNCm(int cm)
+void backwardNCm(int cm, bool slow)
 {
   encoderState = 1;
   //Counts of encoder to get to the objective
@@ -218,18 +232,33 @@ void backwardNCm(int cm)
   //Angle to stay in
   int iStayAngle = getCompass();
 
+  int LF;
+  int LB;
+  int RF;
+  int RB;
+
   //Start at default velocity
-  int LF = velLF;
-  int LB = velLB;
-  int RF = velRF;
-  int RB = velRB;
+  if (slow == false)
+  {
+    LF = velLF;
+    LB = velLB;
+    RF = velRF;
+    RB = velRB;
+  }
+  else
+  {
+    LF = velSlowLF;
+    LB = velSlowLB;
+    RF = velSlowRF;
+    RB = velSlowRB;
+  }
 
   //Start moving
   backward(LF, LB, RF, RB);
 
   while (steps < untilSteps)
   {
-    backwardP(iStayAngle, LF, LB, RF, RB, false);
+    backwardP(iStayAngle, LF, LB, RF, RB, slow);
   }
 
   brake();
@@ -272,10 +301,10 @@ void forwardUntilWallN(int dist)
       backward(LF, LB, RF, RB);
       backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
     }
-    
+
     actualDist = getDistance(pinSF);
     bSlow = actualDist >= 30 ? false : true;
-    
+
     //Already at the distance with an error of +- 2 cm.
     if (actualDist > dist - 2 && actualDist < dist + 2)
     {
@@ -350,7 +379,7 @@ void turnToObjectiveN(int iWant)
   // +- Error
   int iError = 2;
 
-  while(!(iAm > iWant - iError && iAm < iWant + iError))
+  while (!(iAm > iWant - iError && iAm < iWant + iError))
   {
     //Move to the angle in the shorter path
     if (iAux > -180 && iAux < 180)
@@ -379,7 +408,7 @@ void turnToObjectiveN(int iWant)
         turnRight(velLF, velLB, velRF, velRB);
       }
     }
-    
+
     //check angle
     iAm = getCompass();
     iAux = iWant - iAm;
@@ -430,7 +459,7 @@ void forwardUntilNoRight()
   //Check if the the robot should go slower
   bool bSlow = distFront > 30 ? true : false;
 
-  if(distBack < 30)
+  if (distBack < 30)
   {
     //Start moving
     forward(LF, LB, RF, RB);
@@ -472,7 +501,7 @@ void forwardUntilNoLeft()
   //Check if the the robot should go slower
   bool bSlow = distFront > 30 ? true : false;
 
-  if(distBack < 30)
+  if (distBack < 30)
   {
     //Start moving
     forward(LF, LB, RF, RB);
@@ -514,7 +543,7 @@ void backwardUntilNoRight()
   //Check if the the robot should go slower
   bool bSlow = distBack > 30 ? true : false;
 
-  if(distFront < 30)
+  if (distFront < 30)
   {
     //Start moving
     backward(LF, LB, RF, RB);
@@ -555,7 +584,7 @@ void backwardUntilNoLeft()
   //Check if the the robot should go slower
   bool bSlow = distBack > 30 ? true : false;
 
-  if(distFront < 30)
+  if (distFront < 30)
   {
     //Start moving
     backward(LF, LB, RF, RB);
@@ -574,9 +603,3 @@ void backwardUntilNoLeft()
 
   brake();
 }
-
-////////////////////////////////////////////////////
-//                    Faltarian:                  //
-//                                                //
-//    (Forward/Backward)(TillNoLeft/TillNoRight)  //
-////////////////////////////////////////////////////

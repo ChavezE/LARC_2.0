@@ -105,7 +105,7 @@ void setVelocity(int leftFront, int leftBack, int rightFront, int rightBack)
 void brake()
 {
   setVelocity(0, 0);
-  // lcd.clear();
+  // //lcd.clear();
   //Display fucntion in the LCD
   //// writeLCD("BRAKE", 0, 0);
 }
@@ -118,7 +118,7 @@ void forward(int left, int right)
 
   //Set velocity to the motors
   setVelocity(left, right);
-  // lcd.clear();
+  // //lcd.clear();
   //Display fucntion in the LCD
   // // writeLCD("FORWARD", 0, 0);
   // // writeLCD(String(String(left) + " " + String(right)), 0, 1);
@@ -132,7 +132,7 @@ void forward(int leftFront, int leftBack, int rightFront, int rightBack)
 
   //Set velocity to the motors
   setVelocity(leftFront, leftBack, rightFront, rightBack);
-  // lcd.clear();
+  // //lcd.clear();
   //Display fucntion in the LCD
   // // writeLCD("FORWARD", 0, 0);
   // // writeLCD(String(String(leftFront) + " " + String(leftBack) + " " + String(rightFront)+ " " + String(rightBack)), 0, 1);
@@ -146,7 +146,7 @@ void backward(int left, int right)
 
   //Set velocity to the motors
   setVelocity(left, right);
-  // lcd.clear();
+  // //lcd.clear();
   //Display fucntion in the LCD
   // // writeLCD("BACKWARD", 0, 0);
   // // writeLCD(String(String(left) + " " + String(right)), 0, 1);
@@ -160,7 +160,7 @@ void backward(int leftFront, int leftBack, int rightFront, int rightBack)
 
   //Set velocity to the motors
   setVelocity(leftFront, leftBack, rightFront, rightBack);
-  // lcd.clear();
+  // //lcd.clear();
   //Display fucntion in the LCD
   // // writeLCD("BACKWARD", 0, 0);
   // // writeLCD(String(String(leftFront) + " " + String(leftBack) + " " + String(rightFront)+ " " + String(rightBack)), 0, 1);
@@ -174,7 +174,7 @@ void turnRight(int vel)
 
   //Set velocity to the motors
   setVelocity(vel, vel);
-  // lcd.clear();
+  // //lcd.clear();
   //Display fucntion in the LCD
   // // writeLCD("TURN RIGHT", 0, 0);
   // // writeLCD(String(vel), 0, 1);
@@ -188,7 +188,7 @@ void turnRight(int leftFront, int leftBack, int rightFront, int rightBack)
 
   //Set velocity to the motors
   setVelocity(leftFront, leftBack, rightFront, rightBack);
-  // lcd.clear();
+  // //lcd.clear();
   //Display fucntion in the LCD
   // // writeLCD("TURN RIGHT", 0, 0);
   // // writeLCD(String(String(leftFront) + " " + String(leftBack) + " " + String(rightFront)+ " " + String(rightBack)), 0, 1);
@@ -202,7 +202,7 @@ void turnLeft(int vel)
 
   //Set velocity to the motors
   setVelocity(vel, vel);
-  // lcd.clear();
+  // //lcd.clear();
   //Display fucntion in the LCD
   // // writeLCD("TURN LEFT", 0, 0);
   // // writeLCD(String(vel), 0, 1);
@@ -216,7 +216,7 @@ void turnLeft(int leftFront, int leftBack, int rightFront, int rightBack)
 
   //Set velocity to the motors
   setVelocity(leftFront, leftBack, rightFront, rightBack);
-  // lcd.clear();
+  // //lcd.clear();
   //Display fucntion in the LCD
   // // writeLCD("TURN LEFT", 0, 0);
   // // writeLCD(String(String(leftFront) + " " + String(leftBack) + " " + String(rightFront)+ " " + String(rightBack)), 0, 1);

@@ -6,7 +6,7 @@
 int getDistance(byte sharp)
 {
   //Display function in LCD
-  lcd.clear();
+  ////lcd.clear();
   // writeLCD("GETTING DISTANCE", 0, 0);
   //Number of reads
   byte numReads = 7;
@@ -67,7 +67,7 @@ long getCompassX100()
 {
   long angle = bno.getVector(Adafruit_BNO055::VECTOR_EULER).x() * 100;
   //Display function in LCD
-  lcd.clear();
+  //lcd.clear();
   // writeLCD("GETTING ANGLE", 0, 0);
   // writeLCD(String(angle), 0, 1);
   return angle;
@@ -78,7 +78,7 @@ int getCompass()
 {
   int angle = bno.getVector(Adafruit_BNO055::VECTOR_EULER).x();
   //Display function in LCD
-  lcd.clear();
+  //lcd.clear();
   // writeLCD("GETTING ANGLE", 0, 0);
   // writeLCD(String(angle), 0, 1);
   return angle;
