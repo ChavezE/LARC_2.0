@@ -8,7 +8,11 @@ import time
 import math
 import random
 # imporging Roborregos libs
+import sys
+sys.path.insert(0, '../lib/')
 import Larc_vision_2017 as rb
+
+# CODE
 
 imgR = cv2.imread('./depth_photos/b1.jpg',0)
 imgL = cv2.imread('./depth_photos/base.jpg',0)
