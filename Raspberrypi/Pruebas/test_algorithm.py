@@ -23,8 +23,9 @@ mainFrame = []	# frame
 
 def takePicture(frameNumber):
 	global mainFrame
-	mainFrame=cv2.imread('../TestPhotos/'+str(frameNumber)+'.jpg')
-	mainFrame=cv2.pyrDown(mainFrame)
+	# mainFrame=cv2.imread('../TestPhotos/'+str(frameNumber)+'.jpg')
+	mainFrame=cv2.imread('../TestPhotos/480-640/'+str(frameNumber)+'.jpg')
+	# mainFrame=cv2.pyrDown(mainFrame)
 	# mainFrame =  cv2.resize(mainFrame,None,fx=0.25,fy=0.25,interpolation=cv2.INTER_AREA)
 	# cv2.imshow("frame: " + str(frameNumber),mainFrame)
 	# cv2.waitKey(0)
@@ -57,11 +58,12 @@ def drawLimits(left,right,y):
 '''
 if __name__ == "__main__":
 	validation=False
-	for x in range(8,19):
+	for x in range(10,27):
 		frameNumber=x
 		this_time = time.time()
 		takePicture(frameNumber)
-		validation,maxLenT,_ = rb.isThereACow(mainFrame)
+		validation, filtered = rb.filterForCow(mainFrame)
+		validation2,maxLenT,_ = rb.isThereACow(mainFrame,filtered)
 
 		# print validation, len(maxLenT)
 		# print "center camera: ",(mainFrame.shape[1])/2
@@ -81,7 +83,7 @@ if __name__ == "__main__":
 			print "COW NOT FOUND"
 		print ("TOTAL TIME: ",time.time() - this_time)
 		cv2.imshow("limits",mainFrame)
-		print( mainFrame.shape)
+		print mainFrame.shape
 		k = cv2.waitKey(0)
 		if k ==27:
 			break
