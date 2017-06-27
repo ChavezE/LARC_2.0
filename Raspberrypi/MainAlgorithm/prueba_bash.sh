@@ -1,6 +1,6 @@
 #!/bin/bash
 
 while true; do
-python test_algorithm.py
+echo "Empieza el codigo de nuevo"
+python pruebaBoton.py
 done
-
