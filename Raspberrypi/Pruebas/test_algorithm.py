@@ -11,7 +11,10 @@ from copy import deepcopy
 import math
 import random
 # imporging Roborregos libs
+import sys
+sys.path.insert(0, '../lib/')
 import Larc_vision_2017 as rb
+
 
 
 ######### GOBAL VARIABLES #############
@@ -20,7 +23,7 @@ mainFrame = []	# frame
 
 def takePicture(frameNumber):
 	global mainFrame
-	mainFrame=cv2.imread('test_photos/'+str(frameNumber)+'.jpg')
+	mainFrame=cv2.imread('../TestPhotos/'+str(frameNumber)+'.jpg')
 	mainFrame=cv2.pyrDown(mainFrame)
 	# mainFrame =  cv2.resize(mainFrame,None,fx=0.25,fy=0.25,interpolation=cv2.INTER_AREA)
 	# cv2.imshow("frame: " + str(frameNumber),mainFrame)

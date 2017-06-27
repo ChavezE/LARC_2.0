@@ -8,18 +8,22 @@ import time
 import math
 import random
 # imporging Roborregos libs
+import sys
+sys.path.insert(0, '../lib/')
 import Larc_vision_2017 as rb
 
-imgR = cv2.imread('./depth_photos/b2_1.jpg',0)
-imgL = cv2.imread('./depth_photos/base2.jpg',0)
-mainFrame = cv2.imread('./depth_photos/base2.jpg')
+# CODE
 
-cv2.imshow('derecha',imgR)
-cv2.imshow('main',mainFrame)
-cv2.imshow('izquierda',imgL)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+imgR = cv2.imread('./depth_photos/b1.jpg',0)
+imgL = cv2.imread('./depth_photos/base.jpg',0)
+mainFrame = cv2.imread('./depth_photos/base.jpg')
 
+# cv2.imshow('derecha',imgR)
+# cv2.imshow('main',mainFrame)
+# cv2.imshow('izquierda',imgL)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+#
 
 
 def getCowXcenter(frame,maxLenT):
@@ -45,16 +49,34 @@ def drawLimits(frame,left,right,y):
 this_time = time.time()
 
 #stereo obj intializer
-stereo = cv2.StereoBM(0,16,35)
+# stereo = cv2.StereoBM(0,16,35)
+
+window_size = 11
+min_disp = 16
+num_disp = 112-min_disp
+stereo = cv2.StereoSGBM(minDisparity = 1,
+    numDisparities = num_disp,
+    SADWindowSize = window_size,
+    uniquenessRatio = 10,
+    speckleWindowSize = 100,
+    speckleRange = 32,
+    disp12MaxDiff = 1,
+    P1 = 8*3*window_size**2,
+    P2 = 32*3*window_size**2,
+    fullDP = False
+)
 disparity = abs(stereo.compute(imgL, imgR).astype(np.uint8))
 # plt.imshow(disparity,'gray')
 # plt.show()
 
 # mask= cv2.threshold(disparity, 170, 255, cv2.THRESH_BINARY)[1]
-mask1= cv2.inRange(disparity,80,110)
+mask1= cv2.inRange(disparity,170,210)
 # closing mask erosion ad dilate
 mask2 = cv2.erode(mask1,(11,11),iterations = 5)
 mask2 = cv2.dilate(mask2,(11,11),iterations = 25)
+# TODO	TRY morphology tranformation
+# mask2 = cv2.morphologyEx(mask1, cv2.MORPH_OPEN, (12,12))
+
 # putting mask over image
 maskedFrame = cv2.bitwise_and(mainFrame,mainFrame,mask = mask2)
 
@@ -79,10 +101,10 @@ print ("TOTAL TIME: ",time.time() - this_time)
 
 cv2.imshow('maskedFrame',maskedFrame)
 # cv2.imshow('normalFrame',mainFrame)
-cv2.imshow('thereshold closed',mask2)
-
-
+# cv2.imshow('thereshold closed',mask2)
+# cv2.imshow('thereshold unclosed',mask1)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+
 plt.imshow(disparity,'gray')
 plt.show()

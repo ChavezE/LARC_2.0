@@ -8,8 +8,13 @@ import time
 from copy import deepcopy
 
 # Roborregos libs
+import sys
+sys.path.insert(0, '../lib/')
 import Larc_vision_2017 as rb
 import communication as com
+
+# CODE
+
 
 mainFrame = []
 cap = cv2.VideoCapture(0)
@@ -50,7 +55,7 @@ def drawLimits(left,right,y):
     MAIN
 '''
 if __name__ == "__main__":
-	
+
 	while True:
 
 		analyse = raw_input("process photo? ")
@@ -79,7 +84,7 @@ if __name__ == "__main__":
 			else:
 				print "COW NOT FOUND"
 
-				
+
 			print ("TOTAL TIME: ",time.time() - this_time)
 			cv2.imshow("limits",mainFrame)
 			print( mainFrame.shape)
@@ -103,13 +108,3 @@ if __name__ == "__main__":
 		elif mov == "tl":
 			dg = input("dgs ")
 			com.turnNDegrees(dg,1)
-
-
-	
-
-
-
-
-
-
-

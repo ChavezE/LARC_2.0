@@ -69,9 +69,9 @@ const byte pinLI = 43;
 //Out Limit Switch
 const byte pinLO = 45;
 
-const byte pinLR = 7;
+const byte pinLR = 6;
 
-const byte pinLL = 6;
+const byte pinLL = 7;
 
 //-------Servos-------//
 
@@ -164,7 +164,7 @@ void setup()
   //Initialize lcd, turn backlight on and clear the display
   lcd.init();
   lcd.backlight();
-  lcd.clear();
+  //lcd.clear();
 
   pinMode(pinMFRA , OUTPUT);
   pinMode(pinMFRB , OUTPUT);
@@ -199,7 +199,7 @@ void setup()
   encoderState = 1;
 
   //Display the finish of the setup
-  lcd.clear();
+  //lcd.clear();
   writeLCD("START FENIX 2.0", 0, 0);
 
   //Stop plattaform for security
@@ -208,6 +208,9 @@ void setup()
 
 void loop()
 {
+  getInCow();
+  while(1);
+  /*
   unsigned long data;
   unsigned long data1, data2;
   char order = '0';
@@ -292,4 +295,5 @@ void loop()
         break;
     }
   }
+  */
 }

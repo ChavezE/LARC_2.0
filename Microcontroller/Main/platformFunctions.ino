@@ -6,7 +6,7 @@
 void platIn()
 {
   //Display function in LCD
-  lcd.clear();
+  //lcd.clear();
   // writeLCD("PLAT IN", 0, 0);
   //Check the inner limit switch of the robot
   while (digitalRead(pinLI) == 1)
@@ -22,7 +22,7 @@ void platIn()
 void platOut()
 {
   //Display function in LCD
-  lcd.clear();
+  //lcd.clear();
   // writeLCD("PLAT OUT", 0, 0);
   //Check the inner limit switch of the robot
   while (digitalRead(pinLO) == 1)
@@ -38,7 +38,7 @@ void platOut()
 void openClaw()
 {
   //Display function in LCD
-  lcd.clear();
+  //lcd.clear();
   // writeLCD("OPEN CLAW", 0, 0);
   sClaw.write(30);
 }
@@ -47,7 +47,7 @@ void openClaw()
 void closeClaw()
 {
   //Display function in LCD
-  lcd.clear();
+  //lcd.clear();
   // writeLCD("CLOSE CLAW", 0, 0);
   sClaw.write(60);
 }
