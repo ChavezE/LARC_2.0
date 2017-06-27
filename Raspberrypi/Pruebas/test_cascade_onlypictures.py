@@ -3,12 +3,11 @@ import numpy as np
 import cv2
 
 
-cow = cv2.CascadeClassifier('./Cascades/COW1.xml')
+cow = cv2.CascadeClassifier('../Cascades/COW1.xml')
 
-cap = cv2.VideoCapture(0)
 
 for i in range(1, 35):
-    img=cv2.imread("./TestPhotos/" + str(i) + ".jpg")
+    img=cv2.imread("../TestPhotos/" + str(i) + ".jpg")
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # add this
     # image, reject levels level weights.
