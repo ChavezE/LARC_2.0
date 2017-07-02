@@ -58,7 +58,7 @@ def drawLimits(left,right,y):
 '''
 if __name__ == "__main__":
 	validation=False
-	for x in range(10,27):
+	for x in range(1,34):
 		frameNumber=x
 		this_time = time.time()
 		takePicture(frameNumber)

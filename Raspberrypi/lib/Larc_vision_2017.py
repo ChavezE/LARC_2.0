@@ -35,7 +35,7 @@ cascadeSensitivity = 50
 #importing the trained cascade of cow
 cowCascade = cv2.CascadeClassifier('../Cascades/COW1.xml')
 #using a black frame to filter
-blackFrame = cv2.imread("../images/black.jpg",0)
+blackFrame = cv2.imread("../images/white.jpg",0)
 
 
 # Simple class to manage individual squares in the image
@@ -140,6 +140,7 @@ def getGoodSquares(contours,thres,mainC):
    # ----VARIABLES----
    cowSquares = []   # This list is the one that is going to being returned
    # -----------------
+   final_contours=[]
 
    for cnt in contours:
       area = cv2.contourArea(cnt)
@@ -147,7 +148,7 @@ def getGoodSquares(contours,thres,mainC):
       w = int(rect[1][0])
       h = int(rect[1][1])
       rect_area = w * h
-      final_contours=[]
+      
 
       # cv2.drawContours(mainC,[cnt],-1,(0,255,0),1)
       # print area
@@ -406,19 +407,23 @@ def filterForCow(img):
      #ampliation is calibratable,
      #determines how much the 
      #detected area expands 
-      ampliation = (6 * (area/10000))
+      ampliation = (2 * (area/10000))
 
      #This condition is also calibratable, by determining 
      #a relationship between h/w
       if relation < 0.77 and relation > 0.74 and area > 11000 and w > 120:
-
+         cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
+         
          #Expanding the detected area
-         xc = x - int(ampliation)
-         yc = y - int(.6 * ampliation)
+         xc = x - int(.5 * ampliation)
+         yc = y - int(1 * ampliation)
          hc = h + int((3 * ampliation))
-         wc = w + int((2 * ampliation))
+         wc = w + int((1 * ampliation))
          
          cowDetected = True
+
+         cv2.rectangle(img,(xc,yc),(xc+wc,yc+hc),(0,255,0),1)
+         cv2.imshow("img",img)
 
 
    individualCow = equalizedFrame[yc:yc+hc,xc:xc+wc]
