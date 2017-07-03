@@ -412,7 +412,7 @@ def filterForCow(img):
      #This condition is also calibratable, by determining 
      #a relationship between h/w
       if relation < 0.77 and relation > 0.74 and area > 11000 and w > 120:
-         cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
+         #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
          
          #Expanding the detected area
          xc = x - int(.5 * ampliation)
@@ -423,7 +423,7 @@ def filterForCow(img):
          cowDetected = True
 
          cv2.rectangle(img,(xc,yc),(xc+wc,yc+hc),(0,255,0),1)
-         cv2.imshow("img",img)
+         #cv2.imshow("img",img)
 
 
    individualCow = equalizedFrame[yc:yc+hc,xc:xc+wc]
