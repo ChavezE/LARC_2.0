@@ -296,15 +296,16 @@ void loop()
         
       case 'k':
         while(Serial.available() < 1);
-        data1 = Serial.read();
-        byte bDistance = getDistance(pinSharp[data1]);
-        Serial.write(bDistance);
+        int num  = Serial.read() - 48;
+        int bDistance = getDistance(pinSharp[num]);
+        Serial.println(bDistance);
         break;
-        
+      
+      case 'l':
+        int iAm = getCompass();
+        goGrabTerrines(iAm);
+        Serial.write('1');
+        break;
     }
   }
-<<<<<<< HEAD
-=======
- 
->>>>>>> 1f2ce7df78a72e02c679b67dbdf443b1ad9c8cfd
 }
