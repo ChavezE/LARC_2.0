@@ -1,7 +1,7 @@
 import serial
 import time
 try:
-        arduino = serial.Serial('/dev/ttyUSB0', 9600, timeout = 1)
+        arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
 	time.sleep(3)
 except serial.SerialException:
         print("Desconecta y reconecta el arduino");
@@ -184,9 +184,9 @@ def backwardUntilNoLeft():
 def getSharpDistance(num):
     print("getSharpDistance")
     arduino.write("k")
-    arduino.write(chr(num))
+    arduino.write(num)
     # wait for arduino response
     while (arduino.inWaiting() <= 0):
         pass
-    cm = arduino.read()
-    print cm
+    cm = arduino.readline()
+    print (cm)
