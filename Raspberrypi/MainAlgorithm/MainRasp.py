@@ -176,7 +176,7 @@ def walkingDetecting():
 		startedLeft=True
 				
 def alignWithCow():
-	centerFrame=vs.getXCenterFrame()
+	centerFrame=getXCenterFrame()
 	foundCow,maxLenTissue,_ = isThereACow()
 	if foundCow:
 		cowCenter = getCowXCenter(maxLenTissue)

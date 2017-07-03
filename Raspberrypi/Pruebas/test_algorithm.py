@@ -70,8 +70,11 @@ if __name__ == "__main__":
 		frameNumber=x
 		this_time = time.time()
 		takePicture(frameNumber)
-		validation2, filtered = rb.filterForCow(mainFrame)
-		validation,maxLenT,_ = rb.isThereACow(mainFrame,filtered)
+		clearedFrame = rb.clearImage(mainFrame)
+		validation2, filtered = rb.filterForCow(clearedFrame)
+		validation,maxLenT,_ = rb.isThereACow(mainFrame,clearedFrame)
+		#If implementing filterForCow(), the second argument must be "filtered",
+		#else the secund argument must be "clearedFrame"
 
 		# print validation, len(maxLenT)
 		# print "center camera: ",(mainFrame.shape[1])/2

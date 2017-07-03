@@ -113,6 +113,7 @@ def clearImage(imgOriginal):
 
    imGray = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2GRAY)
    imGray = cv2.GaussianBlur(imGray, (3,3), 2)
+   imGray = cv2.equalizeHist(imGray)
    # imGray = cv2.fastNlMeansDenoisingColored(imgOriginal,None,10,10,7,21)
 
    return imGray
@@ -383,9 +384,6 @@ def isThereACow(mainFrame,equalizedFrame):
 #Implementation of the trained cascade classifier,
 #trained to detect the COW pattern
 def filterForCow(img):
-   filteredFrame = clearImage(img)
-   equalizedFrame = cv2.equalizeHist(filteredFrame)
-
    blackTemp = blackFrame.copy()
 
    cows = cowCascade.detectMultiScale(equalizedFrame, 1.3, cascadeSensitivity)
