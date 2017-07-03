@@ -303,4 +303,8 @@ void loop()
         
     }
   }
+<<<<<<< HEAD
+=======
+ 
+>>>>>>> 1f2ce7df78a72e02c679b67dbdf443b1ad9c8cfd
 }

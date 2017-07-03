@@ -19,16 +19,23 @@ from copy import deepcopy
 
 #-------------------GLOBAL FOR CALIBRATION-------------------
 #Cow square area  #si detecta muchos cuadros
-maxSquareArea=5000
-minSquareArea=25
+maxSquareArea = 5000
+minSquareArea = 25
 #Thresh range for cow squares  #si no detecta suficientes cuadros
-minThresh=30
-maxThresh=150
-steps=5
-
+minThresh = 30
+maxThresh = 150
+steps = 5
 #Tissue Parameters
-eps=60
-eps2=60
+eps = 60
+eps2 = 60
+#HAAR Cascade Sansitivity
+cascadeSensitivity = 50
+
+#----HAAR Cascade---
+#importing the trained cascade of cow
+cowCascade = cv2.CascadeClassifier('../Cascades/COW1.xml')
+#using a black frame to filter
+blackFrame = cv2.imread("../images/white.jpg",0)
 
 
 # Simple class to manage individual squares in the image
@@ -106,6 +113,7 @@ def clearImage(imgOriginal):
 
    imGray = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2GRAY)
    imGray = cv2.GaussianBlur(imGray, (3,3), 2)
+   imGray = cv2.equalizeHist(imGray)
    # imGray = cv2.fastNlMeansDenoisingColored(imgOriginal,None,10,10,7,21)
 
    return imGray
@@ -133,6 +141,7 @@ def getGoodSquares(contours,thres,mainC):
    # ----VARIABLES----
    cowSquares = []   # This list is the one that is going to being returned
    # -----------------
+   final_contours=[]
 
    for cnt in contours:
       area = cv2.contourArea(cnt)
@@ -140,7 +149,7 @@ def getGoodSquares(contours,thres,mainC):
       w = int(rect[1][0])
       h = int(rect[1][1])
       rect_area = w * h
-      final_contours=[]
+      
 
       # cv2.drawContours(mainC,[cnt],-1,(0,255,0),1)
       # print area
@@ -323,20 +332,19 @@ def makeTissue(tActSqr,tAllSqrs,tissue,eps,lvl):
 
 
 # returns a Tissue compossed by cow squares if found, if not empty list
-def isThereACow(mainFrame):
+def isThereACow(mainFrame,equalizedFrame):
    maxLenT = [] # maximumLenghtTissue
    allSquares = [] # Store in each iteration of the binarization the squares found in the image
    minNumSquares = 4
    # iterate to get max squares from the image
    # best way so far to counter ligh strokes
-   filteredFrame = clearImage(mainFrame)
-   equalizedFrame = cv2.equalizeHist(filteredFrame)
+
    print "starting bin values"
 
    for binValueT in range(minThresh,maxThresh,steps):
 
       cp0 = cp1 = cp2 = deepcopy(equalizedFrame)
-      main_copy2=mainFrame.copy()
+      # main_copy2=mainFrame.copy()
 
       thresFrame0 = doThresHold(cp0, binValueT,7,1)
       #cv2.imshow("thres0: ", thresFrame0)
@@ -372,6 +380,59 @@ def isThereACow(mainFrame):
          return True,maxLenT,allSquares
 
    return False,[],[]
+
+#Implementation of the trained cascade classifier,
+#trained to detect the COW pattern
+def filterForCow(img):
+   blackTemp = blackFrame.copy()
+
+   cows = cowCascade.detectMultiScale(equalizedFrame, 1.3, cascadeSensitivity)
+
+   xc,yc,hc,wc = 0,0,0,0
+   individualCow = []
+
+   cowDetected = False
+
+   if cows is ():
+      print "NI MADRES"
+      return cowDetected, blackTemp
+
+   for (x,y,w,h) in cows:
+       
+      relation = float(h)/w
+      area = (float(w)*h)
+
+     #ampliation is calibratable,
+     #determines how much the 
+     #detected area expands 
+      ampliation = (2 * (area/10000))
+
+     #This condition is also calibratable, by determining 
+     #a relationship between h/w
+      if relation < 0.77 and relation > 0.74 and area > 11000 and w > 120:
+         #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
+         
+         #Expanding the detected area
+         xc = x - int(.5 * ampliation)
+         yc = y - int(1 * ampliation)
+         hc = h + int((3 * ampliation))
+         wc = w + int((1 * ampliation))
+         
+         cowDetected = True
+
+         cv2.rectangle(img,(xc,yc),(xc+wc,yc+hc),(0,255,0),1)
+         #cv2.imshow("img",img)
+
+
+   individualCow = equalizedFrame[yc:yc+hc,xc:xc+wc]
+   print individualCow.shape
+   blackTemp[yc:yc+hc,xc:xc+wc] = individualCow
+   print blackTemp.shape
+
+   cv2.imshow("with black", blackTemp)
+   return cowDetected, blackTemp
+    
+
 
 # cSquares is a multidimensional list: [[x1,y1],[x2,y2],...,[xN,yN]]
 # These lists and variables are used to calculate A and B

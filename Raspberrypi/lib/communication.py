@@ -1,7 +1,7 @@
 import serial
 import time
 try:
-        arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
+        arduino = serial.Serial('/dev/ttyUSB0', 9600, timeout = 1)
 	time.sleep(3)
 except serial.SerialException:
         print("Desconecta y reconecta el arduino");
@@ -10,16 +10,12 @@ except serial.SerialException:
 
 def forwardNCm(cm):
         print("forwardNCm")
-
         arduino.write("a")
-
         #Send the speed to turn
         arduino.write(chr(cm))
-
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
-
         if(arduino.read() == "1"):
                 print("True")
                 return True
@@ -29,16 +25,12 @@ def forwardNCm(cm):
 
 def backwardNCm(cm):
         print("backwardNCm")
-
         arduino.write("b")
-
         #Send the speed to turn
         arduino.write(chr(cm))
-
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
-                
         if(arduino.read() == "1"):
                 print("True")
                 return True
@@ -48,16 +40,12 @@ def backwardNCm(cm):
 
 def forwardUntilWallN(cm):
         print("forwardUntilWallN")
-
         arduino.write("c")
-
         #Send the speed to turn
         arduino.write(chr(cm))
-
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
-                
         if(arduino.read() == "1"):
                 print("True")
                 return True
@@ -76,7 +64,7 @@ def backwardUntilWallN(cm):
         #Wait for arduino response
         while(arduino.inWaiting() <= 0):
                 pass;
-                
+
         if(arduino.read() == "1"):
                 print("True")
                 return True
@@ -149,7 +137,7 @@ def forwardUntilNoLeft():
         print("forwardUntilNoLeft")
         #Tell the arduino to run brake()
         arduino.write("h")
-        
+
         #Wait for something to happen
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -165,7 +153,7 @@ def backwardUntilNoRight():
         print("backwardUntilNoRight")
         #Tell the arduino to run brake()
         arduino.write("i")
-        
+
         #Wait for something to happen
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -181,7 +169,7 @@ def backwardUntilNoLeft():
         print("backwardUntilNoLeft")
         #Tell the arduino to run brake()
         arduino.write("j")
-        
+
         #Wait for something to happen
         while(arduino.inWaiting() <= 0):
                 pass;
@@ -192,3 +180,13 @@ def backwardUntilNoLeft():
         else:
                 print("False")
                 return False
+
+def getSharpDistance(num):
+    print("getSharpDistance")
+    arduino.write("k")
+    arduino.write(chr(num))
+    # wait for arduino response
+    while (arduino.inWaiting() <= 0):
+        pass
+    cm = arduino.read()
+    print cm
