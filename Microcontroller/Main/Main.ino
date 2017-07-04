@@ -119,7 +119,7 @@ const long velTurn = 60L;
 const int velLF = 61;
 const int velLB = 63;
 
-const int velRF = 53;
+const int velRF = 60;
 const int velRB = 70;
 
 //Cosntants of motors velocity for going slow
@@ -194,7 +194,8 @@ void setup()
   pinMode(pinLR, INPUT);
 
   pinMode(pinEncoder, INPUT_PULLUP);
-  attachInterrupt(pinEncoder, encoderStep, CHANGE); //attachInterrupt(digitalPinToInterrup(pinEncoder), encoderStep, CHANGE);
+  //attachInterrupt(pinEncoder, encoderStep, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE); 
 
   brake();
   platIn();
@@ -306,6 +307,12 @@ void loop()
       case 'l':
         int iAm = getCompass();
         goGrabTerrines(iAm);
+        Serial.write('1');
+        break;
+
+      case 'm':
+        int iAm = getCompass();
+        getInCow3(true, iAm)
         Serial.write('1');
         break;
     }

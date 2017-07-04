@@ -28,7 +28,7 @@ void platInMid()
   //Start moving the plattaform
   sPlattaform.write(100);
   
-  delay(1600);
+  delay(2500);
   
   //Stop the plattaform
   sPlattaform.write(90);
@@ -65,5 +65,5 @@ void closeClaw()
   //Display function in LCD
   //lcd.clear();
   // writeLCD("CLOSE CLAW", 0, 0);
-  sClaw.write(60);
+  sClaw.write(80);
 }

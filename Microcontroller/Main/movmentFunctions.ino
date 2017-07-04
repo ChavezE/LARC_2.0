@@ -414,6 +414,8 @@ void turnToObjectiveN(int iWant)
     iAux = iWant - iAm;
   }
   brake();
+  lcd.clear();
+  writeLCD(String(getCompass()), 0, 0);
 }
 
 //Turn to an exact angle
@@ -462,6 +464,8 @@ void turnToObjectiveN(int iWant, int vLF, int vLB, int vRF, int vRB)
     iAux = iWant - iAm;
   }
   brake();
+  lcd.clear();
+  writeLCD(String(getCompass()), 0, 0);
 }
 
 //Turn n amount of degrees, positive turn right, negative turn left

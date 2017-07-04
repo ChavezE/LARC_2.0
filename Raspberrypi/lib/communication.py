@@ -206,3 +206,19 @@ def goGrabTerrine():
         else:
                 print("False")
                 return False
+
+def getInCow():
+        print("getInCow")
+        #Tell the arduino to run goGrabTerrines()
+        arduino.write("m")
+        #Wait for arduino response
+        while(arduino.inWaiting() <= 0):
+                pass;
+
+        #Completed
+        if(arduino.read() == "1"):
+                print("True")
+                return True
+        else:
+                print("False")
+                return False
