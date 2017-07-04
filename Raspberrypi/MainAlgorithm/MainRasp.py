@@ -177,17 +177,16 @@ def walkingDetecting():
 				
 def alignWithCow():
 	centerFrame=getXCenterFrame()
-	foundCow,maxLenTissue,_ = isThereACow()
-	if foundCow:
-		cowCenter = getCowXCenter(maxLenTissue)
-		degrDif= abs(cowCenter - centerFrame)
+	
+	cowCenter = getCowXCenter(maxLenTissue)
+	#degrDif= abs(cowCenter - centerFrame)
 
-		if (cowCenter < centerFrame - 10):
-			#gira a la izquierda x grados
-			pass
-		elif(cowCenter > centerFrame + 10):
-			#gira a la derecha x grados
-			pass
+	if (cowCenter < centerFrame - 2):
+		#gira a la izquierda x grados
+		pass
+	elif(cowCenter > centerFrame + 2):
+		#gira a la derecha x grados
+		pass
 
 
 
