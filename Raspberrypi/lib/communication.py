@@ -4,7 +4,7 @@ try:
         arduino = serial.Serial('/dev/ttyACM1', 9600, timeout = 1)
 	time.sleep(3)
 except serial.SerialException:
-        print("Desconecta y reconecta el arduino");
+        print("bad port, check labeling");
         while(True):
                 pass;
 

@@ -26,8 +26,8 @@ minThresh = 50
 maxThresh = 175
 steps = 5
 #Tissue Parameters
-eps = 60
-eps2 = 60
+eps = 30
+eps2 = 30
 #HAAR Cascade Sansitivity
 cascadeSensitivity = 50
 
@@ -149,7 +149,7 @@ def getGoodSquares(contours,thres,mainC):
       w = int(rect[1][0])
       h = int(rect[1][1])
       rect_area = w * h
-      
+
 
       # cv2.drawContours(mainC,[cnt],-1,(0,255,0),1)
       # print area
@@ -332,7 +332,7 @@ def makeTissue(tActSqr,tAllSqrs,tissue,eps,lvl):
 
 
 # returns a Tissue compossed by cow squares if found, if not empty list
-def isThereACow(mainFrame):
+def isThereACow(mainFrame, equalizedFrame):
    maxLenT = [] # maximumLenghtTissue
    allSquares = [] # Store in each iteration of the binarization the squares found in the image
    minNumSquares = 4
@@ -343,7 +343,7 @@ def isThereACow(mainFrame):
 
    for binValueT in range(minThresh,maxThresh,steps):
 
-      cp0 = cp1 = cp2 = deepcopy(mainFrame)
+      cp0 = cp1 = cp2 = deepcopy(equalizedFrame)
       # main_copy2=mainFrame.copy()
 
       thresFrame0 = doThresHold(cp0, binValueT,7,1)
@@ -386,7 +386,7 @@ def isThereACow(mainFrame):
 def filterForCow(img):
    blackTemp = blackFrame.copy()
 
-   cows = cowCascade.detectMultiScale(equalizedFrame, 1.3, cascadeSensitivity)
+   cows = cowCascade.detectMultiScale(img, 1.3, cascadeSensitivity)
 
    xc,yc,hc,wc = 0,0,0,0
    individualCow = []
@@ -394,8 +394,8 @@ def filterForCow(img):
    cowDetected = False
 
    if cows is ():
-      print "NI MADRES"
-      return cowDetected, blackTemp
+      print "Nada detectado"
+      return cowDetected, img
 
    for (x,y,w,h) in cows:
 
@@ -404,15 +404,15 @@ def filterForCow(img):
 
      #ampliation is calibratable,
 
-     #determines how much the 
-     #detected area expands 
+     #determines how much the
+     #detected area expands
       ampliation = (2 * (area/10000))
 
      #This condition is also calibratable, by determining
      #a relationship between h/w
       if relation < 0.77 and relation > 0.74 and area > 11000 and w > 120:
          #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
-         
+
          #Expanding the detected area
          xc = x - int(.5 * ampliation)
          yc = y - int(1 * ampliation)
@@ -424,7 +424,7 @@ def filterForCow(img):
          #cv2.imshow("img",img)
 
 
-   individualCow = equalizedFrame[yc:yc+hc,xc:xc+wc]
+   individualCow = img[yc:yc+hc,xc:xc+wc]
    print individualCow.shape
    blackTemp[yc:yc+hc,xc:xc+wc] = individualCow
    print blackTemp.shape

@@ -72,7 +72,7 @@ if __name__ == "__main__":
 		takePicture(frameNumber)
 		clearedFrame = rb.clearImage(mainFrame)
 		validation2, filtered = rb.filterForCow(clearedFrame)
-		validation,maxLenT,_ = rb.isThereACow(mainFrame,clearedFrame)
+		validation,maxLenT,_ = rb.isThereACow(mainFrame,filtered)
 		#If implementing filterForCow(), the second argument must be "filtered",
 		#else the secund argument must be "clearedFrame"
 

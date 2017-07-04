@@ -55,7 +55,7 @@ def drawLimits(left,right,y):
         # cv2.putText(mainFrame,("diff L: " + str(left)),(30,20), font, 0.8,(0,0,255),1,cv2.LINE_AA)
         # cv2.putText(mainFrame,("diff R: " + str(640-right)),(30,50), font, 0.8,(0,0,255),1,cv2.LINE_AA)
         # cv2.putText(mainFrame,("diff Top: " + str(y)),(30,80), font, 0.8,(0,0,255),1,cv2.LINE_AA)
-
+    
 '''
     MAIN
 '''
@@ -75,6 +75,7 @@ if __name__ == "__main__":
 
                         if validation:
                                 print "COW FOUND"
+                                print "center cow: ",getCowXcenter(maxLenT)
                                 tLevel = rb.getTissueTopLevel(maxLenT)
                                 rb.drawCowSquares(mainFrame,100,100,100,tLevel)
                                 A,B,theta = rb.ajusteDeCurvas(tLevel)
@@ -83,26 +84,6 @@ if __name__ == "__main__":
 
                                 cowCenter = getCowXcenter(left,right)
                                 frameCenter = getXCenterFrame()
-
-                                dg = abs(cowCenter - frameCenter) / 12
-                                print "degrees phase :", dg
-                                print "centering the cow..."
-                                if cowCenter > frameCenter:
-                                    # cow is at right
-                                    com.turnNDegrees(dg,0)
-                                else:
-                                    # cow is at left
-                                    com.turnNDegrees(dg,1)
-                                print "centered"
-
-                                cv2.imshow('im',mainFrame)
-                                cv2.waitKey(0)
-                                cv2.destroyAllWindows()
-                                res = raw_input("go?" )
-                                if res == 'yes' or res =='y':
-                                    com.getInCow()
-
-
                                 # showing level of tissue
                                 for sq in maxLenT:
                                         x = sq.getTopLeftC()[0]
