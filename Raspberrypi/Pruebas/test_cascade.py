@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 
-H_cascade = cv2.CascadeClassifier('../Cascades/COW1.xml')
+H_cascade = cv2.CascadeClassifier('../Cascades/COW3.xml')
 
 cap = cv2.VideoCapture(0)
 
@@ -11,7 +11,7 @@ while 1:
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # add this
     # image, reject levels level weights.
-    H = H_cascade.detectMultiScale(gray, 1.3, 100)
+    H = H_cascade.detectMultiScale(gray, 1.3, 75)
     # add this
 
     if H is ():
