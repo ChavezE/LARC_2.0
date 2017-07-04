@@ -215,6 +215,8 @@ void loop()
   unsigned long data1, data2;
   char order = '0';
   char sharp = 'A';
+  int iDistance = 0;
+  int num = 0;
 
   if (Serial.available() > 0) 
   {
@@ -296,9 +298,9 @@ void loop()
         
       case 'k':
         while(Serial.available() < 1);
-        int num  = Serial.read() - 48;
-        int bDistance = getDistance(pinSharp[num]);
-        Serial.println(bDistance);
+        num  = Serial.read() - 48;
+        iDistance = getDistance(pinSharp[num]);
+        Serial.println(iDistance);
         break;
       
       case 'l':

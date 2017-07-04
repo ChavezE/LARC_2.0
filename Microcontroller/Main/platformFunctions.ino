@@ -18,6 +18,22 @@ void platIn()
   sPlattaform.write(90);
 }
 
+//Move plattaform to a mid distance
+void platInMid()
+{
+  //Display function in LCD
+  //lcd.clear();
+  // writeLCD("PLAT IN MID", 0, 0);
+  
+  //Start moving the plattaform
+  sPlattaform.write(100);
+  
+  delay(1600);
+  
+  //Stop the plattaform
+  sPlattaform.write(90);
+}
+
 //Move plattaform Out
 void platOut()
 {
