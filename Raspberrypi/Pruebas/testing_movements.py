@@ -1,5 +1,3 @@
-
-
 # standar libs
 import cv2
 import numpy as np
@@ -33,13 +31,20 @@ def takePicture():
 	goodFrm, mainFrame = cap.read()
 	print "I took a pic"
 
+def getCowXcenter(left,right):
+	center = (left+right)/2
+	cv2.line(mainFrame,(center,0),(center,480),(0,255,255),1)
+	return center
 
-def getCowXcenter(maxLenT):
+def getXCenterFrame():
+	center = (mainFrame.shape[1])/2
+	cv2.line(mainFrame,(center,0),(center,480),(255,255,0),1)
+	return center
+
+def getLimits(maxLenT):
 	left,right,up=rb.calcCowLimits(maxLenT)
-	# print "cow x dist: ", right - left
-	# print "y: ", up
 	drawLimits(left,right,up)
-	return (left+right)/2
+	return left,right,up
 
 def drawLimits(left,right,y):
 	global mainFrame
@@ -75,7 +80,10 @@ if __name__ == "__main__":
 				rb.drawCowSquares(mainFrame,100,100,100,tLevel)
 				A,B,theta = rb.ajusteDeCurvas(tLevel)
 				rb.drawSlope(mainFrame,A,B)
-				print "center cow: ",getCowXcenter(maxLenT)
+				left,right,up=getLimits(maxLenT)
+
+				cowCenter = getCowXcenter(left,right)
+				frameCenter = getXCenterFrame()
 				# showing level of tissue
 				for sq in maxLenT:
 					x = sq.getTopLeftC()[0]

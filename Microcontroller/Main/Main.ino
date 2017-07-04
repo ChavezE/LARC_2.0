@@ -61,6 +61,9 @@ const byte pinSLB = A0;
 //Sharp Claw
 const byte pinSC = A6;
 
+//pins Sharps
+byte pinSharp[9] = {A3, A4, A1, A2, A0, A5, A6};
+
 //----LimitSwithces----//
 
 //In Limit Switch
@@ -208,9 +211,6 @@ void setup()
 
 void loop()
 {
-  getInCow();
-  while(1);
-  /*
   unsigned long data;
   unsigned long data1, data2;
   char order = '0';
@@ -225,7 +225,7 @@ void loop()
         while(Serial.available() < 1);
 
         data = Serial.read();
-        forwardNCm(data);
+        forwardNCm(data, false);
         Serial.write('1');
         break;
 
@@ -233,7 +233,7 @@ void loop()
         while(Serial.available() < 1);
 
         data = Serial.read();
-        backwardNCm(data);
+        backwardNCm(data, false);
         Serial.write('1');
         break;
 
@@ -293,7 +293,19 @@ void loop()
         backwardUntilNoLeft();
         Serial.write('1');
         break;
+        
+      case 'k':
+        while(Serial.available() < 1);
+        int num  = Serial.read() - 48;
+        int bDistance = getDistance(pinSharp[num]);
+        Serial.println(bDistance);
+        break;
+      
+      case 'l':
+        int iAm = getCompass();
+        goGrabTerrines(iAm);
+        Serial.write('1');
+        break;
     }
   }
-  */
 }

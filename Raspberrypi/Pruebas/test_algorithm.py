@@ -35,19 +35,27 @@ def takePicture(frameNumber):
 
 	return True #goodFrm
 
-def getCowXcenter(maxLenT):
-	left,right,up=rb.calcCowLimits(maxLenT)
-	# print "cow x dist: ", right - left
-	# print "y: ", up
-	drawLimits(left,right,up)
-	return (left+right)/2
+def getCowXcenter(left,right):
+	center = (left+right)/2
+	cv2.line(mainFrame,(center,0),(center,480),(0,255,255),1)
+	return center
 
-def drawLimits(left,right,y):
+def getXCenterFrame():
+	center = (mainFrame.shape[1])/2
+	cv2.line(mainFrame,(center,0),(center,480),(255,255,0),1)
+	return center
+
+def getLimits(maxLenT):
+	left,right,up=rb.calcCowLimits(maxLenT)
+	drawLimits(left,right,up)
+	return left,right,up
+
+def drawLimits(left,right,up):
 	global mainFrame
 	font = cv2.FONT_HERSHEY_SIMPLEX
 	cv2.line(mainFrame,(left,0),(left,480),(0,0,255),2)
 	cv2.line(mainFrame,(right,0),(right,480),(0,0,255),2)
-	cv2.line(mainFrame,(0,y),(640,y),(0,0,255),2)
+	cv2.line(mainFrame,(0,up),(640,up),(0,0,255),2)
 	# cv2.putText(mainFrame,("diff L: " + str(left)),(30,20), font, 0.8,(0,0,255),1,cv2.LINE_AA)
 	# cv2.putText(mainFrame,("diff R: " + str(640-right)),(30,50), font, 0.8,(0,0,255),1,cv2.LINE_AA)
 	# cv2.putText(mainFrame,("diff Top: " + str(y)),(30,80), font, 0.8,(0,0,255),1,cv2.LINE_AA)
@@ -58,12 +66,15 @@ def drawLimits(left,right,y):
 '''
 if __name__ == "__main__":
 	validation=False
-	for x in range(10,27):
+	for x in range(1,34):
 		frameNumber=x
 		this_time = time.time()
 		takePicture(frameNumber)
-		validation2, filtered = rb.filterForCow(mainFrame)
-		validation,maxLenT,_ = rb.isThereACow(mainFrame,filtered)
+		clearedFrame = rb.clearImage(mainFrame)
+		validation2, filtered = rb.filterForCow(clearedFrame)
+		validation,maxLenT,_ = rb.isThereACow(mainFrame,clearedFrame)
+		#If implementing filterForCow(), the second argument must be "filtered",
+		#else the secund argument must be "clearedFrame"
 
 		# print validation, len(maxLenT)
 		# print "center camera: ",(mainFrame.shape[1])/2
@@ -73,12 +84,19 @@ if __name__ == "__main__":
 			# rb.drawCowSquares(mainFrame,100,100,100,tLevel)
 			A,B,theta = rb.ajusteDeCurvas(tLevel)
 			# rb.drawSlope(mainFrame,A,B)
-			print "center cow: ",getCowXcenter(maxLenT)
+			left,right,up=getLimits(maxLenT)
+
+
 			# showing level of tissue
 			# for sq in maxLenT:
 			# 	x = sq.getTopLeftC()[0]
 			# 	y = sq.getTopLeftC()[1]
 			# 	cv2.putText(mainFrame,str(sq.getLevel()),(x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(0,0,255),1,1)
+
+			cowCenter = getCowXcenter(left,right)
+			frameCenter = getXCenterFrame()
+
+
 		else:
 			print "COW NOT FOUND"
 		print ("TOTAL TIME: ",time.time() - this_time)

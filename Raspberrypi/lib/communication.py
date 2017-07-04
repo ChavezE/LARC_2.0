@@ -190,3 +190,19 @@ def getSharpDistance(num):
         pass
     cm = arduino.readline()
     print (cm)
+
+def goGrabTerrine():
+        print("GoGrabTerrine")
+        #Tell the arduino to run goGrabTerrines()
+        arduino.write("l")
+        #Wait for arduino response
+        while(arduino.inWaiting() <= 0):
+                pass;
+
+        #Completed
+        if(arduino.read() == "1"):
+                print("True")
+                return True
+        else:
+                print("False")
+                return False

@@ -416,10 +416,58 @@ void turnToObjectiveN(int iWant)
   brake();
 }
 
+//Turn to an exact angle
+void turnToObjectiveN(int iWant, int vLF, int vLB, int vRF, int vRB)
+{
+  //Actual Angle
+  int iAm = getCompass();
+  //Auxiliar to know limits
+  int iAux = iWant - iAm;
+
+  // +- Error
+  int iError = 2;
+
+  while (!(iAm > iWant - iError && iAm < iWant + iError))
+  {
+    //Move to the angle in the shorter path
+    if (iAux > -180 && iAux < 180)
+    {
+      if (iWant > iAm)
+      {
+        //Turn right
+        turnRight(vLF, vLB, vRF, vRB);
+      }
+      else if (iWant < iAm)
+      {
+        //Turn left
+        turnLeft(vLF, vLB, vRF, vRB);
+      }
+    }
+    else if (iAux > 180 || iAux < -180)
+    {
+      if (iAux > 0)
+      {
+        //Turn left
+        turnLeft(vLF, vLB, vRF, vRB);
+      }
+      else if (iAux < 0)
+      {
+        //Turn right
+        turnRight(vLF, vLB, vRF, vRB);
+      }
+    }
+
+    //check angle
+    iAm = getCompass();
+    iAux = iWant - iAm;
+  }
+  brake();
+}
+
 //Turn n amount of degrees, positive turn right, negative turn left
 void turnNDegrees(int n)
 {
-  writeLCD(String(n), 0, 0);
+  //writeLCD(String(n), 0, 0);
   //Get objective angle
   int obj = getCompass() + n;
 
@@ -435,6 +483,27 @@ void turnNDegrees(int n)
 
   //Turn to degree
   turnToObjectiveN(obj);
+}
+
+//Turn n amount of degrees, positive turn right, negative turn left
+void turnNDegrees(int n, int vLF, int vLB, int vRF, int vRB)
+{
+  //writeLCD(String(n), 0, 0);
+  //Get objective angle
+  int obj = getCompass() + n;
+
+  //angle correction
+  if (obj > 359)
+  {
+    obj -= 360;
+  }
+  else if (obj < 0)
+  {
+    obj += 360;
+  }
+
+  //Turn to degree
+  turnToObjectiveN(obj, vLF, vLB, vRF, vRB);
 }
 
 void forwardUntilNoRight()
