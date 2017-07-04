@@ -44,17 +44,18 @@ def colorFilterCalibration():
 	 
 	moments = cv2.moments(mask)
 	area = moments['m00']
+	x = 0
 
 	print area
-	if(area > 200):
+	if(area > 10):
 
 		x = int(moments['m10']/moments['m00'])
 		y = int(moments['m01']/moments['m00'])
 		
 		cv2.rectangle(imagen, (x, y), (x+2, y+2),(0,200,255), 2)
-		cv2.line(imagen,(x,0),(x,480),(0,200,0),1)
+		cv2.line(mainFrame,(x,0),(x,480),(0,200,0),1)
 
-	cv2.imshow('mask', mask)
+	#cv2.imshow('mask', mask)
 
 	return imagen, x
 
@@ -65,7 +66,7 @@ def getCowXcenter(left,right):
 
 def getXCenterFrame():
 	center = (mainFrame.shape[1])/2
-	cv2.line(mainFrame,(center,0),(center,480),(255,255,0),1)
+	cv2.line(mainFrame,(center,0),(center,480),(0,0,255),2)
 	return center
 
 def getLimits(maxLenT):
@@ -89,15 +90,14 @@ def drawLimits(left,right,y):
 if __name__ == "__main__":
 
 	while True:
-		takePicture()
+
+		takePicture()	
 		frame, x =  colorFilterCalibration()
 		center = getXCenterFrame()
-		cv2.imshow("Allignment", frame)
+		cv2.imshow("Allignment", mainFrame)
 		print ("pixels:  ", center - x)
-		k = cv2.waitKey(0)
-		if k ==27:
-			break
-			
+		cv2.waitKey(0)
+		
 
 		# navegation instructions
 		mov = raw_input("type instruction ")
@@ -114,4 +114,5 @@ if __name__ == "__main__":
 		elif mov == "tl":
 			dg = input("dgs ")
 			com.turnNDegrees(dg,1)
+
 cv2.destroyAllWindows()
