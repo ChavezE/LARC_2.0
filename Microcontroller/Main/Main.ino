@@ -44,7 +44,7 @@ const byte pinSB = A2;
 const byte pinSRF = A4;
 
 //Sharp Right Center
-const byte pinSRC;
+//const byte pinSRC;
 
 //Sharp Right Back
 const byte pinSRB = A1;
@@ -53,7 +53,7 @@ const byte pinSRB = A1;
 const byte pinSLF = A5;
 
 //Sharp Left Center
-const byte pinSLC;
+//const byte pinSLC;
 
 //Sharp Left Back
 const byte pinSLB = A0;
@@ -194,7 +194,7 @@ void setup()
   pinMode(pinLR, INPUT);
 
   pinMode(pinEncoder, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
+  attachInterrupt(pinEncoder, encoderStep, CHANGE); //attachInterrupt(digitalPinToInterrup(pinEncoder), encoderStep, CHANGE);
 
   brake();
   platIn();

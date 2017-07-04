@@ -1,6 +1,8 @@
 //Function to go to the terrines zone and grab a terrine
 void goGrabTerrines(int iDeg)
 {
+        lcd.clear();
+        writeLCD("GRAB TERRINE", 0, 0);
 	//If the claw sharp detect something
 	bool bTerrine = false;
 	//Vel to move on function
