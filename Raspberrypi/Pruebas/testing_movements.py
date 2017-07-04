@@ -1,5 +1,3 @@
-
-
 # standar libs
 import cv2
 import numpy as np
@@ -69,8 +67,9 @@ if __name__ == "__main__":
 		if analyse == '1':
 			takePicture()
 			cv2.imshow('im',mainFrame)
+			filteredImage = rb.clearImage(mainFrame)
 			this_time = time.time()
-			validation,maxLenT,_ = rb.isThereACow(mainFrame)
+			validation,maxLenT,_ = rb.isThereACow(filteredImage)
 			# print validation, len(maxLenT)
 			# print "center camera: ",(mainFrame.shape[1])/2
 

@@ -19,11 +19,11 @@ from copy import deepcopy
 
 #-------------------GLOBAL FOR CALIBRATION-------------------
 #Cow square area  #si detecta muchos cuadros
-maxSquareArea = 5000
-minSquareArea = 25
+maxSquareArea = 1000
+minSquareArea = 100
 #Thresh range for cow squares  #si no detecta suficientes cuadros
-minThresh = 30
-maxThresh = 150
+minThresh = 50
+maxThresh = 175
 steps = 5
 #Tissue Parameters
 eps = 60
@@ -332,7 +332,7 @@ def makeTissue(tActSqr,tAllSqrs,tissue,eps,lvl):
 
 
 # returns a Tissue compossed by cow squares if found, if not empty list
-def isThereACow(mainFrame,equalizedFrame):
+def isThereACow(mainFrame):
    maxLenT = [] # maximumLenghtTissue
    allSquares = [] # Store in each iteration of the binarization the squares found in the image
    minNumSquares = 4
@@ -343,7 +343,7 @@ def isThereACow(mainFrame,equalizedFrame):
 
    for binValueT in range(minThresh,maxThresh,steps):
 
-      cp0 = cp1 = cp2 = deepcopy(equalizedFrame)
+      cp0 = cp1 = cp2 = deepcopy(mainFrame)
       # main_copy2=mainFrame.copy()
 
       thresFrame0 = doThresHold(cp0, binValueT,7,1)
@@ -398,16 +398,17 @@ def filterForCow(img):
       return cowDetected, blackTemp
 
    for (x,y,w,h) in cows:
-       
+
       relation = float(h)/w
       area = (float(w)*h)
 
      #ampliation is calibratable,
+
      #determines how much the 
      #detected area expands 
       ampliation = (2 * (area/10000))
 
-     #This condition is also calibratable, by determining 
+     #This condition is also calibratable, by determining
      #a relationship between h/w
       if relation < 0.77 and relation > 0.74 and area > 11000 and w > 120:
          #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
@@ -417,7 +418,6 @@ def filterForCow(img):
          yc = y - int(1 * ampliation)
          hc = h + int((3 * ampliation))
          wc = w + int((1 * ampliation))
-         
          cowDetected = True
 
          cv2.rectangle(img,(xc,yc),(xc+wc,yc+hc),(0,255,0),1)
@@ -431,7 +431,7 @@ def filterForCow(img):
 
    cv2.imshow("with black", blackTemp)
    return cowDetected, blackTemp
-    
+
 
 
 # cSquares is a multidimensional list: [[x1,y1],[x2,y2],...,[xN,yN]]
