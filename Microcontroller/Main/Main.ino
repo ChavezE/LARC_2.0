@@ -123,11 +123,11 @@ const int velRF = 60;
 const int velRB = 70;
 
 //Cosntants of motors velocity for going slow
-const int velSlowLF = 41;
-const int velSlowLB = 43;
+const int velSlowLF = 48;
+const int velSlowLB = 51;
 
-const int velSlowRF = 33;
-const int velSlowRB = 50;
+const int velSlowRF = 42;
+const int velSlowRB = 56;
 
 /////////////////////
 //    Variables    //
@@ -218,6 +218,7 @@ void loop()
   char sharp = 'A';
   int iDistance = 0;
   int num = 0;
+  int iAm = 0;
 
   if (Serial.available() > 0) 
   {
@@ -305,14 +306,13 @@ void loop()
         break;
       
       case 'l':
-        int iAm = getCompass();
+        iAm = getCompass();
         goGrabTerrines(iAm);
         Serial.write('1');
         break;
 
       case 'm':
-        int iAm = getCompass();
-        getInCow3(true, iAm)
+        getInCow();
         Serial.write('1');
         break;
     }
