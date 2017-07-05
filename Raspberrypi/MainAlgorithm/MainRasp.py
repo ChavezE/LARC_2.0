@@ -24,6 +24,7 @@ tankAngle = 360 #Angle where we find the Tank; 360 = unknown, any other number i
 
 mainFrame = []
 clearedMainFrame = []
+maxLenTissue = []
 
 cap = cv2.VideoCapture(0)
 # let camara calibrate light
@@ -216,18 +217,20 @@ def walkingDetecting():
 		startedLeft=True
 
 def alignWithCow():
-	centerFrame=rb.getXCenterFrame(mainFrame)
-
+	centerFrame = rb.getXCenterFrame(mainFrame)
 	cowCenter = rb.getCowXCenter(maxLenTissue)
-	#degrDif= abs(cowCenter - centerFrame)
+	pixelDif = centerFrame - cowCenter
+	degree = abs(pixelDif)/12 
+	#Constant obtained throught calibration
 
-	if (cowCenter < centerFrame - 2):
-		#gira a la izquierda x grados
-		pass
-	elif(cowCenter > centerFrame + 2):
-		#gira a la derecha x grados
-		pass
+	if (pixelDif < -2 ):
+		turnRight(degree)
+		
+	elif(pixelDif > 2 ):
+		turnLeft(degree)
+
 def detect180R():
+	global maxLenTissue
 	foundCow = False
 	deg = 4
 	while deg < 179 :
@@ -237,15 +240,16 @@ def detect180R():
 		found, filtered = rb.detectCow(clearedMainFrame)
 		#first validation, haar cascade
 		if found:
-			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
+			foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
 			#second validation, algorithm
 			if foundCow:
-                                cv2.imshow("cow",mainFrame)
-                                cv2.waitKey(0)
+                cv2.imshow("cow",mainFrame)
+                cv2.waitKey(0)
 				return foundCow
 	return foundCow
 
 def detect180L():
+	global maxLenTissue
 	foundCow = False
 	deg = 4
 	while deg < 179 :
@@ -256,11 +260,11 @@ def detect180L():
 		found, filtered = rb.detectCow(clearedMainFrame)
 		#first validation, haar cascade
 		if found:
-			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
+			foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
 			#second validation, algorithm
 			if foundCow:
-                                cv2.imshow("cow",mainFrame)
-                                cv2.waitKey(0)
+                cv2.imshow("cow",mainFrame)
+                cv2.waitKey(0)
 				return foundCow
 	return foundCow
 
@@ -272,4 +276,8 @@ if __name__ == "__main__":
 	
 	found = detect180L()
 	print found
+	if (found):
+		print "ALINEANDOSE"
+		alignWithCow()
+		print "ALINEADO TERMINADO"
 	cv2.destroyAllWindows()
