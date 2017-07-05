@@ -46,10 +46,10 @@ def takePicture():
 	goodFrm, mainFrame = cap.read()
 	print "I took a pic"
 	if goodFrm:
-		cv2.imshow('main', mainFrame)
+		#cv2.imshow('main', mainFrame)
 		clearedMainFrame = rb.clearImage(mainFrame)
-		cv2.waitKey(0)
-		cv2.destroyAllWindows()
+		cv2.waitKey(30)
+		#cv2.destroyAllWindows()
 
 	else:
 		print ("There is an error with the camera")
@@ -240,6 +240,8 @@ def detect180R():
 			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
 			#second validation, algorithm
 			if foundCow:
+                                cv2.imshow("cow",mainFrame)
+                                cv2.waitKey(0)
 				return foundCow
 	return foundCow
 
@@ -250,6 +252,7 @@ def detect180L():
 		turnLeft(deg)
 		deg = deg + 4
 		takePicture()
+		
 		found, filtered = rb.detectCow(clearedMainFrame)
 		#first validation, haar cascade
 		if found:
@@ -265,5 +268,6 @@ def detect180L():
 if __name__ == "__main__":
 	
 	
-	found = checkingTurningR()
+	found = detect180R()
 	print found
+	cv2.destroyAllWindows()
