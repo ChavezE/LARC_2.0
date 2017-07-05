@@ -38,6 +38,7 @@ for i in range(10):
 # updates mainFrame
 def takePicture():
 	global mainFrame
+	global clearedMainFrame
 	# clear internal buffer
 	for i in range(4):
 		cap.grab()

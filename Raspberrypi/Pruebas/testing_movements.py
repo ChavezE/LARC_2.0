@@ -15,6 +15,8 @@ import communication as com
 
 
 mainFrame = []
+clearedMainFrame = []
+
 cap = cv2.VideoCapture(0)
 # let camara calibrate light
 for i in range(10):
@@ -22,14 +24,20 @@ for i in range(10):
 
 
 def takePicture():
-        global mainFrame
-        # mainFrame=cv2.imread('test_photos/'+str(frameNumber)+'.jpg')
-        # mainFrame=cv2.pyrDown(mainFrame)
-        for i in range(4):
-                cap.grab()
+	global mainFrame
+	global clearedMainFrame
+	# clear internal buffer
+	for i in range(4):
+		cap.grab()
+	# get new image
+	goodFrm, mainFrame = cap.read()
+	print "I took a pic"
+	if goodFrm:
+		clearedMainFrame = rb.clearImage(mainFrame)
 
-        goodFrm, mainFrame = cap.read()
-        print "I took a pic"
+	else:
+		print ("There is an error with the camera")
+	return goodFrm
 
 def getCowXcenter(left,right):
         center = (left+right)/2
