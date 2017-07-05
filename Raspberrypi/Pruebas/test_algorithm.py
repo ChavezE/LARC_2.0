@@ -27,8 +27,8 @@ def takePicture(frameNumber):
 	mainFrame=cv2.imread('../TestPhotos/480-640/'+str(frameNumber)+'.jpg')
 	# mainFrame=cv2.pyrDown(mainFrame)
 	# mainFrame =  cv2.resize(mainFrame,None,fx=0.25,fy=0.25,interpolation=cv2.INTER_AREA)
-	# cv2.imshow("frame: " + str(frameNumber),mainFrame)
-	# cv2.waitKey(0)
+	cv2.imshow("frame: " + str(frameNumber),mainFrame)
+	cv2.waitKey(0)
 	# for i in range(10):
 	# 	goodFrm, mainFrame = cap.read()
 	# print "I took a pic"
@@ -41,7 +41,7 @@ def takePicture(frameNumber):
 '''
 if __name__ == "__main__":
 	validation=False
-	for x in range(1,34):
+	for x in range(39,48):
 		frameNumber=x
 		this_time = time.time()
 		takePicture(frameNumber)
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 			# 	y = sq.getTopLeftC()[1]
 			# 	cv2.putText(mainFrame,str(sq.getLevel()),(x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(0,0,255),1,1)
 
-			cowCenter = rb.getCowXcenter(left,right)
+			cowCenter = rb.getCowXcenter(maxLenT)
 			frameCenter = rb.getXCenterFrame(mainFrame)
 
 

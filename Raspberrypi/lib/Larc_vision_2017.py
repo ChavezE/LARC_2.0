@@ -19,11 +19,11 @@ from copy import deepcopy
 
 #-------------------GLOBAL FOR CALIBRATION-------------------
 #Cow square area  #si detecta muchos cuadros
-maxSquareArea = 1000
+maxSquareArea = 5000
 minSquareArea = 100
 #Thresh range for cow squares  #si no detecta suficientes cuadros
 minThresh = 50
-maxThresh = 175
+maxThresh = 200
 steps = 5
 #Tissue Parameters
 eps = 30
@@ -33,7 +33,7 @@ cascadeSensitivity = 50
 
 #----HAAR Cascade---
 #importing the trained cascade of cow
-cowCascade = cv2.CascadeClassifier('../Cascades/COW1.xml')
+cowCascade = cv2.CascadeClassifier('../Cascades/COW3.xml')
 #using a black frame to filter
 blackFrame = cv2.imread("../images/white.jpg",0)
 
@@ -159,7 +159,7 @@ def getGoodSquares(contours,thres,mainC):
          extent = float(area / rect_area)
          if (extent >= 0.75 and area >= minSquareArea and area <= maxSquareArea):   # tolerance #previos range: 400-8500
             x,y,w,h = cv2.boundingRect(cnt)
-            if thres[y + h*0.5,x + w*0.5] == 1.0 and w/h < 3 and h/w < 3:
+            if thres[y + h/2,x + w/2] == 1 and w/h < 3 and h/w < 3:
                tempCowSquare = cowSquare(x,y,w,h,area)    # Create an objet from the 'cowSquare' class
                cowSquares.append(tempCowSquare) # Insert object 'cowSquare' into a list
                cv2.drawContours(mainC,[cnt],-1,(255,0,0),1)
