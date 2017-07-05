@@ -35,31 +35,6 @@ def takePicture(frameNumber):
 
 	return True #goodFrm
 
-def getCowXcenter(left,right):
-	center = (left+right)/2
-	cv2.line(mainFrame,(center,0),(center,480),(0,255,255),1)
-	return center
-
-def getXCenterFrame():
-	center = (mainFrame.shape[1])/2
-	cv2.line(mainFrame,(center,0),(center,480),(255,255,0),1)
-	return center
-
-def getLimits(maxLenT):
-	left,right,up=rb.calcCowLimits(maxLenT)
-	drawLimits(left,right,up)
-	return left,right,up
-
-def drawLimits(left,right,up):
-	global mainFrame
-	font = cv2.FONT_HERSHEY_SIMPLEX
-	cv2.line(mainFrame,(left,0),(left,480),(0,0,255),2)
-	cv2.line(mainFrame,(right,0),(right,480),(0,0,255),2)
-	cv2.line(mainFrame,(0,up),(640,up),(0,0,255),2)
-	# cv2.putText(mainFrame,("diff L: " + str(left)),(30,20), font, 0.8,(0,0,255),1,cv2.LINE_AA)
-	# cv2.putText(mainFrame,("diff R: " + str(640-right)),(30,50), font, 0.8,(0,0,255),1,cv2.LINE_AA)
-	# cv2.putText(mainFrame,("diff Top: " + str(y)),(30,80), font, 0.8,(0,0,255),1,cv2.LINE_AA)
-
 
 '''
     MAIN
@@ -71,7 +46,7 @@ if __name__ == "__main__":
 		this_time = time.time()
 		takePicture(frameNumber)
 		clearedFrame = rb.clearImage(mainFrame)
-		validation2, filtered = rb.filterForCow(clearedFrame)
+		validation2, filtered = rb.detectCow(clearedFrame)
 		validation,maxLenT,_ = rb.isThereACow(mainFrame,filtered)
 		#If implementing filterForCow(), the second argument must be "filtered",
 		#else the secund argument must be "clearedFrame"
@@ -84,8 +59,8 @@ if __name__ == "__main__":
 			# rb.drawCowSquares(mainFrame,100,100,100,tLevel)
 			A,B,theta = rb.ajusteDeCurvas(tLevel)
 			# rb.drawSlope(mainFrame,A,B)
-			left,right,up=getLimits(maxLenT)
-
+			left,right,up=rb.calcCowLimits(maxLenT)
+			rb.drawLimits(mainFrame,left,right,up)
 
 			# showing level of tissue
 			# for sq in maxLenT:
@@ -93,8 +68,8 @@ if __name__ == "__main__":
 			# 	y = sq.getTopLeftC()[1]
 			# 	cv2.putText(mainFrame,str(sq.getLevel()),(x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(0,0,255),1,1)
 
-			cowCenter = getCowXcenter(left,right)
-			frameCenter = getXCenterFrame()
+			cowCenter = rb.getCowXcenter(left,right)
+			frameCenter = rb.getXCenterFrame(mainFrame)
 
 
 		else:

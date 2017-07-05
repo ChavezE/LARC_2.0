@@ -23,6 +23,7 @@ tankPos = 0  #Position where we find the Tank; 0 = unknown, 1 = right, 2 = cente
 tankAngle = 360 #Angle where we find the Tank; 360 = unknown, any other number is the angle
 
 mainFrame = []
+clearedMainFrame = []
 
 cap = cv2.VideoCapture(0)
 # let camara calibrate light
@@ -43,9 +44,14 @@ def takePicture():
 	# get new image
 	goodFrm, mainFrame = cap.read()
 	print "I took a pic"
-	cv2.imshow('main', mainFrame)
-	cv2.waitKey(0)
-	cv2.destroyAllWindows()
+	if goodFrm:
+		cv2.imshow('main', mainFrame)
+		clearedMainFrame = rb.clearImage(mainFrame)
+		cv2.waitKey(0)
+		cv2.destroyAllWindows()
+
+	else:
+		print ("There is an error with the camera")
 	return goodFrm
 
 
@@ -86,6 +92,40 @@ def getTerrines():
 
 ##### Movimientos ######
 
+# def mamadaDeEmilio():
+# 	takePicture()
+
+# 	clearedFrame = rb.clearImage(mainFrame)
+# 	# validation2, filtered = rb.filterForCow(clearedFrame)
+# 	validation,maxLenT,_ = rb.isThereACow(mainFrame,clearedFrame)
+# 	if validation:
+# 		print "COW FOUND"
+# 		tLevel = rb.getTissueTopLevel(maxLenT)
+# 		rb.drawCowSquares(mainFrame,100,100,100,tLevel)
+# 		A,B,theta = rb.ajusteDeCurvas(tLevel)
+# 		rb.drawSlope(mainFrame,A,B)
+# 		left,right,up=getLimits(maxLenT)
+
+# 		cowCenter = getCowXcenter(left,right)
+# 		frameCenter = getXCenterFrame()
+
+# 		dg = abs(cowCenter - frameCenter) / 12
+# 		print "degrees phase :", dg
+# 		print "centering the cow..."
+# 		if cowCenter > frameCenter:
+# 			# cow is at right
+# 			com.turnNDegrees(dg,0)
+# 		else:
+# 			# cow is at left
+# 			com.turnNDegrees(dg,1)
+# 		print "centered"
+# 		com.getInCow()
+
+# 	if validation:
+# 		print "lo encontro"
+# 		break
+
+
 def turnRight(degrees):
 	com.turnNDegrees(degrees,0)
 
@@ -93,54 +133,36 @@ def turnLeft(degrees):
 	com.turnNDegrees(degrees,1)
 
 def checkingTurningR():
+	foundCow = False
 	turnRight(50)
 	for x in range(1,3):
 		turnRight(15)
 		missingAngles=((3-x)*15)+75
 		takePicture()
-
-
-		clearedFrame = rb.clearImage(mainFrame)
-		# validation2, filtered = rb.filterForCow(clearedFrame)
-		validation,maxLenT,_ = rb.isThereACow(mainFrame,clearedFrame)
-		if validation:
-			print "COW FOUND"
-			tLevel = rb.getTissueTopLevel(maxLenT)
-			rb.drawCowSquares(mainFrame,100,100,100,tLevel)
-			A,B,theta = rb.ajusteDeCurvas(tLevel)
-			rb.drawSlope(mainFrame,A,B)
-			left,right,up=getLimits(maxLenT)
-
-			cowCenter = getCowXcenter(left,right)
-			frameCenter = getXCenterFrame()
-
-			dg = abs(cowCenter - frameCenter) / 12
-			print "degrees phase :", dg
-			print "centering the cow..."
-			if cowCenter > frameCenter:
-				# cow is at right
-				com.turnNDegrees(dg,0)
-			else:
-				# cow is at left
-				com.turnNDegrees(dg,1)
-			print "centered"
-			com.getInCow()
-
-		if validation:
-			print "lo encontro"
-			break
-
-	#turnRight(missingAngles)
-	return validation
+		found, filtered = rb.detectCow(clearedMainFrame)
+		#first validation, haar cascade
+		if found:
+			foundCow,_,_ = rb.isThereACow(filtered)
+			#second validation, algorithm
+			if foundCow:
+				break
+	turnRight(missingAngles)
+	return foundCow
 
 def checkingTurningL():
+	foundCow = False
 	turnLeft(50)
 	for x in range(1,3):
 		turnLeft(15)
 		missingAngles=((3-x)*15)+75
-		foundCow,_,_ = isThereACow()
-		if foundCow:
-			break
+		takePicture()
+		found, filtered = rb.detectCow(clearedMainFrame)
+		#first validation, haar cascade
+		if found:
+			foundCow,_,_ = rb.isThereACow(filtered)
+			#second validation, algorithm
+			if foundCow:
+				break
 	turnLeft(missingAngles)
 	return foundCow
 
@@ -191,9 +213,9 @@ def walkingDetecting():
 		startedLeft=True
 
 def alignWithCow():
-	centerFrame=getXCenterFrame()
+	centerFrame=rb.getXCenterFrame(mainFrame)
 
-	cowCenter = getCowXCenter(maxLenTissue)
+	cowCenter = rb.getCowXCenter(maxLenTissue)
 	#degrDif= abs(cowCenter - centerFrame)
 
 	if (cowCenter < centerFrame - 2):
@@ -208,7 +230,7 @@ def alignWithCow():
 	MAIN
 '''
 if __name__ == "__main__":
-	getTerrines()
+	
 	com.turnNDegrees(90,0)
-	res = checkingTurningR()
-	print res
+	found = checkingTurningR()
+	print found

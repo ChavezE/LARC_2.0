@@ -383,7 +383,7 @@ def isThereACow(mainFrame, equalizedFrame):
 
 #Implementation of the trained cascade classifier,
 #trained to detect the COW pattern
-def filterForCow(img):
+def detectCow(img):
    blackTemp = blackFrame.copy()
 
    cows = cowCascade.detectMultiScale(img, 1.3, cascadeSensitivity)
@@ -613,7 +613,20 @@ def getTissueTopLevel(tissue):
 
 
    return levelTissue
+#############################################
+##-----------ALLINGMENT AND LIMITS-----------##
+#############################################
 
+
+def getCowXcenter(tissue):
+   left,right,top = calcCowLimits(tissue)
+   center = (left+right)/2
+   return center
+
+def getXCenterFrame(mainFrame):
+   center = (mainFrame.shape[1])/2
+   #cv2.line(mainFrame,(center,0),(center,480),(255,255,0),1)
+   return center
 
 #############################################
 ##-----------SECONDARY FUNCTIONS-----------##
@@ -691,14 +704,7 @@ def drawGreatestTissue(frame,greatestTissue):
    # cv2.putText(mainFrame,(str(areaT)),(50,50), font, 1,(0,0,255),1,cv2.LINE_AA)
    return frame
 
-def drawLimits(frame,left,right,y):
-   font = cv2.FONT_HERSHEY_SIMPLEX
-   cv2.line(frame,(left,0),(left,480),(0,200,0),3)
-   cv2.line(frame,(right,0),(right,480),(0,200,0),3)
-   cv2.line(frame,(0,y),(640,y),(0,200,0),3)
-
-   cv2.putText(frame,("diff L: " + str(left)),(30,20), font, 0.8,(0,0,255),1)
-   cv2.putText(frame,("diff R: " + str(640-right)),(30,50), font, 0.8,(0,0,255),1)
-   cv2.putText(frame,("diff Top: " + str(y)),(30,80), font, 0.8,(0,0,255),1)
-
-   return frame
+def drawLimits(mainFrame,left,right,y):
+   cv2.line(mainFrame,(left,0),(left,480),(255,0,0),3)
+   cv2.line(mainFrame,(right,0),(right,480),(255,0,0),3)
+   cv2.line(mainFrame,(0,y),(640,y),(255,0,0),3)
