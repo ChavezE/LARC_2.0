@@ -38,6 +38,7 @@ for i in range(10):
 # updates mainFrame
 def takePicture():
 	global mainFrame
+	global clearedMainFrame
 	# clear internal buffer
 	for i in range(4):
 		cap.grab()
@@ -141,11 +142,13 @@ def checkingTurningR():
 		takePicture()
 		found, filtered = rb.detectCow(clearedMainFrame)
 		#first validation, haar cascade
+		print ("HAAR CASCADE")
 		if found:
+                        print("IN!")
 			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
 			#second validation, algorithm
 			if foundCow:
-				break
+				return foundCow
 	turnRight(missingAngles)
 	return foundCow
 
@@ -162,7 +165,7 @@ def checkingTurningL():
 			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
 			#second validation, algorithm
 			if foundCow:
-				break
+				return foundCow
 	turnLeft(missingAngles)
 	return foundCow
 
@@ -224,13 +227,43 @@ def alignWithCow():
 	elif(cowCenter > centerFrame + 2):
 		#gira a la derecha x grados
 		pass
+def detect180R():
+	foundCow = False
+	deg = 4
+	while deg < 179 :
+		turnRight(deg)
+		deg = deg + 4
+		takePicture()
+		found, filtered = rb.detectCow(clearedMainFrame)
+		#first validation, haar cascade
+		if found:
+			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
+			#second validation, algorithm
+			if foundCow:
+				return foundCow
+	return foundCow
 
+def detect180L():
+	foundCow = False
+	deg = 4
+	while deg < 179 :
+		turnLeft(deg)
+		deg = deg + 4
+		takePicture()
+		found, filtered = rb.detectCow(clearedMainFrame)
+		#first validation, haar cascade
+		if found:
+			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
+			#second validation, algorithm
+			if foundCow:
+				return foundCow
+	return foundCow
 
 '''
 	MAIN
 '''
 if __name__ == "__main__":
 	
-	com.turnNDegrees(90,0)
+	
 	found = checkingTurningR()
 	print found
