@@ -74,10 +74,10 @@ if __name__ == "__main__":
         analyse = raw_input("process photo? ")
         if analyse == '1':
                 takePicture()
-                cv2.imshow('im',mainFrame)
                 filteredImage = rb.clearImage(mainFrame)
                 this_time = time.time()
                 validation,maxLenT,_ = rb.isThereACow(mainFrame,filteredImage)
+                cv2.imshow('im',mainFrame)
                 print validation, len(maxLenT)
                 print "center camera: ",(mainFrame.shape[1])/2
 

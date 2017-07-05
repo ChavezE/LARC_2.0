@@ -19,11 +19,11 @@ from copy import deepcopy
 
 #-------------------GLOBAL FOR CALIBRATION-------------------
 #Cow square area  #si detecta muchos cuadros
-maxSquareArea = 5000
+maxSquareArea = 3000
 minSquareArea = 100
 #Thresh range for cow squares  #si no detecta suficientes cuadros
 minThresh = 50
-maxThresh = 200
+maxThresh = 150
 steps = 5
 #Tissue Parameters
 eps = 30
@@ -113,7 +113,7 @@ def clearImage(imgOriginal):
 
    imGray = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2GRAY)
    imGray = cv2.GaussianBlur(imGray, (3,3), 2)
-   imGray = cv2.equalizeHist(imGray)
+   #imGray = cv2.equalizeHist(imGray)
    # imGray = cv2.fastNlMeansDenoisingColored(imgOriginal,None,10,10,7,21)
 
    return imGray

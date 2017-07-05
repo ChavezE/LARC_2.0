@@ -259,6 +259,8 @@ def detect180L():
 			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
 			#second validation, algorithm
 			if foundCow:
+                                cv2.imshow("cow",mainFrame)
+                                cv2.waitKey(0)
 				return foundCow
 	return foundCow
 
@@ -268,6 +270,6 @@ def detect180L():
 if __name__ == "__main__":
 	
 	
-	found = detect180R()
+	found = detect180L()
 	print found
 	cv2.destroyAllWindows()
