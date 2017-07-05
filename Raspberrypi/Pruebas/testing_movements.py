@@ -61,80 +61,41 @@ def drawLimits(left,right,y):
 '''
 if __name__ == "__main__":
 
-        while True:
+    while True:
 
-                analyse = raw_input("process photo? ")
-                if analyse == '1':
-                        takePicture()
-                        cv2.imshow('im',mainFrame)
-                        filteredImage = rb.clearImage(mainFrame)
-                        this_time = time.time()
-                        validation,maxLenT,_ = rb.isThereACow(filteredImage)
-                        # print validation, len(maxLenT)
-                        # print "center camera: ",(mainFrame.shape[1])/2
+        analyse = raw_input("process photo? ")
+        if analyse == '1':
+                takePicture()
+                cv2.imshow('im',mainFrame)
+                filteredImage = rb.clearImage(mainFrame)
+                this_time = time.time()
+                validation,maxLenT,_ = rb.isThereACow(mainFrame,filteredImage)
+                print validation, len(maxLenT)
+                print "center camera: ",(mainFrame.shape[1])/2
 
-                        if validation:
-                                print "COW FOUND"
-                                tLevel = rb.getTissueTopLevel(maxLenT)
-                                rb.drawCowSquares(mainFrame,100,100,100,tLevel)
-                                A,B,theta = rb.ajusteDeCurvas(tLevel)
-                                rb.drawSlope(mainFrame,A,B)
-                                left,right,up=getLimits(maxLenT)
+                
+                k = cv2.waitKey(0)
+                if k ==27:
+                        break
+                cv2.destroyAllWindows()
 
-                                cowCenter = getCowXcenter(left,right)
-                                frameCenter = getXCenterFrame()
+        # navegation instructions
+        mov = raw_input("type instruction ")
 
-                                dg = abs(cowCenter - frameCenter) / 12
-                                print "degrees phase :", dg
-                                print "centering the cow..."
-                                if cowCenter > frameCenter:
-                                    # cow is at right
-                                    com.turnNDegrees(dg,0)
-                                else:
-                                    # cow is at left
-                                    com.turnNDegrees(dg,1)
-                                print "centered"
+        if mov == 'f':
+                cm = input("cm ")
+                com.forwardNCm(cm)
+        elif mov == 'b':
+                cm = input("cm ")
+                com.backwardNCm(cm)
+        elif mov == "tr":
+                dg = input("dgs ")
+                com.turnNDegrees(dg,0)
+        elif mov == "tl":
+                dg = input("dgs ")
+                com.turnNDegrees(dg,1)
+        elif mov == "t":
+	                com.goGrabTerrine()
+    cap.release()
+	cv2.destroyAllWindows()
 
-                                cv2.imshow('im',mainFrame)
-                                cv2.waitKey(0)
-                                cv2.destroyAllWindows()
-                                res = raw_input("go?" )
-                                if res == 'yes' or res =='y':
-                                    com.getInCow()
-
-
-                                # showing level of tissue
-                                for sq in maxLenT:
-                                        x = sq.getTopLeftC()[0]
-                                        y = sq.getTopLeftC()[1]
-                                        cv2.putText(mainFrame,str(sq.getLevel()),(x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(0,0,255),1,1)
-
-                        else:
-                                print "COW NOT FOUND"
-
-
-                        print ("TOTAL TIME: ",time.time() - this_time)
-                        cv2.imshow("limits",mainFrame)
-                        print( mainFrame.shape)
-                        k = cv2.waitKey(0)
-                        if k ==27:
-                                break
-                        cv2.destroyAllWindows()
-
-                # navegation instructions
-                mov = raw_input("type instruction ")
-
-                if mov == 'f':
-                        cm = input("cm ")
-                        com.forwardNCm(cm)
-                elif mov == 'b':
-                        cm = input("cm ")
-                        com.backwardNCm(cm)
-                elif mov == "tr":
-                        dg = input("dgs ")
-                        com.turnNDegrees(dg,0)
-                elif mov == "tl":
-                        dg = input("dgs ")
-                        com.turnNDegrees(dg,1)
-                elif mov == "t":
-                        com.goGrabTerrine()

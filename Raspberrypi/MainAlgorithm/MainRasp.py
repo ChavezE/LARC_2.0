@@ -142,7 +142,7 @@ def checkingTurningR():
 		found, filtered = rb.detectCow(clearedMainFrame)
 		#first validation, haar cascade
 		if found:
-			foundCow,_,_ = rb.isThereACow(filtered)
+			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
 			#second validation, algorithm
 			if foundCow:
 				break
@@ -159,7 +159,7 @@ def checkingTurningL():
 		found, filtered = rb.detectCow(clearedMainFrame)
 		#first validation, haar cascade
 		if found:
-			foundCow,_,_ = rb.isThereACow(filtered)
+			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
 			#second validation, algorithm
 			if foundCow:
 				break
