@@ -105,5 +105,5 @@ if __name__ == "__main__":
         elif mov == "t":
 	                com.goGrabTerrine()
     cap.release()
-	cv2.destroyAllWindows()
+    cv2.destroyAllWindows()
 

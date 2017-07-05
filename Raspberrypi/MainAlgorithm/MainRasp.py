@@ -142,11 +142,13 @@ def checkingTurningR():
 		takePicture()
 		found, filtered = rb.detectCow(clearedMainFrame)
 		#first validation, haar cascade
+		print ("HAAR CASCADE")
 		if found:
+                        print("IN!")
 			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
 			#second validation, algorithm
 			if foundCow:
-				break
+				return foundCow
 	turnRight(missingAngles)
 	return foundCow
 
@@ -163,7 +165,7 @@ def checkingTurningL():
 			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
 			#second validation, algorithm
 			if foundCow:
-				break
+				return foundCow
 	turnLeft(missingAngles)
 	return foundCow
 
@@ -232,6 +234,6 @@ def alignWithCow():
 '''
 if __name__ == "__main__":
 	
-	com.turnNDegrees(90,0)
+	
 	found = checkingTurningR()
 	print found
