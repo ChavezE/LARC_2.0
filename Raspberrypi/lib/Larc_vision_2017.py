@@ -618,7 +618,7 @@ def getTissueTopLevel(tissue):
 #############################################
 
 
-def getCowXcenter(tissue):
+def getCowXCenter(tissue):
    left,right,top = calcCowLimits(tissue)
    center = (left+right)/2
    return center

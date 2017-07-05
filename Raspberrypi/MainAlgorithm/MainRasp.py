@@ -29,255 +29,255 @@ maxLenTissue = []
 cap = cv2.VideoCapture(0)
 # let camara calibrate light
 for i in range(10):
-		cap.read()
+        cap.read()
 
 '''
-	METODOS
+    METODOS
 '''
 ##### Camara ######
 
 # updates mainFrame
 def takePicture():
-	global mainFrame
-	global clearedMainFrame
-	# clear internal buffer
-	for i in range(4):
-		cap.grab()
-	# get new image
-	goodFrm, mainFrame = cap.read()
-	print "I took a pic"
-	if goodFrm:
-		#cv2.imshow('main', mainFrame)
-		clearedMainFrame = rb.clearImage(mainFrame)
-		cv2.waitKey(30)
-		#cv2.destroyAllWindows()
+    global mainFrame
+    global clearedMainFrame
+    # clear internal buffer
+    for i in range(4):
+        cap.grab()
+    # get new image
+    goodFrm, mainFrame = cap.read()
+    print "I took a pic"
+    if goodFrm:
+        #cv2.imshow('main', mainFrame)
+        clearedMainFrame = rb.clearImage(mainFrame)
+        cv2.waitKey(30)
+        #cv2.destroyAllWindows()
 
-	else:
-		print ("There is an error with the camera")
-	return goodFrm
+    else:
+        print ("There is an error with the camera")
+    return goodFrm
 
 
 ##### Rutinas ######
 
 def goToTerrines():
-	turnLeft(90)
-	result="n"
-	global terrinesZone;
-	if(terrinesZone == "c" or terrinesZone == "r"):
-		arduino.write("v")
-		time.sleep(1);
-		while(True):
-			if(arduino.inWaiting()>0):
-				result= arduino.read()
-				break
+    turnLeft(90)
+    result="n"
+    global terrinesZone;
+    if(terrinesZone == "c" or terrinesZone == "r"):
+        arduino.write("v")
+        time.sleep(1);
+        while(True):
+            if(arduino.inWaiting()>0):
+                result= arduino.read()
+                break
 
-		#Si agarramos vaso pues nos vamos al centro a buscar vaca, sino pues para ir al otro lado a buscar vasos
-		fowardUntilNotLeft();
+        #Si agarramos vaso pues nos vamos al centro a buscar vaca, sino pues para ir al otro lado a buscar vasos
+        fowardUntilNotLeft();
 
-		if(result=="1"):
-			terrinesZone= "r";
-			return;
+        if(result=="1"):
+            terrinesZone= "r";
+            return;
 
 
-	#No hubo en la derecha o ya sabiamos que es izq
-	arduino.write("k")
-	time.sleep(1);
-	while(arduino.inWaiting()<=0):
-		pass;
-	terrinesZone= "l"
+    #No hubo en la derecha o ya sabiamos que es izq
+    arduino.write("k")
+    time.sleep(1);
+    while(arduino.inWaiting()<=0):
+        pass;
+    terrinesZone= "l"
 
-	#Nos vamos al centro a buscar vacas siempre
-	#BackwardUntilNotLeft();
+    #Nos vamos al centro a buscar vacas siempre
+    #BackwardUntilNotLeft();
 
 def getTerrines():
-	com.goGrabTerrine()
+    com.goGrabTerrine()
 
 ##### Movimientos ######
 
 # def mamadaDeEmilio():
-# 	takePicture()
+#   takePicture()
 
-# 	clearedFrame = rb.clearImage(mainFrame)
-# 	# validation2, filtered = rb.filterForCow(clearedFrame)
-# 	validation,maxLenT,_ = rb.isThereACow(mainFrame,clearedFrame)
-# 	if validation:
-# 		print "COW FOUND"
-# 		tLevel = rb.getTissueTopLevel(maxLenT)
-# 		rb.drawCowSquares(mainFrame,100,100,100,tLevel)
-# 		A,B,theta = rb.ajusteDeCurvas(tLevel)
-# 		rb.drawSlope(mainFrame,A,B)
-# 		left,right,up=getLimits(maxLenT)
+#   clearedFrame = rb.clearImage(mainFrame)
+#   # validation2, filtered = rb.filterForCow(clearedFrame)
+#   validation,maxLenT,_ = rb.isThereACow(mainFrame,clearedFrame)
+#   if validation:
+#       print "COW FOUND"
+#       tLevel = rb.getTissueTopLevel(maxLenT)
+#       rb.drawCowSquares(mainFrame,100,100,100,tLevel)
+#       A,B,theta = rb.ajusteDeCurvas(tLevel)
+#       rb.drawSlope(mainFrame,A,B)
+#       left,right,up=getLimits(maxLenT)
 
-# 		cowCenter = getCowXcenter(left,right)
-# 		frameCenter = getXCenterFrame()
+#       cowCenter = getCowXcenter(left,right)
+#       frameCenter = getXCenterFrame()
 
-# 		dg = abs(cowCenter - frameCenter) / 12
-# 		print "degrees phase :", dg
-# 		print "centering the cow..."
-# 		if cowCenter > frameCenter:
-# 			# cow is at right
-# 			com.turnNDegrees(dg,0)
-# 		else:
-# 			# cow is at left
-# 			com.turnNDegrees(dg,1)
-# 		print "centered"
-# 		com.getInCow()
+#       dg = abs(cowCenter - frameCenter) / 12
+#       print "degrees phase :", dg
+#       print "centering the cow..."
+#       if cowCenter > frameCenter:
+#           # cow is at right
+#           com.turnNDegrees(dg,0)
+#       else:
+#           # cow is at left
+#           com.turnNDegrees(dg,1)
+#       print "centered"
+#       com.getInCow()
 
-# 	if validation:
-# 		print "lo encontro"
-# 		break
+#   if validation:
+#       print "lo encontro"
+#       break
 
 
 def turnRight(degrees):
-	com.turnNDegrees(degrees,0)
+    com.turnNDegrees(degrees,0)
 
 def turnLeft(degrees):
-	com.turnNDegrees(degrees,1)
+    com.turnNDegrees(degrees,1)
 
 def checkingTurningR():
-	foundCow = False
-	turnRight(50)
-	for x in range(1,3):
-		turnRight(15)
-		missingAngles=((3-x)*15)+75
-		takePicture()
-		found, filtered = rb.detectCow(clearedMainFrame)
-		#first validation, haar cascade
-		print ("HAAR CASCADE")
-		if found:
-                        print("IN!")
-			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
-			#second validation, algorithm
-			if foundCow:
-				return foundCow
-	turnRight(missingAngles)
-	return foundCow
+    foundCow = False
+    turnRight(50)
+    for x in range(1,3):
+        turnRight(15)
+        missingAngles=((3-x)*15)+75
+        takePicture()
+        found, filtered = rb.detectCow(clearedMainFrame)
+        #first validation, haar cascade
+        print ("HAAR CASCADE")
+        if found:
+            print("IN!")
+            foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
+            #second validation, algorithm
+            if foundCow:
+                return foundCow
+    turnRight(missingAngles)
+    return foundCow
 
 def checkingTurningL():
-	foundCow = False
-	turnLeft(50)
-	for x in range(1,3):
-		turnLeft(15)
-		missingAngles=((3-x)*15)+75
-		takePicture()
-		found, filtered = rb.detectCow(clearedMainFrame)
-		#first validation, haar cascade
-		if found:
-			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
-			#second validation, algorithm
-			if foundCow:
-				return foundCow
-	turnLeft(missingAngles)
-	return foundCow
+    foundCow = False
+    turnLeft(50)
+    for x in range(1,3):
+        turnLeft(15)
+        missingAngles=((3-x)*15)+75
+        takePicture()
+        found, filtered = rb.detectCow(clearedMainFrame)
+        #first validation, haar cascade
+        if found:
+            foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
+            #second validation, algorithm
+            if foundCow:
+                return foundCow
+    turnLeft(missingAngles)
+    return foundCow
 
 def walkingDetecting():
-	global terrinesZone
-	foundCow=False
-	missingAngles=0
-	startedLeft=0
-	pseudoterrines='l'
+    global terrinesZone
+    foundCow=False
+    missingAngles=0
+    startedLeft=0
+    pseudoterrines='l'
 
-	if pseudoterrines=='l':
-		startedLeft=True
-		BackwardCms(75)
-	else:
-		ForwardCms(75)
-		turnRight(180)
+    if pseudoterrines=='l':
+        startedLeft=True
+        BackwardCms(75)
+    else:
+        ForwardCms(75)
+        turnRight(180)
 
-	while foundCow == False:
-		if startedLeft == True:
+    while foundCow == False:
+        if startedLeft == True:
 
-			foundCow=checkingTurningR()
-			if foundCow:
-				break
+            foundCow=checkingTurningR()
+            if foundCow:
+                break
 
-			ForwardCms(75)
-			foundCow=checkingTurningL()
-			if foundCow:
-				break
-
-
-			BackwardCms(75)
-			foundCow=checkingTurningR()
-			if foundCow:
-				break
+            ForwardCms(75)
+            foundCow=checkingTurningL()
+            if foundCow:
+                break
 
 
-		foundCow=checkingTurningL()
-		if foundCow:
-			break
+            BackwardCms(75)
+            foundCow=checkingTurningR()
+            if foundCow:
+                break
 
-		ForwardCms(75)
-		foundCow=checkingTurningR()
-		if foundCow:
-			break
 
-		BackwardCms(75)
-		foundCow=checkingTurningL()
-		startedLeft=True
+        foundCow=checkingTurningL()
+        if foundCow:
+            break
+
+        ForwardCms(75)
+        foundCow=checkingTurningR()
+        if foundCow:
+            break
+
+        BackwardCms(75)
+        foundCow=checkingTurningL()
+        startedLeft=True
 
 def alignWithCow():
-	centerFrame = rb.getXCenterFrame(mainFrame)
-	cowCenter = rb.getCowXCenter(maxLenTissue)
-	pixelDif = centerFrame - cowCenter
-	degree = abs(pixelDif)/12 
-	#Constant obtained throught calibration
+    centerFrame = rb.getXCenterFrame(mainFrame)
+    cowCenter = rb.getCowXCenter(maxLenTissue)
+    pixelDif = centerFrame - cowCenter
+    degree = abs(pixelDif)/12 
+    #Constant obtained throught calibration
 
-	if (pixelDif < -2 ):
-		turnRight(degree)
-		
-	elif(pixelDif > 2 ):
-		turnLeft(degree)
+    if (pixelDif < -2 ):
+        turnRight(degree)
+        
+    elif(pixelDif > 2 ):
+        turnLeft(degree)
 
 def detect180R():
-	global maxLenTissue
-	foundCow = False
-	deg = 4
-	while deg < 179 :
-		turnRight(deg)
-		deg = deg + 4
-		takePicture()
-		found, filtered = rb.detectCow(clearedMainFrame)
-		#first validation, haar cascade
-		if found:
-			foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
-			#second validation, algorithm
-			if foundCow:
+    global maxLenTissue
+    foundCow = False
+    deg = 4
+    while deg < 179 :
+        turnRight(4)
+        deg = deg + 4
+        takePicture()
+        found, filtered = rb.detectCow(clearedMainFrame)
+        #first validation, haar cascade
+        if found:
+            foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
+            #second validation, algorithm
+            if foundCow:
                 cv2.imshow("cow",mainFrame)
                 cv2.waitKey(0)
-				return foundCow
-	return foundCow
+                return foundCow
+    return foundCow
 
 def detect180L():
-	global maxLenTissue
-	foundCow = False
-	deg = 4
-	while deg < 179 :
-		turnLeft(deg)
-		deg = deg + 4
-		takePicture()
-		
-		found, filtered = rb.detectCow(clearedMainFrame)
-		#first validation, haar cascade
-		if found:
-			foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
-			#second validation, algorithm
-			if foundCow:
+    global maxLenTissue
+    foundCow = False
+    deg = 4
+    while deg < 179 :
+        turnLeft(4)
+        deg = deg + 4
+        takePicture()
+        
+        found, filtered = rb.detectCow(clearedMainFrame)
+        #first validation, haar cascade
+        if found:
+            foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
+            #second validation, algorithm
+            if foundCow:
                 cv2.imshow("cow",mainFrame)
                 cv2.waitKey(0)
-				return foundCow
-	return foundCow
+                return foundCow
+    return foundCow
 
 '''
-	MAIN
+    MAIN
 '''
 if __name__ == "__main__":
-	
-	
-	found = detect180L()
-	print found
-	if (found):
-		print "ALINEANDOSE"
-		alignWithCow()
-		print "ALINEADO TERMINADO"
-	cv2.destroyAllWindows()
+    
+    
+    found = detect180L()
+    print found
+    if (found):
+        print "ALINEANDOSE"
+        alignWithCow()
+        print "ALINEADO TERMINADO"
+    cv2.destroyAllWindows()
