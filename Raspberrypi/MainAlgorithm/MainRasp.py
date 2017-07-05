@@ -227,7 +227,37 @@ def alignWithCow():
 	elif(cowCenter > centerFrame + 2):
 		#gira a la derecha x grados
 		pass
+def detect180R():
+	foundCow = False
+	deg = 4
+	while deg < 179 :
+		turnRight(deg)
+		deg = deg + 4
+		takePicture()
+		found, filtered = rb.detectCow(clearedMainFrame)
+		#first validation, haar cascade
+		if found:
+			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
+			#second validation, algorithm
+			if foundCow:
+				return foundCow
+	return foundCow
 
+def detect180L():
+	foundCow = False
+	deg = 4
+	while deg < 179 :
+		turnLeft(deg)
+		deg = deg + 4
+		takePicture()
+		found, filtered = rb.detectCow(clearedMainFrame)
+		#first validation, haar cascade
+		if found:
+			foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
+			#second validation, algorithm
+			if foundCow:
+				return foundCow
+	return foundCow
 
 '''
 	MAIN
