@@ -11,7 +11,7 @@ while 1:
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # add this
     # image, reject levels level weights.
-    H = H_cascade.detectMultiScale(gray, 1.3, 75)
+    H = H_cascade.detectMultiScale(gray, 1.3, 50)
     # add this
 
     if H is ():

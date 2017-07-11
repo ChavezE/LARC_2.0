@@ -261,6 +261,7 @@ def detect180L():
         #first validation, haar cascade
         if found:
             foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
+            #cv2.waitKey(2000)
             #second validation, algorithm
             if foundCow:
                 cv2.imshow("cow",mainFrame)
@@ -280,4 +281,5 @@ if __name__ == "__main__":
         print "ALINEANDOSE"
         alignWithCow()
         print "ALINEADO TERMINADO"
+        com.forwardNCm(100)
     cv2.destroyAllWindows()

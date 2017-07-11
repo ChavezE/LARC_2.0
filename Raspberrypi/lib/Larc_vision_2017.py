@@ -23,13 +23,13 @@ maxSquareArea = 3000
 minSquareArea = 100
 #Thresh range for cow squares  #si no detecta suficientes cuadros
 minThresh = 50
-maxThresh = 150
+maxThresh = 250
 steps = 5
 #Tissue Parameters
 eps = 30
 eps2 = 30
 #HAAR Cascade Sansitivity
-cascadeSensitivity = 60
+cascadeSensitivity = 75
 
 #----HAAR Cascade---
 #importing the trained cascade of cow
@@ -113,7 +113,7 @@ def clearImage(imgOriginal):
 
    imGray = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2GRAY)
    imGray = cv2.GaussianBlur(imGray, (3,3), 2)
-   #imGray = cv2.equalizeHist(imGray)
+   imGray = cv2.equalizeHist(imGray)
    # imGray = cv2.fastNlMeansDenoisingColored(imgOriginal,None,10,10,7,21)
 
    return imGray
