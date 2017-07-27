@@ -94,40 +94,6 @@ def getTerrines():
 
 ##### Movimientos ######
 
-# def mamadaDeEmilio():
-#   takePicture()
-
-#   clearedFrame = rb.clearImage(mainFrame)
-#   # validation2, filtered = rb.filterForCow(clearedFrame)
-#   validation,maxLenT,_ = rb.isThereACow(mainFrame,clearedFrame)
-#   if validation:
-#       print "COW FOUND"
-#       tLevel = rb.getTissueTopLevel(maxLenT)
-#       rb.drawCowSquares(mainFrame,100,100,100,tLevel)
-#       A,B,theta = rb.ajusteDeCurvas(tLevel)
-#       rb.drawSlope(mainFrame,A,B)
-#       left,right,up=getLimits(maxLenT)
-
-#       cowCenter = getCowXcenter(left,right)
-#       frameCenter = getXCenterFrame()
-
-#       dg = abs(cowCenter - frameCenter) / 12
-#       print "degrees phase :", dg
-#       print "centering the cow..."
-#       if cowCenter > frameCenter:
-#           # cow is at right
-#           com.turnNDegrees(dg,0)
-#       else:
-#           # cow is at left
-#           com.turnNDegrees(dg,1)
-#       print "centered"
-#       com.getInCow()
-
-#   if validation:
-#       print "lo encontro"
-#       break
-
-
 def turnRight(degrees):
     com.turnNDegrees(degrees,0)
 
@@ -220,12 +186,12 @@ def alignWithCow():
     centerFrame = rb.getXCenterFrame(mainFrame)
     cowCenter = rb.getCowXCenter(maxLenTissue)
     pixelDif = centerFrame - cowCenter
-    degree = abs(pixelDif)/12 
+    degree = abs(pixelDif)/12
     #Constant obtained throught calibration
 
     if (pixelDif < -2 ):
         turnRight(degree)
-        
+
     elif(pixelDif > 2 ):
         turnLeft(degree)
 
@@ -251,18 +217,21 @@ def detect180R():
 def detect180L():
     global maxLenTissue
     foundCow = False
-    deg = 4
+    deg = 9
     while deg < 179 :
-        turnLeft(4)
-        deg = deg + 4
+        print "dentro"
+        turnLeft(9)
+        deg = deg + 9
         takePicture()
-        
+
         found, filtered = rb.detectCow(clearedMainFrame)
+        print "haar"
         #first validation, haar cascade
         if found:
             foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
             #cv2.waitKey(2000)
             #second validation, algorithm
+            print "tissue"
             if foundCow:
                 cv2.imshow("cow",mainFrame)
                 cv2.waitKey(0)
@@ -273,8 +242,8 @@ def detect180L():
     MAIN
 '''
 if __name__ == "__main__":
-    
-    
+
+
     found = detect180L()
     print found
     if (found):
