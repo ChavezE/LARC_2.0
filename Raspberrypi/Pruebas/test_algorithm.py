@@ -58,7 +58,7 @@ if __name__ == "__main__":
 			tLevel = rb.getTissueTopLevel(maxLenT)
 			# rb.drawCowSquares(mainFrame,100,100,100,tLevel)
 			A,B,theta = rb.ajusteDeCurvas(tLevel)
-			# rb.drawSlope(mainFrame,A,B)
+			rb.drawSlope(mainFrame,A,B)
 			left,right,up=rb.calcCowLimits(maxLenT)
 			rb.drawLimits(mainFrame,left,right,up)
 
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 			# 	y = sq.getTopLeftC()[1]
 			# 	cv2.putText(mainFrame,str(sq.getLevel()),(x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.5,(0,0,255),1,1)
 
-			cowCenter = rb.getCowXcenter(maxLenT)
+			cowCenter = rb.getCowXCenter(maxLenT)
 			frameCenter = rb.getXCenterFrame(mainFrame)
 
 
