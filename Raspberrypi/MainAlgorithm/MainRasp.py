@@ -16,11 +16,16 @@ import communication as com
 VARIABLES GLOBALES
 '''
 
-terrinesZone = "c" #Terrines Position; c = unknown, r = right, l = left
-cowPos = 0  #Position where we find the Cow; 0 = unknown, 1 = right, 2 = center, 3 = left
-cowAngle = 360 #Angle where we find the Cow; 360 = unknown, any other number is the angle
-tankPos = 0  #Position where we find the Tank; 0 = unknown, 1 = right, 2 = center, 3 = left
-tankAngle = 360 #Angle where we find the Tank; 360 = unknown, any other number is the angle
+#Terrines Position; c = unknown, r = right, l = left
+terrinesZone = "c"
+ #Position where we find the Cow; 0 = unknown, 1 = right, 2 = center, 3 = left
+cowPos = 0
+#Angle where we find the Cow; 360 = unknown, any other number is the angle
+cowAngle = 360
+#Position where we find the Tank; 0 = unknown, 1 = right, 2 = center, 3 = left
+tankPos = 0
+ #Angle where we find the Tank; 360 = unknown, any other number is the angle
+tankAngle = 360
 
 mainFrame = []
 clearedMainFrame = []
@@ -100,87 +105,131 @@ def turnRight(degrees):
 def turnLeft(degrees):
     com.turnNDegrees(degrees,1)
 
+# Checks if the cascade detects a cow, updates maxLenTissue and returns boolean wheather found or not
+# Robot must be facing EAST
 def checkingTurningR():
-    foundCow = False
-    turnRight(50)
-    for x in range(1,3):
-        turnRight(15)
-        missingAngles=((3-x)*15)+75
-        takePicture()
-        found, filtered = rb.detectCow(clearedMainFrame)
-        #first validation, haar cascade
-        print ("HAAR CASCADE")
-        if found:
-            print("IN!")
-            foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
-            #second validation, algorithm
-            if foundCow:
-                return foundCow
-    turnRight(missingAngles)
-    return foundCow
+    global maxLenTissue
 
-def checkingTurningL():
-    foundCow = False
-    turnLeft(50)
-    for x in range(1,3):
-        turnLeft(15)
-        missingAngles=((3-x)*15)+75
+    turnRight(135)
+
+    for x in range(0,95,5) :
+        turnLeft(5)
         takePicture()
         found, filtered = rb.detectCow(clearedMainFrame)
         #first validation, haar cascade
         if found:
-            foundCow,_,_ = rb.isThereACow(mainFrame,filtered)
-            #second validation, algorithm
+            print "HAAR FOUND COW"
+            # second validation, tissue algorithm
+            foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
             if foundCow:
-                return foundCow
-    turnLeft(missingAngles)
-    return foundCow
+                print "TISSUE FOUND COW"
+                # uncomment to show the frame #
+                # cv2.imshow("cow",mainFrame)
+                # cv2.waitKey(0)
+                # cv2.destroyAllWindows()
+                return True
+
+            print "TISSUE DIT NOT FIND COW"
+    print "HAAR DID NOT FOUND COW"
+    turnLeft(45)
+    return False
+
+# Checks if the cascade detects a cow, updates maxLenTissue and returns boolean wheather found or not
+# Robot must be facing WEST
+def checkingTurningL():
+    global maxLenTissue
+
+    turnLeft(135)
+
+    for x in range(0,95,5) :
+        turnRight(5)
+        takePicture()
+        found, filtered = rb.detectCow(clearedMainFrame)
+        #first validation, haar cascade
+        if found:
+            # second validation, tissue algorithm
+            foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
+            if foundCow:
+                print "TISSUE FOUND COW"
+                # uncomment to show the frame #
+                # cv2.imshow("cow",mainFrame)
+                # cv2.waitKey(0)
+                # cv2.destroyAllWindows()
+                return True
+
+            print "TISSUE DIT NOT FIND COW"
+    print "HAAR DID NOT FOUND COW"
+    turnRight(45)
+    return False
+
 
 def walkingDetecting():
     global terrinesZone
-    foundCow=False
-    missingAngles=0
-    startedLeft=0
-    pseudoterrines='l'
 
-    if pseudoterrines=='l':
-        startedLeft=True
-        BackwardCms(75)
-    else:
-        ForwardCms(75)
-        turnRight(180)
-
+    stepping = 75
+    corner = "WEST"
+    foundCow = False
     while foundCow == False:
-        if startedLeft == True:
+            if(starting == "WEST"):
+                for x in range(3):
+                    foundCow=checkingTurningR()
+                    if foundCow:
+                        break
+                    ForwardCms(stepping)
+                corner = "EAST"
+            else:
+                for x in range(3):
+                    foundCow=checkingTurningR()
+                    if foundCow:
+                        break
+                    ForwardCms(stepping)
+                corner = "WEST"
 
-            foundCow=checkingTurningR()
-            if foundCow:
-                break
-
-            ForwardCms(75)
-            foundCow=checkingTurningL()
-            if foundCow:
-                break
-
-
-            BackwardCms(75)
-            foundCow=checkingTurningR()
-            if foundCow:
-                break
-
-
-        foundCow=checkingTurningL()
-        if foundCow:
-            break
-
-        ForwardCms(75)
-        foundCow=checkingTurningR()
-        if foundCow:
-            break
-
-        BackwardCms(75)
-        foundCow=checkingTurningL()
-        startedLeft=True
+# def walkingDetecting():
+#     global terrinesZone
+#     foundCow=False
+#     missingAngles=0
+#     startedLeft=0
+#     pseudoterrines='l'
+#
+#     if pseudoterrines=='l':
+#         startedLeft=True
+#         BackwardCms(75)
+#     else:
+#         ForwardCms(75)
+#         turnRight(180)
+#
+#     while foundCow == False:
+#         if startedLeft == True:
+#
+#             foundCow=checkingTurningR()
+#             if foundCow:
+#                 break
+#
+#             ForwardCms(75)
+#             foundCow=checkingTurningL()
+#             if foundCow:
+#                 break
+#
+#
+#             BackwardCms(75)
+#             foundCow=checkingTurningR()
+#             if foundCow:
+#                 break
+#
+#
+#         foundCow=checkingTurningL()
+#         if foundCow:
+#             break
+#
+#         ForwardCms(75)
+#         foundCow=checkingTurningR()
+#         if foundCow:
+#             break
+#
+#         BackwardCms(75)
+#         foundCow=checkingTurningL()
+#         startedLeft=True
 
 def alignWithCow():
     centerFrame = rb.getXCenterFrame(mainFrame)
@@ -195,60 +244,28 @@ def alignWithCow():
     elif(pixelDif > 2 ):
         turnLeft(degree)
 
-def detect180R():
-    global maxLenTissue
-    foundCow = False
-    deg = 4
-    while deg < 179 :
-        turnRight(4)
-        deg = deg + 4
-        takePicture()
-        found, filtered = rb.detectCow(clearedMainFrame)
-        #first validation, haar cascade
-        if found:
-            foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
-            #second validation, algorithm
-            if foundCow:
-                cv2.imshow("cow",mainFrame)
-                cv2.waitKey(0)
-                return foundCow
-    return foundCow
 
-def detect180L():
-    global maxLenTissue
-    foundCow = False
-    deg = 9
-    while deg < 179 :
-        print "dentro"
-        turnLeft(9)
-        deg = deg + 9
-        takePicture()
-
-        found, filtered = rb.detectCow(clearedMainFrame)
-        print "haar"
-        #first validation, haar cascade
-        if found:
-            foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
-            #cv2.waitKey(2000)
-            #second validation, algorithm
-            print "tissue"
-            if foundCow:
-                cv2.imshow("cow",mainFrame)
-                cv2.waitKey(0)
-                return foundCow
-    return foundCow
 
 '''
     MAIN
 '''
 if __name__ == "__main__":
 
+    # Robot always STARTS facing NORTH, check field in 'information' folder #
 
-    found = detect180L()
-    print found
-    if (found):
-        print "ALINEANDOSE"
-        alignWithCow()
-        print "ALINEADO TERMINADO"
-        com.forwardNCm(100)
-    cv2.destroyAllWindows()
+    # goToTerrines()
+    # getTerrines()
+
+    # STARTING EXPLORTION HERE
+    turnLeft(90)
+    walkingDetecting()
+    alignWithCow()
+    com.forwardNCm(100)
+
+    # print found
+    # if (found):
+    #     print "ALINEANDOSE"
+    #     alignWithCow()
+    #     print "ALINEADO TERMINADO"
+    #     com.forwardNCm(100)
+    # cv2.destroyAllWindows()
