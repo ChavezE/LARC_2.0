@@ -116,11 +116,11 @@ const long velTurn = 60L;
 //Constants of the motors when the motor is treated as  a 4x4
 
 //Cosntants of motors velocity
-const int velLF = 61;
-const int velLB = 63;
+const int velLF = 67; //67
+const int velLB = 68; //68
 
-const int velRF = 60;
-const int velRB = 70;
+const int velRF = 70; //70
+const int velRB = 80; //80
 
 //Cosntants of motors velocity for going slow
 const int velSlowLF = 48;
@@ -153,6 +153,8 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void setup()
 {
+  lcd.clear();
+  writeLCD("Iniciando", 0, 0);
   //delay(1000);
   //Delay to establish connection with raspberry
   Serial.begin(9600);
@@ -203,7 +205,7 @@ void setup()
   encoderState = 1;
 
   //Display the finish of the setup
-  //lcd.clear();
+  lcd.clear();
   writeLCD("START FENIX 2.0", 0, 0);
 
   //Stop plattaform for security
