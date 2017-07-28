@@ -1,7 +1,7 @@
 import serial
 import time
 try:
-        arduino = serial.Serial('/dev/ttyACM1', 9600, timeout = 1)
+        arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
 	time.sleep(3)
 except serial.SerialException:
         print("bad port, check labeling");
