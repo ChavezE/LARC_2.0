@@ -1,6 +1,7 @@
-void getInCow()
-{
+void getInCow(){
+  //Clear LCD and write that we are getting under the cow
   lcd.clear();
+  writeLCD("Entrando a vaca", 0, 0);
 
   //Angle at start
   int iAm = getCompass();
@@ -47,145 +48,56 @@ void getInCow()
     backwardNCm(5, true);
   }
 
-  if(bRight)
-  {
-    //Distance of right front sharp
-    distRF = getDistance(pinSRF);
+  //Reset vel
+  LF = velSlowLF;
+  LB = velSlowLB;
+  RF = velSlowRF;
+  RB = velSlowRB;
 
-    lcd.clear();
-    writeLCD("Buscando RF", 0, 0);
-    //Turn until it detect a leg
-    while (distRF > 30)
-    {
-      turnNDegrees(iTurn * -1);
-      distRF = getDistance(pinSRF);
-    }
-    brake();
+  //Check sharps
+  distRB = getDistance(pinSRB);
+  distLB = getDistance(pinSLB);
 
-    //Turn until it lost leg
-    while (distRF < 30)
-    {
-      turnNDegrees(iTurn * -1);
-      distRF = getDistance(pinSRF);
-    }
-    brake();
+  if(bRight){
+    turnNDegrees(-90);
+    backwardNCm(10, false);
+    forward(LF, LB, RF, RB);
+    do{
+      distRB = getDistance(pinSRB);
+    }while(distRB > 30);
 
-    //Turn until detect leg
-    while (distRF < 30)
-    {
-      turnNDegrees(iTurn);
-      distRF = getDistance(pinSRF);
-    }
-    brake();
-
-    //Distance of back sharp
-    distRB = getDistance(pinSRB);
-    //Move forward until back sharp detect the leg
-    forward(velSlowLF, velSlowLB, velSlowRF, velSlowRB);
-    while(distRB > 30)
-    {
+    while(distRB < 30){
       distRB = getDistance(pinSRB);
     }
     brake();
-    /*
-    //Move forward until back sharp lose the leg
-    forward(LF, LB, RF, RB);
-    while(distRB < 30)
-    {
-      distRB = getDistance(pinSRB);
-    }
-    brake();
-    */
+    forwardNCm(4, false);
 
-    backwardNCm(7, true);
-    //left front and right front sharp distance
-    distRF = getDistance(pinSRF);
-    distLF = getDistance(pinSLF);
-    //Turn until a leg detect a leg
-    while(distRF > 30 || distLF > 30)
-    {
-      turnNDegrees(iTurn);
-      distRF = getDistance(pinSRF);
-      distLF = getDistance(pinSLF);
-    }
-    forwardNCm(5, true);
+    turnNDegrees(90);
+    forwardNCm(10, false);
   }
-  else if(bLeft)
-  {
-    //Distance of right front sharp
-    distLF = getDistance(pinSLF);
-
-    lcd.clear();
-    writeLCD("Buscando LF", 0, 0);
-    //Turn until it detect a leg
-    while (distLF > 30)
-    {
-      turnNDegrees(iTurn);
-      distLF = getDistance(pinSLF);
-    }
-    brake();
-
-    //Turn until it lost leg
-    while (distLF < 30)
-    {
-      turnNDegrees(iTurn);
-      distLF = getDistance(pinSLF);
-    }
-    brake();
-
-    //Turn until detect leg
-    while (distLF < 30)
-    {
-      turnNDegrees(iTurn * -1);
-      distLF = getDistance(pinSLF);
-    }
-    brake();
-
-    //Distance of back sharp
-    distLB = getDistance(pinSLB);
-    //Move forward until back sharp detect the leg
+  else if(bLeft){
+    turnNDegrees(90);
+    backwardNCm(10, false);
     forward(LF, LB, RF, RB);
-    while(distLB > 30)
-    {
+    do{
+      distLB = getDistance(pinSLB);
+    }while(distLB > 30);
+
+    while(distLB < 30){
       distLB = getDistance(pinSLB);
     }
     brake();
-    //Move forward until back sharp lose the leg
-    forward(LF, LB, RF, RB);
-    while(distLB < 30)
-    {
-      distLB = getDistance(pinSLB);
-    }
-    brake();
-    //left front and right front sharp distance
-    distRF = getDistance(pinSRF);
-    distLF = getDistance(pinSLF);
-    //Turn until a leg detect a leg
-    while(distRF > 30 || distLF > 30)
-    {
-      turnNDegrees(iTurn * -1);
-      distRF = getDistance(pinSRF);
-      distLF = getDistance(pinSLF);
-    }
+    forwardNCm(4, false);
+
+    turnNDegrees(-90);
+    forwardNCm(10, false);
   }
-  
-  //Turn with a pivot
-  if(distRF < 30)
-  {
-    while(distLF > 30)
-    {
-      turnNDegrees(iTurn, LF, LB, 0, 0);
-      distLF = getDistance(pinSLF);
-    }
+  else{
+    forwardNCm(10, false);
   }
-  else
-  {
-    while(distRF > 30)
-    {
-      turnNDegrees(iTurn * -1, 0, 0, RF, RB);
-      distRF = getDistance(pinSRF);
-    }
-  }
-  //Get in cow
-  forwardNCm(5, true);
+  //To be sure
+  brake();
+  /*
+   *There could be an adjustment with the angle of the robot here
+   */
 }
