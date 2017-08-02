@@ -179,8 +179,9 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
 //Go forward the cm given in the parameter, Nestor style
 void forwardNCm(int cm, bool slow)
 {
-  //writeLCD("ForwardNCm", 0, 0);
-  //writeLCD(String(cm), 0, 1);
+  lcd.clear();
+  writeLCD("ForwardNCm", 0, 0);
+  writeLCD(String(cm), 0, 1);
   encoderState = 1;
   //Counts of encoder to get to the objective
   int untilSteps = (encoder30Cm / 30) * cm;
@@ -224,6 +225,10 @@ void forwardNCm(int cm, bool slow)
 //Go backward the cm given in the parameter, Nestor style
 void backwardNCm(int cm, bool slow)
 {
+  lcd.clear();
+  writeLCD("backwardNCm", 0, 0);
+  writeLCD(String(cm), 0, 1);
+
   encoderState = 1;
   //Counts of encoder to get to the objective
   int untilSteps = (encoder30Cm / 30) * cm;
@@ -371,6 +376,10 @@ void backwardUntilWallN(int dist)
 //Turn to an exact angle
 void turnToObjectiveN(int iWant)
 {
+  lcd.clear();
+  writeLCD("Turning To:", 0, 0);
+  writeLCD(String(iWant), 0, 1);
+
   //Actual Angle
   int iAm = getCompass();
   //Auxiliar to know limits
@@ -471,22 +480,24 @@ void turnToObjectiveN(int iWant, int vLF, int vLB, int vRF, int vRB)
 //Turn n amount of degrees, positive turn right, negative turn left
 void turnNDegrees(int n)
 {
-  //writeLCD(String(n), 0, 0);
-  //Get objective angle
-  int obj = getCompass() + n;
+  if (n != 0) {
+    //writeLCD(String(n), 0, 0);
+    //Get objective angle
+    int obj = getCompass() + n;
 
-  //angle correction
-  if (obj > 359)
-  {
-    obj -= 360;
-  }
-  else if (obj < 0)
-  {
-    obj += 360;
-  }
+    //angle correction
+    if (obj > 359)
+    {
+      obj -= 360;
+    }
+    else if (obj < 0)
+    {
+      obj += 360;
+    }
 
-  //Turn to degree
-  turnToObjectiveN(obj);
+    //Turn to degree
+    turnToObjectiveN(obj);
+  }
 }
 
 //Turn n amount of degrees, positive turn right, negative turn left
