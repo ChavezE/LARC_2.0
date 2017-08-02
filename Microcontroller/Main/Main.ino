@@ -214,11 +214,6 @@ void setup()
 
 void loop()
 {
-  //turnNDegrees(90);
-  //delay(2000);
-  getInCow();
-  while(1);
-  /*
   unsigned long data;
   unsigned long data1, data2;
   char order = '0';
@@ -325,5 +320,4 @@ void loop()
         break;
     }
   }
-  */
 }
