@@ -170,7 +170,7 @@ def walkingDetecting():
     corner = "WEST"
     foundCow = False
     while foundCow == False:
-            if(starting == "WEST"):
+            if(corner == "WEST"):
                 for x in range(3):
                     foundCow=checkingTurningR()
                     if foundCow:
@@ -258,9 +258,10 @@ if __name__ == "__main__":
 
     # STARTING EXPLORTION HERE
     turnLeft(90)
+    com.forwardNCm(10)
     walkingDetecting()
     alignWithCow()
-    com.forwardNCm(100)
+    com.getInCow()
 
     # print found
     # if (found):
