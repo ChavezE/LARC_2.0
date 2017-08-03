@@ -25,10 +25,11 @@ from copy import deepcopy
 # distance constants
 dstFile = open("../calibration/distParams")
 # A is in first line, B in second
-lines = dstFile.readlines()
-A = lines[0]
-B = lines[1]
+A = float(dstFile.readline().strip("\n"))
+B = float(dstFile.readline().strip("\n"))
 
+print "A", A
+print "B", B
 maxSquareArea = 3000
 minSquareArea = 100
 #Thresh range for cow squares  #si no detecta suficientes cuadros
