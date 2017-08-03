@@ -177,7 +177,6 @@ def walkingDetecting():
                     if foundCow:
                         break
                 corner = "EAST"
-                com.turnToObjective(270)
             else:
                 for x in range(3):
                     com.forwardNCm(stepping)
@@ -185,7 +184,6 @@ def walkingDetecting():
                     if foundCow:
                         break
                 corner = "WEST"
-                com.turnToObjective(90)
 
 
 # def walkingDetecting():
