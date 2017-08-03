@@ -124,7 +124,8 @@ def checkingTurningR():
             if foundCow:
                 print "TISSUE FOUND COW"
                 L,R,T = rb.calcCowLimits(maxLenTissue)
-                print "DISTANCE O COW", rb.getDistanceFromTop(T)
+                dis = rb.getDistanceFromTop(T)
+                print "DISTANCE O COW", dis
                 # uncomment to show the frame #
                 # cv2.imshow("cow",mainFrame)
                 # cv2.waitKey(0)
