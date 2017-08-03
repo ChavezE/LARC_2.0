@@ -254,9 +254,9 @@ def paralelism():
     degrees = int(abs(theta))
     print degrees
     if theta < -1:
-        turnLeft(degrees)
+        turnLeft(90-degrees)
     elif theta > 1:
-        turnRight(degrees)
+        turnRight(90-degrees)
 
 '''
     MAIN
@@ -275,7 +275,7 @@ if __name__ == "__main__":
     alignWithCow()
     print("PARALELO")
     paralelism()
-    com.getInCow()
+    #com.getInCow()
 
 
 
