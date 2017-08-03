@@ -17,8 +17,18 @@ import random
 from copy import deepcopy
 
 
+
+
 #-------------------GLOBAL FOR CALIBRATION-------------------
 #Cow square area  #si detecta muchos cuadros
+
+# distance constants
+dstFile = open("../calibration/distParams")
+# A is in first line, B in second
+lines = dstFile.readlines()
+A = lines[0]
+B = lines[1]
+
 maxSquareArea = 3000
 minSquareArea = 100
 #Thresh range for cow squares  #si no detecta suficientes cuadros
@@ -199,7 +209,10 @@ def getGoodSquares(contours,thres,mainC):
 
 
 
-
+def getDistanceFromTop(top):
+   global A
+   global B
+   return (top*A + B )
 
 # OUT: list of (x,y) coordenates with >= n strongest corners
 def getCorners(frame,n,quality):

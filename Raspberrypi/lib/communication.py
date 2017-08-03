@@ -231,15 +231,15 @@ def turnNorth():
     #Tell the arduino to turn to the north
     arduino.write("n")
     #Wait for arduino response
-        while(arduino.inWaiting() <= 0):
-                pass;
-        #Completed
-        if(arduino.read() == "1"):
-                print("True")
-                return True
-        else:
-                print("False")
-                return False
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
 
 #Turn to the East
 def turnEast():
@@ -249,15 +249,15 @@ def turnEast():
     #Tell the arduino to turn to the east
     arduino.write("e")
     #Wait for arduino response
-        while(arduino.inWaiting() <= 0):
-                pass;
-        #Completed
-        if(arduino.read() == "1"):
-                print("True")
-                return True
-        else:
-                print("False")
-                return False
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
 
 #Turn to the South
 def turnSouth():
@@ -267,15 +267,15 @@ def turnSouth():
     #Tell the arduino to turn to the South
     arduino.write("s")
     #Wait for arduino response
-        while(arduino.inWaiting() <= 0):
-                pass;
-        #Completed
-        if(arduino.read() == "1"):
-                print("True")
-                return True
-        else:
-                print("False")
-                return False
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
 
 #Turn to the West
 def turnWest():
@@ -285,13 +285,13 @@ def turnWest():
     #Tell the arduino to turn to the West
     arduino.write("w")
     #Wait for arduino response
-        while(arduino.inWaiting() <= 0):
-                pass;
-        #Completed
-        if(arduino.read() == "1"):
-                print("True")
-                return True
-        else:
-                print("False")
-                return False
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
 

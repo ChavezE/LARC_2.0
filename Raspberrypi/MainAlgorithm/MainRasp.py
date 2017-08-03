@@ -123,6 +123,9 @@ def checkingTurningR():
             foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
             if foundCow:
                 print "TISSUE FOUND COW"
+                L,R,T = rb.calcCowLimits(maxLenTissue)
+                dis = rb.getDistanceFromTop(T)
+                print "DISTANCE O COW", dis
                 # uncomment to show the frame #
                 # cv2.imshow("cow",mainFrame)
                 # cv2.waitKey(0)
@@ -172,11 +175,11 @@ def walkingDetecting():
     while foundCow == False:
             if(corner == "WEST"):
                 for x in range(3):
+                    com.forwardNCm(stepping)
                     foundCow=checkingTurningR()
                     if foundCow:
                         break
                 corner = "EAST"
-                turnRight(179)
             else:
                 for x in range(3):
                     com.forwardNCm(stepping)
@@ -184,7 +187,6 @@ def walkingDetecting():
                     if foundCow:
                         break
                 corner = "WEST"
-                turnRight(179)
 
 
 # def walkingDetecting():
@@ -268,7 +270,6 @@ if __name__ == "__main__":
 
     # STARTING EXPLORTION HERE #
     turnLeft(90)
-    com.forwardNCm(10)
     walkingDetecting()
     print("ALINEARSE")
     alignWithCow()
