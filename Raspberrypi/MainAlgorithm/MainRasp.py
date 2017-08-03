@@ -172,6 +172,7 @@ def walkingDetecting():
     while foundCow == False:
             if(corner == "WEST"):
                 for x in range(3):
+                    com.forwardNCm(stepping)
                     foundCow=checkingTurningR()
                     if foundCow:
                         break
@@ -260,7 +261,6 @@ if __name__ == "__main__":
 
     # STARTING EXPLORTION HERE #
     turnLeft(90)
-    com.forwardNCm(10)
     walkingDetecting()
     print("ALINEARSE")
     alignWithCow()
