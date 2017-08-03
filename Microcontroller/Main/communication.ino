@@ -103,6 +103,24 @@ void communication() {
         getInCow();
         Serial.write('1');
         break;
+
+      case 'n':
+        while(Serial.available() < 1);
+        sharp = Serial.read();
+        if(sharp == 'n'){
+          turnToObjectiveN(iNorth);
+        }
+        else if(sharp == 'e'){
+          turnToObjectiveN(iEast);
+        }
+        else if(sharp == 's'){
+          turnToObjectiveN(iSouth);
+        }
+        else if(sharp == 'w'){
+          turnToObjectiveN(iWest);
+        }
+        Serial.write('1');
+        break;
     }
     lcd.clear();
     writeLCD("Completado", 0, 0);
