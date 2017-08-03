@@ -247,7 +247,15 @@ def alignWithCow():
     elif(pixelDif > 2 ):
         turnLeft(degree)
 
-
+def paralelism():
+    tLevel = rb.getTissueTopLevel(maxLenTissue)
+    A,B,theta = rb.ajusteDeCurvas(tLevel)
+    degrees = int(abs(theta))
+    print degrees
+    if theta < -1:
+        turnLeft(degrees)
+    elif theta > 1:
+        turnRight(degrees)
 
 '''
     MAIN
@@ -264,7 +272,9 @@ if __name__ == "__main__":
     walkingDetecting()
     print("ALINEARSE")
     alignWithCow()
-    com.forwardNCm(100)
+    print("PARALELO")
+    paralelism()
+    #com.forwardNCm(100)
 
 
     # print found
