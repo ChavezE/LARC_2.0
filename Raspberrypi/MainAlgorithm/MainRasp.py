@@ -112,7 +112,7 @@ def checkingTurningR():
 
     turnRight(135)
 
-    for x in range(0,95,5) :
+    for x in range(0,95,15) :
         turnLeft(5)
         takePicture()
         found, filtered = rb.detectCow(clearedMainFrame)
@@ -131,7 +131,7 @@ def checkingTurningR():
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
-    turnLeft(45)
+    com.turnToObjective(270) # EAST
     return False
 
 # Checks if the cascade detects a cow, updates maxLenTissue and returns boolean wheather found or not
@@ -141,8 +141,8 @@ def checkingTurningL():
 
     turnLeft(135)
 
-    for x in range(0,95,5) :
-        turnRight(5)
+    for x in range(0,95,15) :
+        turnRight(15)
         takePicture()
         found, filtered = rb.detectCow(clearedMainFrame)
         #first validation, haar cascade
@@ -159,31 +159,34 @@ def checkingTurningL():
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
-    turnRight(45)
+    com.turnToObjective(90)  # WEST
     return False
 
 
 def walkingDetecting():
     global terrinesZone
 
-    stepping = 75
+    stepping = 20
     corner = "WEST"
     foundCow = False
     while foundCow == False:
-            if(starting == "WEST"):
-                for x in range(3):
+            if(corner == "WEST"):
+                for x in xrange(3):
+                    com.forwardNCm(stepping)
                     foundCow=checkingTurningR()
                     if foundCow:
                         break
-                    ForwardCms(stepping)
                 corner = "EAST"
+                turnRight(179)
             else:
                 for x in range(3):
-                    foundCow=checkingTurningR()
+                    com.forwardNCm(stepping)
+                    foundCow=checkingTurningL()
                     if foundCow:
                         break
-                    ForwardCms(stepping)
                 corner = "WEST"
+                turnRight(179)
+
 
 # def walkingDetecting():
 #     global terrinesZone
@@ -256,11 +259,13 @@ if __name__ == "__main__":
     # goToTerrines()
     # getTerrines()
 
-    # STARTING EXPLORTION HERE
+    # STARTING EXPLORTION HERE #
     turnLeft(90)
     walkingDetecting()
+    print("ALINEARSE")
     alignWithCow()
     com.forwardNCm(100)
+
 
     # print found
     # if (found):
