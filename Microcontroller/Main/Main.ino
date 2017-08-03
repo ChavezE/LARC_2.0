@@ -1,3 +1,4 @@
+
 #include <Adafruit_BNO055.h>
 #include <Servo.h>
 #include <Wire.h>
@@ -151,6 +152,12 @@ const int encoder30Cm = 1500;
 //LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
+//Angles of West, East, North, South
+int iNorth = 0;
+int iSouth = 0;
+int iWest = 0;
+int iEast = 0;
+
 void setup()
 {
   lcd.clear();
@@ -210,6 +217,19 @@ void setup()
 
   //Stop plattaform for security
   sPlattaform.write(90);
+
+  //Angle for north
+  iNorth = getCompass();
+  //Angle for East
+  iEast = iNorth + 90;
+  //Cheack if is not bigger than 360
+  if(iEast > 360){
+    iEast -= 360;
+  }
+  //Angle for east
+  iSouth = iEast + 90;
+  //Angle for south
+  iWest = iSouth + 90;
 }
 
 void loop()

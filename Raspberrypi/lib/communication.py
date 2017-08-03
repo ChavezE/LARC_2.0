@@ -222,3 +222,76 @@ def getInCow():
         else:
                 print("False")
                 return False
+
+#Turn to the North
+def turnNorth():
+    print("Turn North")
+    #Tell the arduino to turn
+    arduino.write("n")
+    #Tell the arduino to turn to the north
+    arduino.write("n")
+    #Wait for arduino response
+        while(arduino.inWaiting() <= 0):
+                pass;
+        #Completed
+        if(arduino.read() == "1"):
+                print("True")
+                return True
+        else:
+                print("False")
+                return False
+
+#Turn to the East
+def turnEast():
+    print("Turn East")
+    #Tell the arduino to turn
+    arduino.write("n")
+    #Tell the arduino to turn to the east
+    arduino.write("e")
+    #Wait for arduino response
+        while(arduino.inWaiting() <= 0):
+                pass;
+        #Completed
+        if(arduino.read() == "1"):
+                print("True")
+                return True
+        else:
+                print("False")
+                return False
+
+#Turn to the South
+def turnSouth():
+    print("Turn South")
+    #Tell the arduino to turn
+    arduino.write("n")
+    #Tell the arduino to turn to the South
+    arduino.write("s")
+    #Wait for arduino response
+        while(arduino.inWaiting() <= 0):
+                pass;
+        #Completed
+        if(arduino.read() == "1"):
+                print("True")
+                return True
+        else:
+                print("False")
+                return False
+
+#Turn to the West
+def turnWest():
+    print("Turn West")
+    #Tell the arduino to turn
+    arduino.write("n")
+    #Tell the arduino to turn to the West
+    arduino.write("w")
+    #Wait for arduino response
+        while(arduino.inWaiting() <= 0):
+                pass;
+        #Completed
+        if(arduino.read() == "1"):
+                print("True")
+                return True
+        else:
+                print("False")
+                return False
+
