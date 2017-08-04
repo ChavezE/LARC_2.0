@@ -63,7 +63,14 @@ def drawLimits(left,right,y):
         # cv2.putText(mainFrame,("diff L: " + str(left)),(30,20), font, 0.8,(0,0,255),1,cv2.LINE_AA)
         # cv2.putText(mainFrame,("diff R: " + str(640-right)),(30,50), font, 0.8,(0,0,255),1,cv2.LINE_AA)
         # cv2.putText(mainFrame,("diff Top: " + str(y)),(30,80), font, 0.8,(0,0,255),1,cv2.LINE_AA)
-
+def paralelism(maxLenTissue):
+        global mainFrame
+        tLevel = rb.getTissueTopLevel(maxLenTissue)
+        A,B,theta = rb.ajusteDeCurvas(tLevel)
+        rb.drawSlope(mainFrame,A,B)
+        degrees = int(abs(theta))
+        print degrees
+        print A
 '''
     MAIN
 '''
@@ -77,6 +84,8 @@ if __name__ == "__main__":
                 filteredImage = rb.clearImage(mainFrame)
                 this_time = time.time()
                 validation,maxLenT,_ = rb.isThereACow(mainFrame,filteredImage)
+                if validation:
+                        paralelism(maxLenT)
                 cv2.imshow('im',mainFrame)
                 print validation, len(maxLenT)
                 print "center camera: ",(mainFrame.shape[1])/2
