@@ -1,6 +1,8 @@
 import serial
 import time
 import cv2
+import pygame, sys
+#import pygame.locals()
 
 try:
         arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
@@ -9,6 +11,14 @@ except serial.SerialException:
         print("bad port, check labeling");
         while(True):
                 pass;
+
+pygame.init()
+BLACK = (0,0,0)
+WIDTH = 600
+HEIGHT = 400
+windowSurface = pygame.display.set_mode((WIDTH, HEIGHT), 0 ,32)
+
+windowSurface.fill(BLACK)
 
 def forwardNCm(cm):
         print("forwardNCm")
@@ -300,33 +310,39 @@ def turnWest():
 #Control the robot with the keyboard
 def controlRobot():
     print "Control Robot"
-    while(True):
-        pressKey = cv2.waitKey(250)
-        cv2.imshow("img", cv2.imread("../images/black.jpg"))
-        #w key
-        if (w == 119):
-            forwardNCm(1)
-        #a key
-        elif (a == 97):
-            turnNDegrees(1 , 1)
-        #s key
-        elif (s == 115):
-            backwardNCm(1)
-        #d key
-        elif(d == 100):
-            turnNDegrees(1 , 0)
-        #i key
-        elif(i == 105):
-            pass
-        #j key
-        elif(j == 106):
-            pass
-        #k key
-        elif(k == 108):
-            pass
-        #l key
-        elif(l == 107):
-            pass
-        #esc key
-        elif(esc == 27):
-            break
+    control = True
+    while(control):
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+                forwardNCm(3)
+                cont = True
+                while(cont):
+                    for event in pygame.event.get():
+                        if event.type == pygame.KEYUP and event.key == pygame.K_w:
+                            cont = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+                backwardNCm(3)
+                cont = True
+                while(cont):
+                    for event in pygame.event.get():
+                        if event.type == pygame.KEYUP and event.key == pygame.K_s:
+                            cont = False
+                            
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_a:
+                turnNDegrees(4, 1)
+                cont = True
+                while(cont):
+                    for event in pygame.event.get():
+                        if event.type == pygame.KEYUP and event.key == pygame.K_a:
+                            cont = False
+                            
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+                turnNDegrees(4, 0)
+                cont = True
+                while(cont):
+                    for event in pygame.event.get():
+                        if event.type == pygame.KEYUP and event.key == pygame.K_d:
+                            cont = False
+                            
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+                control = False
