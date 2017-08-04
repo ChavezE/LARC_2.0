@@ -307,6 +307,81 @@ def turnWest():
             print("False")
             return False
 
+def forward():
+    print("Forward")
+    #Tell the arduino to move forward
+    arduino.wrtie("o")
+    #Wait for arduino response
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
+
+def backward():
+    print("Backward")
+    #Tell the arduino to move backward
+    arduino.wrtie("p")
+    #Wait for arduino response
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
+
+def brake():
+    print("Brake")
+    #Tell the arduino to Brake
+    arduino.wrtie("q")
+    #Wait for arduino response
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
+
+def right():
+    print("Turning Right")
+    #Tell the arduino to turn Right
+    arduino.wrtie("r")
+    #Wait for arduino response
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
+
+def left():
+    print("Turning Left")
+    #Tell the arduino to turn Left
+    arduino.wrtie("s")
+    #Wait for arduino response
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
+
 #Control the robot with the keyboard
 def controlRobot():
     print "Control Robot"
@@ -314,34 +389,38 @@ def controlRobot():
     while(control):
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
-                forwardNCm(3)
+                forward()
                 cont = True
                 while(cont):
                     for event in pygame.event.get():
                         if event.type == pygame.KEYUP and event.key == pygame.K_w:
+                            brake()
                             cont = False
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_s:
-                backwardNCm(3)
+                backward()
                 cont = True
                 while(cont):
                     for event in pygame.event.get():
                         if event.type == pygame.KEYUP and event.key == pygame.K_s:
+                            brake()
                             cont = False
                             
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_a:
-                turnNDegrees(4, 1)
+                left()
                 cont = True
                 while(cont):
                     for event in pygame.event.get():
                         if event.type == pygame.KEYUP and event.key == pygame.K_a:
+                            brake()
                             cont = False
                             
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_d:
-                turnNDegrees(4, 0)
+                right()
                 cont = True
                 while(cont):
                     for event in pygame.event.get():
                         if event.type == pygame.KEYUP and event.key == pygame.K_d:
+                            brake()
                             cont = False
                             
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_c:

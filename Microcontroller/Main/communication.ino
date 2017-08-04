@@ -121,6 +121,31 @@ void communication() {
         }
         Serial.write('1');
         break;
+
+      case 'o':
+        forward(LF, LB, RF, RB);
+        Serial.write('1');
+        break;
+
+      case 'p':
+        backward(LF, LB, RF, RB);
+        Serial.write('1');
+        break;
+
+      case 'q':
+        brake();
+        Serial.write('1');
+        break;
+
+      case 'r':
+        turnRight(LF, LB, RF, RB);
+        Serial.write('1');
+        break;
+
+      case 's':
+        turnLeft(LF, LB, RF, RB);
+        Serial.write('1');
+        break;
     }
     writeLCD("C", 15, 0);
   }
