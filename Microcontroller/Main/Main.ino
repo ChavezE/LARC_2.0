@@ -235,4 +235,7 @@ void setup()
 void loop()
 {
   communication();
+  delay(500);
+  writeLCD("   ", 13, 1);
+  writeLCD(String(getCompass()), 13, 1);
 }

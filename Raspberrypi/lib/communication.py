@@ -1,5 +1,7 @@
 import serial
 import time
+import cv2
+
 try:
         arduino = serial.Serial('/dev/ttyACM0', 9600, timeout = 1)
 	time.sleep(3)
@@ -295,3 +297,36 @@ def turnWest():
             print("False")
             return False
 
+#Control the robot with the keyboard
+def controlRobot():
+    print "Control Robot"
+    while(True):
+        pressKey = cv2.waitKey(250)
+        cv2.imshow("img", cv2.imread("../images/black.jpg"))
+        #w key
+        if (w == 119):
+            forwardNCm(1)
+        #a key
+        elif (a == 97):
+            turnNDegrees(1 , 1)
+        #s key
+        elif (s == 115):
+            backwardNCm(1)
+        #d key
+        elif(d == 100):
+            turnNDegrees(1 , 0)
+        #i key
+        elif(i == 105):
+            pass
+        #j key
+        elif(j == 106):
+            pass
+        #k key
+        elif(k == 108):
+            pass
+        #l key
+        elif(l == 107):
+            pass
+        #esc key
+        elif(esc == 27):
+            break

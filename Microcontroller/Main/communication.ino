@@ -122,7 +122,6 @@ void communication() {
         Serial.write('1');
         break;
     }
-    lcd.clear();
-    writeLCD("Completado", 0, 0);
+    writeLCD("C", 15, 0);
   }
 }

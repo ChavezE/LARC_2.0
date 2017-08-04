@@ -2,7 +2,7 @@
 # standar libs
 import cv2
 import numpy as np
-import serial
+# import serial
 import time
 from copy import deepcopy
 
@@ -261,12 +261,12 @@ if __name__ == "__main__":
     # getTerrines()
 
     # STARTING EXPLORTION HERE #
-    turnLeft(90)
-    walkingDetecting()
-    print("ALINEARSE")
-    alignWithCow()
-    com.getInCow()
-
+    #turnLeft(90)
+    #walkingDetecting()
+    #print("ALINEARSE")
+    #alignWithCow()
+    #com.getInCow()
+    com.controlRobot()
 
     # print found
     # if (found):
