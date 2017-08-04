@@ -310,7 +310,7 @@ def turnWest():
 def forward():
     print("Forward")
     #Tell the arduino to move forward
-    arduino.wrtie("o")
+    arduino.write("o")
     #Wait for arduino response
     while(arduino.inWaiting() <= 0):
             pass;
@@ -325,7 +325,7 @@ def forward():
 def backward():
     print("Backward")
     #Tell the arduino to move backward
-    arduino.wrtie("p")
+    arduino.write("p")
     #Wait for arduino response
     while(arduino.inWaiting() <= 0):
             pass;
@@ -340,7 +340,7 @@ def backward():
 def brake():
     print("Brake")
     #Tell the arduino to Brake
-    arduino.wrtie("q")
+    arduino.write("q")
     #Wait for arduino response
     while(arduino.inWaiting() <= 0):
             pass;
@@ -355,7 +355,7 @@ def brake():
 def right():
     print("Turning Right")
     #Tell the arduino to turn Right
-    arduino.wrtie("r")
+    arduino.write("r")
     #Wait for arduino response
     while(arduino.inWaiting() <= 0):
             pass;
@@ -370,7 +370,7 @@ def right():
 def left():
     print("Turning Left")
     #Tell the arduino to turn Left
-    arduino.wrtie("s")
+    arduino.write("s")
     #Wait for arduino response
     while(arduino.inWaiting() <= 0):
             pass;
@@ -387,6 +387,7 @@ def controlRobot():
     print "Control Robot"
     control = True
     while(control):
+        brake()
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
                 forward()
@@ -425,3 +426,5 @@ def controlRobot():
                             
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                 control = False
+            else:
+                brake()
