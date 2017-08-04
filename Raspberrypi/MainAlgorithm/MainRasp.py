@@ -5,6 +5,7 @@ import numpy as np
 # import serial
 import time
 from copy import deepcopy
+import thread
 
 # Roborregos libs
 import sys
@@ -249,10 +250,13 @@ def alignWithCow():
         turnLeft(degree)
 
 
+def control():
+    com.controlRobot()
 
 '''
     MAIN
 '''
+
 if __name__ == "__main__":
 
     # Robot always STARTS facing NORTH, check field in 'information' folder #
@@ -266,7 +270,9 @@ if __name__ == "__main__":
     #print("ALINEARSE")
     #alignWithCow()
     #com.getInCow()
-    com.controlRobot()
+    thread.start_new_thread( control, ( ) )
+    while 1:
+        pass
 
     # print found
     # if (found):
