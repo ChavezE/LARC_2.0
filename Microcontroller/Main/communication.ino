@@ -123,12 +123,12 @@ void communication() {
         break;
 
       case 'o':
-        forward(LF, LB, RF, RB);
+        forward(velLF, velLB, velRF, velRB);
         Serial.write('1');
         break;
 
       case 'p':
-        backward(LF, LB, RF, RB);
+        backward(velLF, velLB, velRF, velRB);
         Serial.write('1');
         break;
 
@@ -138,12 +138,12 @@ void communication() {
         break;
 
       case 'r':
-        turnRight(LF, LB, RF, RB);
+        turnRight(velLF, velLB, velRF, velRB);
         Serial.write('1');
         break;
 
       case 's':
-        turnLeft(LF, LB, RF, RB);
+        turnLeft(velLF, velLB, velRF, velRB);
         Serial.write('1');
         break;
     }
