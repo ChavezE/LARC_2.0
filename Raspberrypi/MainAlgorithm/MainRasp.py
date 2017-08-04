@@ -272,6 +272,9 @@ if __name__ == "__main__":
     #com.getInCow()
     thread.start_new_thread( control, ( ) )
     while 1:
+        takePicture()
+        cv2.imshow('cam',mainFrame)
+        cv2.waitKey(10)
         pass
 
     # print found
