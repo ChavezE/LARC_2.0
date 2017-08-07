@@ -256,7 +256,7 @@ def paralelism():
     if theta < -1:
         turnLeft(90-(4*degrees))
     elif theta > 1:
-        turnRight(90-(4*degrees))
+        turnRight(90-(5*degrees))
 
 '''
     MAIN
