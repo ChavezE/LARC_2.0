@@ -250,6 +250,40 @@ def alignWithCow():
         turnLeft(degree)
 
 
+def paralelism():
+    tLevel = rb.getTissueTopLevel(maxLenTissue)
+    A,B,theta = rb.ajusteDeCurvas(tLevel)
+    degrees = int(abs(theta))
+
+    if theta < -1:
+        finalDeg = 90 - (4*degrees)
+        turnLeft(finalDeg)
+        turnedLeft = True       
+    elif theta > 1:
+        finalDeg = 90 - (5*degrees)
+        turnRight(finalDeg)
+        turnedLeft = False
+    else:
+        return 0, False
+
+    return finalDeg, turnedLeft
+
+def triangleToGetInCow():
+    L,R,Top = rb.calcCowLimits(maxLenTissue)
+    adyacent = rb.getDistanceFromTop(Top)
+
+    degs, turnedLeft = paralelism()
+    
+    if degs > 0:
+        hypotenuse = (1/cos(degs)) * adyacent
+
+        com.forwardNCm(hypotenuse/2)
+
+        if turnedLeft :
+            turnRight(90)
+        else:
+            turnLeft(90)
+
 def control():
     com.controlRobot()
 
