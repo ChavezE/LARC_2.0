@@ -136,7 +136,7 @@ def checkingTurningR():
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
-    com.turnToObjective(270) # EAST
+    com.turnToObjective(270) # WEST
     return False
 
 # Checks if the cascade detects a cow, updates maxLenTissue and returns boolean wheather found or not
@@ -164,7 +164,7 @@ def checkingTurningL():
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
-    com.turnToObjective(90)  # WEST
+    com.turnToObjective(90)  # EAST
     return False
 
 
@@ -172,23 +172,25 @@ def walkingDetecting():
     global terrinesZone
 
     stepping = 20
-    corner = "WEST"
+    corner = "EAST"
     foundCow = False
     while foundCow == False:
-            if(corner == "WEST"):
+            if(corner == "EAST"):
+                com.turnToObjective(90)
                 for x in range(3):
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningR()
                     if foundCow:
                         break
-                corner = "EAST"
+                corner = "WEST"
             else:
+                com.turnToObjective(270)
                 for x in range(3):
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningL()
                     if foundCow:
                         break
-                corner = "WEST"
+                corner = "EAST"
 
 
 # def walkingDetecting():
@@ -279,7 +281,7 @@ def triangleToGetInCow():
     print "PARALLEL"
     degs, turnedLeft = paralelism()
     print degs
-    print "TRIANGLE"
+     print "TRIANGLE"
     if degs > 0:
         print "ACTION"
         hypotenuse = (1/math.cos(math.radians(degs))) * adyacent
