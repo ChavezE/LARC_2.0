@@ -2,6 +2,7 @@
 # standar libs
 import cv2
 import numpy as np
+import math
 # import serial
 import time
 from copy import deepcopy
@@ -135,7 +136,7 @@ def checkingTurningR():
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
-    com.turnToObjective(270) # EAST
+    com.turnToObjective(270) # WEST
     return False
 
 # Checks if the cascade detects a cow, updates maxLenTissue and returns boolean wheather found or not
@@ -163,7 +164,7 @@ def checkingTurningL():
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
-    com.turnToObjective(90)  # WEST
+    com.turnToObjective(90)  # EAST
     return False
 
 
@@ -171,23 +172,25 @@ def walkingDetecting():
     global terrinesZone
 
     stepping = 20
-    corner = "WEST"
+    corner = "EAST"
     foundCow = False
     while foundCow == False:
-            if(corner == "WEST"):
+            if(corner == "EAST"):
+                com.turnToObjective(90)
                 for x in range(3):
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningR()
                     if foundCow:
                         break
-                corner = "EAST"
+                corner = "WEST"
             else:
+                com.turnToObjective(270)
                 for x in range(3):
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningL()
                     if foundCow:
                         break
-                corner = "WEST"
+                corner = "EAST"
 
 
 # def walkingDetecting():
@@ -250,6 +253,51 @@ def alignWithCow():
         turnLeft(degree)
 
 
+def paralelism():
+    tLevel = rb.getTissueTopLevel(maxLenTissue)
+    A,B,theta = rb.ajusteDeCurvas(tLevel)
+    degrees = int(abs(theta))
+
+    if theta < -4:
+        finalDeg = 90 - (4*degrees)
+        turnLeft(finalDeg)
+        turnedLeft = True       
+    elif theta > 4:
+        finalDeg = 90 - (5*degrees)
+        turnRight(finalDeg)
+        turnedLeft = False
+    else:
+        alignWithCow()
+        return 0, False
+
+    return finalDeg, turnedLeft
+
+def triangleToGetInCow():
+    L,R,Top = rb.calcCowLimits(maxLenTissue)
+    adyacent = rb.getDistanceFromTop(Top)
+    print "ADYACENT"
+    print adyacent
+    cv2.waitKey(0)
+    print "PARALLEL"
+    degs, turnedLeft = paralelism()
+    print degs
+     print "TRIANGLE"
+    if degs > 0:
+        print "ACTION"
+        hypotenuse = (1/math.cos(math.radians(degs))) * adyacent
+        print hypotenuse
+        if hypotenuse < 0:
+                hypotenuse = hypotenuse * -1
+                print "HYPOTENUSE CORRECTION"
+        #if hypotenuse > 
+        
+        com.forwardNCm(int(hypotenuse/2))
+
+        if turnedLeft :
+            turnRight(90)
+        else:
+            turnLeft(90)
+
 def control():
     com.controlRobot()
 
@@ -265,14 +313,11 @@ if __name__ == "__main__":
     # getTerrines()
 
     # STARTING EXPLORTION HERE #
-    #turnLeft(90)
-    #walkingDetecting()
-    #print("ALINEARSE")
-    #alignWithCow()
-    #com.getInCow()
-    thread.start_new_thread( control, ( ) )
-    while 1:
-        pass
+    turnLeft(90)
+    walkingDetecting()
+    triangleToGetInCow()
+    com.getInCow()
+
 
     # print found
     # if (found):
