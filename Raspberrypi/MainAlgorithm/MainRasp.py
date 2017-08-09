@@ -2,6 +2,7 @@
 # standar libs
 import cv2
 import numpy as np
+import math
 # import serial
 import time
 from copy import deepcopy
@@ -255,15 +256,16 @@ def paralelism():
     A,B,theta = rb.ajusteDeCurvas(tLevel)
     degrees = int(abs(theta))
 
-    if theta < -1:
+    if theta < -4:
         finalDeg = 90 - (4*degrees)
         turnLeft(finalDeg)
         turnedLeft = True       
-    elif theta > 1:
+    elif theta > 4:
         finalDeg = 90 - (5*degrees)
         turnRight(finalDeg)
         turnedLeft = False
     else:
+        alignWithCow()
         return 0, False
 
     return finalDeg, turnedLeft
@@ -271,13 +273,23 @@ def paralelism():
 def triangleToGetInCow():
     L,R,Top = rb.calcCowLimits(maxLenTissue)
     adyacent = rb.getDistanceFromTop(Top)
-
+    print "ADYACENT"
+    print adyacent
+    cv2.waitKey(0)
+    print "PARALLEL"
     degs, turnedLeft = paralelism()
-    
+    print degs
+    print "TRIANGLE"
     if degs > 0:
-        hypotenuse = (1/cos(degs)) * adyacent
-
-        com.forwardNCm(hypotenuse/2)
+        print "ACTION"
+        hypotenuse = (1/math.cos(math.radians(degs))) * adyacent
+        print hypotenuse
+        if hypotenuse < 0:
+                hypotenuse = hypotenuse * -1
+                print "HYPOTENUSE CORRECTION"
+        #if hypotenuse > 
+        
+        com.forwardNCm(int(hypotenuse/2))
 
         if turnedLeft :
             turnRight(90)
@@ -299,17 +311,11 @@ if __name__ == "__main__":
     # getTerrines()
 
     # STARTING EXPLORTION HERE #
-    #turnLeft(90)
-    #walkingDetecting()
-    #print("ALINEARSE")
-    #alignWithCow()
-    #com.getInCow()
-    thread.start_new_thread( control, ( ) )
-    while 1:
-        takePicture()
-        cv2.imshow('cam',mainFrame)
-        cv2.waitKey(10)
-        pass
+    turnLeft(90)
+    walkingDetecting()
+    triangleToGetInCow()
+    com.getInCow()
+
 
     # print found
     # if (found):
