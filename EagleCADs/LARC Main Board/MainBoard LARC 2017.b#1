@@ -206,6 +206,7 @@
 <text x="237.49" y="91.44" size="1.778" layer="16" rot="MR270">SCL</text>
 <hole x="100.33" y="11.43" drill="15"/>
 <text x="129.54" y="8.89" size="1.778" layer="16" rot="MR0">A[8..13]</text>
+<dimension x1="186.69" y1="198.12" x2="186.69" y2="0" x3="331.47" y3="99.06" textsize="5.08" layer="108"/>
 </plain>
 <libraries>
 <library name="SparkFun-Boards">

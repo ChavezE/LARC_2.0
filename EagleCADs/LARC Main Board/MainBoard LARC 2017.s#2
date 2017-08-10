@@ -5187,8 +5187,6 @@ type 0309, grid 2.5 mm</description>
 <part name="OUT_MOTORS1" library="SparkFun-Connectors" deviceset="CONN_03" device="LONGPADS"/>
 <part name="POSITIVE_T" library="adafruit" deviceset="PINHD-2X4" device=""/>
 <part name="NEGATIVE_T" library="adafruit" deviceset="PINHD-2X4" device=""/>
-<part name="POSITIVE_T1" library="adafruit" deviceset="PINHD-2X4" device=""/>
-<part name="NEGATIVE_T1" library="adafruit" deviceset="PINHD-2X4" device=""/>
 <part name="SWITCH_SERVOS" library="SparkFun-Connectors" deviceset="CONN_03" device="LONGPADS"/>
 <part name="SWITCH_SERVOS1" library="SparkFun-Connectors" deviceset="CONN_03" device="LONGPADS"/>
 <part name="INT1" library="pinhead" deviceset="PINHD-1X2" device=""/>
@@ -5207,6 +5205,11 @@ type 0309, grid 2.5 mm</description>
 <part name="JP2" library="pinhead" deviceset="PINHD-1X4" device=""/>
 <part name="JP3" library="pinhead" deviceset="PINHD-1X4" device=""/>
 <part name="JP4" library="pinhead" deviceset="PINHD-1X4" device=""/>
+<part name="JP5" library="pinhead" deviceset="PINHD-1X4" device=""/>
+<part name="JP6" library="pinhead" deviceset="PINHD-1X4" device=""/>
+<part name="JP7" library="pinhead" deviceset="PINHD-1X2" device=""/>
+<part name="JP8" library="pinhead" deviceset="PINHD-1X2" device=""/>
+<part name="JP9" library="pinhead" deviceset="PINHD-1X2" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -5216,6 +5219,7 @@ type 0309, grid 2.5 mm</description>
 <text x="200.66" y="180.34" size="6.4516" layer="91">POWER SUPPLYS</text>
 <text x="20.32" y="182.88" size="5.08" layer="91">ENCODER</text>
 <text x="78.74" y="185.42" size="3.81" layer="91">PULL UPS</text>
+<text x="109.22" y="93.98" size="2.54" layer="91">I2C</text>
 </plain>
 <instances>
 <instance part="B1" gate="G$1" x="63.5" y="50.8"/>
@@ -5231,8 +5235,6 @@ type 0309, grid 2.5 mm</description>
 <instance part="OUT_MOTORS1" gate="J$1" x="243.84" y="132.08" rot="R90"/>
 <instance part="POSITIVE_T" gate="A" x="175.26" y="124.46"/>
 <instance part="NEGATIVE_T" gate="A" x="203.2" y="124.46"/>
-<instance part="POSITIVE_T1" gate="A" x="157.48" y="124.46"/>
-<instance part="NEGATIVE_T1" gate="A" x="220.98" y="124.46"/>
 <instance part="SWITCH_SERVOS" gate="J$1" x="271.78" y="152.4"/>
 <instance part="SWITCH_SERVOS1" gate="J$1" x="302.26" y="152.4" rot="R180"/>
 <instance part="INT1" gate="G$1" x="27.94" y="165.1"/>
@@ -5251,6 +5253,11 @@ type 0309, grid 2.5 mm</description>
 <instance part="JP2" gate="A" x="111.76" y="144.78" rot="R270"/>
 <instance part="JP3" gate="A" x="-27.94" y="91.44" rot="R180"/>
 <instance part="JP4" gate="A" x="-27.94" y="73.66" rot="R180"/>
+<instance part="JP5" gate="A" x="223.52" y="134.62" rot="R90"/>
+<instance part="JP6" gate="A" x="160.02" y="134.62" rot="R90"/>
+<instance part="JP7" gate="G$1" x="109.22" y="88.9" rot="R180"/>
+<instance part="JP8" gate="G$1" x="119.38" y="78.74" rot="R180"/>
+<instance part="JP9" gate="G$1" x="109.22" y="78.74" rot="R180"/>
 </instances>
 <busses>
 <bus name="1_SHIELD[1..4]">
@@ -5322,33 +5329,20 @@ type 0309, grid 2.5 mm</description>
 <junction x="208.28" y="129.54"/>
 <wire x1="208.28" y1="127" x2="208.28" y2="129.54" width="0.1524" layer="91"/>
 <wire x1="200.66" y1="129.54" x2="200.66" y2="137.16" width="0.1524" layer="91"/>
-<pinref part="NEGATIVE_T1" gate="A" pin="1"/>
-<junction x="218.44" y="129.54"/>
-<pinref part="NEGATIVE_T1" gate="A" pin="3"/>
-<junction x="218.44" y="127"/>
-<wire x1="218.44" y1="129.54" x2="218.44" y2="127" width="0.1524" layer="91"/>
-<pinref part="NEGATIVE_T1" gate="A" pin="5"/>
-<junction x="218.44" y="124.46"/>
-<wire x1="218.44" y1="127" x2="218.44" y2="124.46" width="0.1524" layer="91"/>
-<pinref part="NEGATIVE_T1" gate="A" pin="7"/>
-<junction x="218.44" y="121.92"/>
-<wire x1="218.44" y1="124.46" x2="218.44" y2="121.92" width="0.1524" layer="91"/>
-<pinref part="NEGATIVE_T1" gate="A" pin="8"/>
-<junction x="226.06" y="121.92"/>
-<wire x1="218.44" y1="121.92" x2="223.52" y2="121.92" width="0.1524" layer="91"/>
-<pinref part="NEGATIVE_T1" gate="A" pin="6"/>
-<junction x="226.06" y="124.46"/>
-<wire x1="223.52" y1="121.92" x2="226.06" y2="121.92" width="0.1524" layer="91"/>
-<wire x1="226.06" y1="121.92" x2="226.06" y2="124.46" width="0.1524" layer="91"/>
-<pinref part="NEGATIVE_T1" gate="A" pin="4"/>
-<junction x="226.06" y="127"/>
-<wire x1="226.06" y1="124.46" x2="226.06" y2="127" width="0.1524" layer="91"/>
-<pinref part="NEGATIVE_T1" gate="A" pin="2"/>
-<junction x="226.06" y="129.54"/>
-<wire x1="226.06" y1="127" x2="226.06" y2="129.54" width="0.1524" layer="91"/>
-<wire x1="223.52" y1="121.92" x2="223.52" y2="116.84" width="0.1524" layer="91"/>
-<wire x1="223.52" y1="116.84" x2="203.2" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="218.44" y1="132.08" x2="218.44" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="218.44" y1="116.84" x2="203.2" y2="116.84" width="0.1524" layer="91"/>
 <wire x1="203.2" y1="116.84" x2="203.2" y2="121.92" width="0.1524" layer="91"/>
+<pinref part="JP5" gate="A" pin="1"/>
+<junction x="218.44" y="132.08"/>
+<pinref part="JP5" gate="A" pin="2"/>
+<junction x="220.98" y="132.08"/>
+<wire x1="218.44" y1="132.08" x2="220.98" y2="132.08" width="0.1524" layer="91"/>
+<pinref part="JP5" gate="A" pin="3"/>
+<junction x="223.52" y="132.08"/>
+<wire x1="220.98" y1="132.08" x2="223.52" y2="132.08" width="0.1524" layer="91"/>
+<pinref part="JP5" gate="A" pin="4"/>
+<junction x="226.06" y="132.08"/>
+<wire x1="223.52" y1="132.08" x2="226.06" y2="132.08" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="B1" gate="G$1" pin="GND@0"/>
@@ -5422,34 +5416,21 @@ type 0309, grid 2.5 mm</description>
 <wire x1="172.72" y1="124.46" x2="172.72" y2="127" width="0.1524" layer="91"/>
 <wire x1="180.34" y1="127" x2="185.42" y2="127" width="0.1524" layer="91"/>
 <label x="185.42" y="127" size="1.27" layer="95"/>
-<pinref part="POSITIVE_T1" gate="A" pin="1"/>
-<junction x="154.94" y="129.54"/>
-<pinref part="POSITIVE_T1" gate="A" pin="3"/>
-<junction x="154.94" y="127"/>
 <wire x1="185.42" y1="127" x2="190.5" y2="127" width="0.1524" layer="91"/>
-<wire x1="154.94" y1="129.54" x2="154.94" y2="127" width="0.1524" layer="91"/>
-<pinref part="POSITIVE_T1" gate="A" pin="5"/>
-<junction x="154.94" y="124.46"/>
-<wire x1="154.94" y1="127" x2="154.94" y2="124.46" width="0.1524" layer="91"/>
-<pinref part="POSITIVE_T1" gate="A" pin="7"/>
-<junction x="154.94" y="121.92"/>
-<wire x1="154.94" y1="124.46" x2="154.94" y2="121.92" width="0.1524" layer="91"/>
-<wire x1="154.94" y1="121.92" x2="160.02" y2="121.92" width="0.1524" layer="91"/>
-<pinref part="POSITIVE_T1" gate="A" pin="8"/>
-<junction x="162.56" y="121.92"/>
-<pinref part="POSITIVE_T1" gate="A" pin="6"/>
-<junction x="162.56" y="124.46"/>
-<wire x1="160.02" y1="121.92" x2="162.56" y2="121.92" width="0.1524" layer="91"/>
-<wire x1="162.56" y1="121.92" x2="162.56" y2="124.46" width="0.1524" layer="91"/>
-<pinref part="POSITIVE_T1" gate="A" pin="4"/>
-<junction x="162.56" y="127"/>
-<wire x1="162.56" y1="124.46" x2="162.56" y2="127" width="0.1524" layer="91"/>
-<pinref part="POSITIVE_T1" gate="A" pin="2"/>
-<junction x="162.56" y="129.54"/>
-<wire x1="162.56" y1="127" x2="162.56" y2="129.54" width="0.1524" layer="91"/>
-<wire x1="160.02" y1="121.92" x2="160.02" y2="116.84" width="0.1524" layer="91"/>
-<wire x1="160.02" y1="116.84" x2="185.42" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="154.94" y1="132.08" x2="154.94" y2="116.84" width="0.1524" layer="91"/>
+<wire x1="154.94" y1="116.84" x2="185.42" y2="116.84" width="0.1524" layer="91"/>
 <wire x1="185.42" y1="116.84" x2="185.42" y2="127" width="0.1524" layer="91"/>
+<pinref part="JP6" gate="A" pin="1"/>
+<junction x="154.94" y="132.08"/>
+<pinref part="JP6" gate="A" pin="2"/>
+<junction x="157.48" y="132.08"/>
+<wire x1="154.94" y1="132.08" x2="157.48" y2="132.08" width="0.1524" layer="91"/>
+<pinref part="JP6" gate="A" pin="3"/>
+<junction x="160.02" y="132.08"/>
+<wire x1="157.48" y1="132.08" x2="160.02" y2="132.08" width="0.1524" layer="91"/>
+<pinref part="JP6" gate="A" pin="4"/>
+<junction x="162.56" y="132.08"/>
+<wire x1="160.02" y1="132.08" x2="162.56" y2="132.08" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="1_SHIELD1" class="0">
@@ -5992,6 +5973,19 @@ type 0309, grid 2.5 mm</description>
 <wire x1="81.28" y1="81.28" x2="86.36" y2="81.28" width="0.1524" layer="91"/>
 <label x="83.82" y="81.28" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="JP7" gate="G$1" pin="2"/>
+<junction x="111.76" y="88.9"/>
+<label x="116.84" y="88.9" size="1.778" layer="95"/>
+<wire x1="111.76" y1="88.9" x2="124.46" y2="88.9" width="0.1524" layer="91"/>
+<wire x1="124.46" y1="88.9" x2="124.46" y2="76.2" width="0.1524" layer="91"/>
+<pinref part="JP8" gate="G$1" pin="1"/>
+<junction x="121.92" y="76.2"/>
+<wire x1="124.46" y1="76.2" x2="121.92" y2="76.2" width="0.1524" layer="91"/>
+<pinref part="JP9" gate="G$1" pin="1"/>
+<junction x="111.76" y="76.2"/>
+<wire x1="111.76" y1="76.2" x2="121.92" y2="76.2" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="SDA" class="0">
 <segment>
@@ -5999,6 +5993,18 @@ type 0309, grid 2.5 mm</description>
 <junction x="81.28" y="83.82"/>
 <wire x1="81.28" y1="83.82" x2="86.36" y2="83.82" width="0.1524" layer="91"/>
 <label x="83.82" y="83.82" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="JP7" gate="G$1" pin="1"/>
+<junction x="111.76" y="86.36"/>
+<label x="116.84" y="86.36" size="1.778" layer="95"/>
+<pinref part="JP8" gate="G$1" pin="2"/>
+<junction x="121.92" y="78.74"/>
+<wire x1="111.76" y1="86.36" x2="121.92" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="121.92" y1="86.36" x2="121.92" y2="78.74" width="0.1524" layer="91"/>
+<pinref part="JP9" gate="G$1" pin="2"/>
+<junction x="111.76" y="78.74"/>
+<wire x1="121.92" y1="78.74" x2="111.76" y2="78.74" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="D19" class="0">

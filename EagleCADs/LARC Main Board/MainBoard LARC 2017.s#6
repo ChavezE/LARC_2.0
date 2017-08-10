@@ -2582,10 +2582,13 @@ No silk outline, but tDocu layer shows pin location.
 <part name="IC1" library="linear" deviceset="78*" device="TV" technology="05"/>
 <part name="IC2" library="linear" deviceset="78*" device="TV" technology="05"/>
 <part name="IC3" library="linear" deviceset="78*" device="TV" technology="05"/>
-<part name="J1" library="SparkFun-Connectors" deviceset="BATTERY_CONN" device="_DEANS"/>
-<part name="J2" library="SparkFun-Connectors" deviceset="BATTERY_CONN" device="_DEANS"/>
+<part name="INPUT_GRAL" library="SparkFun-Connectors" deviceset="BATTERY_CONN" device="_DEANS"/>
+<part name="INPUT_MOTORS" library="SparkFun-Connectors" deviceset="BATTERY_CONN" device="_DEANS"/>
 <part name="J3" library="SparkFun-Connectors" deviceset="BATTERY_CONN" device="_DEANS"/>
 <part name="SWITCH_GRAL" library="SparkFun-Connectors" deviceset="CONN_03" device="LONGPADS"/>
+<part name="SWITCH_MOTORS" library="SparkFun-Connectors" deviceset="CONN_03" device="LONGPADS"/>
+<part name="OUT_MOTORS" library="SparkFun-Connectors" deviceset="CONN_03" device="LONGPADS"/>
+<part name="OUT_MOTORS1" library="SparkFun-Connectors" deviceset="CONN_03" device="LONGPADS"/>
 </parts>
 <sheets>
 <sheet>
@@ -2599,12 +2602,15 @@ No silk outline, but tDocu layer shows pin location.
 <instance part="MS_1" gate="G$1" x="160.02" y="33.02"/>
 <instance part="MS_2" gate="G$1" x="254" y="33.02"/>
 <instance part="IC1" gate="A1" x="200.66" y="144.78"/>
-<instance part="IC2" gate="A1" x="241.3" y="142.24" rot="R180"/>
+<instance part="IC2" gate="A1" x="264.16" y="157.48" rot="R180"/>
 <instance part="IC3" gate="A1" x="279.4" y="142.24" rot="R180"/>
-<instance part="J1" gate="G$1" x="198.12" y="172.72" rot="MR270"/>
-<instance part="J2" gate="G$1" x="243.84" y="172.72" rot="R270"/>
+<instance part="INPUT_GRAL" gate="G$1" x="198.12" y="172.72" rot="MR270"/>
+<instance part="INPUT_MOTORS" gate="G$1" x="243.84" y="172.72" rot="MR270"/>
 <instance part="J3" gate="G$1" x="281.94" y="172.72" rot="R270"/>
 <instance part="SWITCH_GRAL" gate="J$1" x="175.26" y="157.48"/>
+<instance part="SWITCH_MOTORS" gate="J$1" x="220.98" y="157.48"/>
+<instance part="OUT_MOTORS" gate="J$1" x="243.84" y="144.78" rot="R90"/>
+<instance part="OUT_MOTORS1" gate="J$1" x="243.84" y="132.08" rot="R90"/>
 </instances>
 <busses>
 <bus name="1_SHIELD[1..4]">
@@ -2639,11 +2645,28 @@ No silk outline, but tDocu layer shows pin location.
 <label x="220.98" y="93.98" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="J1" gate="G$1" pin="-"/>
+<pinref part="INPUT_GRAL" gate="G$1" pin="-"/>
 <junction x="200.66" y="165.1"/>
 <pinref part="IC1" gate="A1" pin="GND"/>
 <junction x="200.66" y="137.16"/>
 <wire x1="200.66" y1="165.1" x2="200.66" y2="137.16" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="B1" gate="G$1" pin="GND@0"/>
+<junction x="45.72" y="10.16"/>
+<wire x1="45.72" y1="10.16" x2="35.56" y2="10.16" width="0.1524" layer="91"/>
+<label x="33.02" y="10.16" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="INPUT_MOTORS" gate="G$1" pin="-"/>
+<junction x="246.38" y="165.1"/>
+</segment>
+<segment>
+<pinref part="OUT_MOTORS" gate="J$1" pin="1"/>
+<junction x="246.38" y="152.4"/>
+<pinref part="OUT_MOTORS1" gate="J$1" pin="1"/>
+<junction x="246.38" y="139.7"/>
+<wire x1="246.38" y1="152.4" x2="246.38" y2="139.7" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="5V_GRAL" class="0">
@@ -2764,12 +2787,13 @@ No silk outline, but tDocu layer shows pin location.
 </net>
 <net name="5V_GRAL_INPUT" class="0">
 <segment>
-<pinref part="J1" gate="G$1" pin="+"/>
+<pinref part="INPUT_GRAL" gate="G$1" pin="+"/>
 <junction x="198.12" y="165.1"/>
 <wire x1="198.12" y1="165.1" x2="198.12" y2="160.02" width="0.1524" layer="91"/>
 <pinref part="SWITCH_GRAL" gate="J$1" pin="3"/>
 <junction x="182.88" y="160.02"/>
 <wire x1="198.12" y1="160.02" x2="182.88" y2="160.02" width="0.1524" layer="91"/>
+<label x="180.34" y="160.02" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="5V_SWITCH" class="0">
@@ -2780,6 +2804,54 @@ No silk outline, but tDocu layer shows pin location.
 <junction x="190.5" y="144.78"/>
 <wire x1="182.88" y1="154.94" x2="190.5" y2="154.94" width="0.1524" layer="91"/>
 <wire x1="190.5" y1="154.94" x2="190.5" y2="144.78" width="0.1524" layer="91"/>
+<label x="185.42" y="154.94" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="B1" gate="G$1" pin="VIN"/>
+<junction x="45.72" y="101.6"/>
+<wire x1="45.72" y1="101.6" x2="40.64" y2="101.6" width="0.1524" layer="91"/>
+<label x="30.48" y="101.6" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="N$3" class="0">
+<segment>
+<pinref part="SWITCH_MOTORS" gate="J$1" pin="3"/>
+<junction x="228.6" y="160.02"/>
+<pinref part="INPUT_MOTORS" gate="G$1" pin="+"/>
+<junction x="243.84" y="165.1"/>
+<wire x1="228.6" y1="160.02" x2="243.84" y2="160.02" width="0.1524" layer="91"/>
+<wire x1="243.84" y1="160.02" x2="243.84" y2="165.1" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$4" class="0">
+<segment>
+<pinref part="SWITCH_MOTORS" gate="J$1" pin="1"/>
+<junction x="228.6" y="154.94"/>
+<pinref part="OUT_MOTORS" gate="J$1" pin="3"/>
+<junction x="241.3" y="152.4"/>
+<wire x1="228.6" y1="154.94" x2="241.3" y2="154.94" width="0.1524" layer="91"/>
+<wire x1="241.3" y1="154.94" x2="241.3" y2="152.4" width="0.1524" layer="91"/>
+<pinref part="OUT_MOTORS1" gate="J$1" pin="3"/>
+<junction x="241.3" y="139.7"/>
+<wire x1="241.3" y1="152.4" x2="241.3" y2="139.7" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$5" class="0">
+<segment>
+<pinref part="IC2" gate="A1" pin="GND"/>
+<junction x="264.16" y="165.1"/>
+</segment>
+</net>
+<net name="N$6" class="0">
+<segment>
+<pinref part="IC2" gate="A1" pin="VO"/>
+<junction x="254" y="157.48"/>
+</segment>
+</net>
+<net name="N$7" class="0">
+<segment>
+<pinref part="IC2" gate="A1" pin="VI"/>
+<junction x="274.32" y="157.48"/>
 </segment>
 </net>
 </nets>

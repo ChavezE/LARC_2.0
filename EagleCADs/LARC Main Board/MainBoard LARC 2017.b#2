@@ -184,7 +184,7 @@
 <hole x="129.54" y="191.77" drill="3.2"/>
 <hole x="180.34" y="191.77" drill="3.2"/>
 <dimension x1="210.82" y1="68.58" x2="281.94" y2="68.58" x3="246.38" y3="72.39" textsize="1.778" layer="100" dtype="diameter"/>
-<hole x="281.94" y="68.58" drill="25"/>
+<hole x="281.94" y="60.96" drill="25"/>
 <text x="148.59" y="191.77" size="1.778" layer="16" rot="MR0">+5V</text>
 <text x="163.83" y="191.77" size="1.778" layer="16" rot="MR0">GND</text>
 <text x="30.48" y="60.96" size="1.778" layer="16" rot="MR0">Gral</text>
