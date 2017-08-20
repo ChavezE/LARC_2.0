@@ -115,7 +115,7 @@ def checkingTurningR():
     turnRight(135)
 
     for x in range(0,95,15) :
-        turnLeft(5)
+        turnLeft(15)
         takePicture()
         found, filtered = rb.detectCow(clearedMainFrame)
         #first validation, haar cascade
@@ -176,7 +176,7 @@ def walkingDetecting():
     foundCow = False
     while foundCow == False:
             if(corner == "EAST"):
-                com.turnToObjective(90)
+                com.turnToObjective(270)
                 for x in range(3):
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningR()
@@ -184,7 +184,7 @@ def walkingDetecting():
                         break
                 corner = "WEST"
             else:
-                com.turnToObjective(270)
+                com.turnToObjective(90)
                 for x in range(3):
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningL()
@@ -255,17 +255,22 @@ def alignWithCow():
 
 def paralelism():
     tLevel = rb.getTissueTopLevel(maxLenTissue)
-    A,B,theta = rb.ajusteDeCurvas(tLevel)
+    A,B,theta = rb.ajusteDeCurvas(maxLenTissue)
+    rb.drawSlope(mainFrame,A,B)
+    cv2.imshow("slope",mainFrame)
+    cv2.waitKey(0)
     degrees = int(abs(theta))
 
-    if theta < -4:
+    if theta < -5:
         finalDeg = 90 - (4*degrees)
         turnLeft(finalDeg)
-        turnedLeft = True       
-    elif theta > 4:
+        turnedLeft = True
+        print finalDeg
+    elif theta > 5:
         finalDeg = 90 - (5*degrees)
         turnRight(finalDeg)
         turnedLeft = False
+        print finalDeg
     else:
         alignWithCow()
         return 0, False
@@ -281,7 +286,7 @@ def triangleToGetInCow():
     print "PARALLEL"
     degs, turnedLeft = paralelism()
     print degs
-     print "TRIANGLE"
+    print "TRIANGLE"
     if degs > 0:
         print "ACTION"
         hypotenuse = (1/math.cos(math.radians(degs))) * adyacent
