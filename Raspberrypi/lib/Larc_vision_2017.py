@@ -495,6 +495,15 @@ def calcCowLimits(maxLvl):
    topY = maxLvl[0].getY()
    return limitLeft, limitRight, topY
 
+def calcCowLimits2(tissue):
+   tissue = sorted(tissue, key=lambda x:x.getX(), reverse = False)
+   limitRight = tissue[len(tissue)-1].getTopRightC()[0]
+   limitLeft = tissue[0].getX()
+   tissue = sorted(tissue, key=lambda x:x.getY(), reverse = False)
+   topY = tissue[0].getY()
+   bottomY = tissue[len(tissue)-1].getBotRightC()[1]
+   return limitLeft, limitRight, topY, bottomY
+
 # Return distance between the corners of the square object
 def distanceBCorners(c1,c2):
    x1 = c1[0]
@@ -722,3 +731,9 @@ def drawLimits(mainFrame,left,right,y):
    cv2.line(mainFrame,(left,0),(left,480),(255,0,0),3)
    cv2.line(mainFrame,(right,0),(right,480),(255,0,0),3)
    cv2.line(mainFrame,(0,y),(640,y),(255,0,0),3)
+
+def drawLimits2(mainFrame,left,right,top,bottom):
+   cv2.line(mainFrame,(left,0),(left,480),(255,0,0),3)
+   cv2.line(mainFrame,(right,0),(right,480),(255,0,0),3)
+   cv2.line(mainFrame,(0,top),(640,top),(255,0,0),3)
+   cv2.line(mainFrame,(0,bottom),(640,bottom),(255,0,0),3)
