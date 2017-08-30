@@ -57,8 +57,8 @@ def getPhotos():
 
 		distance = raw_input("type the distance in cm of the current photo:  ")
 		distance += "_cm.jpg"
-		path = "/distance_data" + distance
-		cv2.imwrite(path,mainFrame)
+		path = "/distance_data/" + distance
+		cv2.imwrite("distance_data/" +distance,mainFrame)
 
 		ans = raw_input("press \'q\' to finish or any key to keep adding photos")
 
