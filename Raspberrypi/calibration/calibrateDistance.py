@@ -7,6 +7,7 @@ import math
 import glob
 from copy import deepcopy
 
+
 # Roborregos libs
 import sys
 sys.path.insert(0, '../lib/')
@@ -94,7 +95,7 @@ def calibDst():
         print "obtained dst : ", dist, " real distance : ", c.getY()
 
 
-
 # driving the functions
-analyseData()
-calibDst()
+def runCalib():
+    analyseData()
+    calibDst()
