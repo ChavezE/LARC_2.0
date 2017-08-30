@@ -68,7 +68,8 @@ def getPhotos():
 
 
 def emptyFolder():
-	subprocess.call(["rm", "distance_data/*.jpg"])
+	bashCommand = "rm distance_data/*.jpg"
+	output = subprocess.check_output(['bash','-c', bashCommand])
 
 
 emptyFolder()
