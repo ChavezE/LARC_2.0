@@ -136,7 +136,7 @@ def checkingTurningR():
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
-    com.turnToObjective(270) # WEST
+    com.turnWest() # WEST
     return False
 
 # Checks if the cascade detects a cow, updates maxLenTissue and returns boolean wheather found or not
@@ -164,7 +164,7 @@ def checkingTurningL():
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
-    com.turnToObjective(90)  # EAST
+    com.turnEast()  # EAST
     return False
 
 
@@ -176,7 +176,7 @@ def walkingDetecting():
     foundCow = False
     while foundCow == False:
             if(corner == "EAST"):
-                com.turnToObjective(270)
+                com.turnWest()
                 for x in range(3):
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningR()
@@ -184,7 +184,7 @@ def walkingDetecting():
                         break
                 corner = "WEST"
             else:
-                com.turnToObjective(90)
+                com.turnEast()
                 for x in range(3):
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningL()
@@ -255,7 +255,8 @@ def alignWithCow():
 
 def paralelism():
     tLevel = rb.getTissueTopLevel(maxLenTissue)
-    A,B,theta = rb.ajusteDeCurvas(maxLenTissue)
+    top = rb.getTissueTopLevel(maxLenTissue)
+    A,B,theta = rb.ajusteDeCurvas(top)
     rb.drawSlope(mainFrame,A,B)
     cv2.imshow("slope",mainFrame)
     cv2.waitKey(0)
@@ -296,7 +297,7 @@ def triangleToGetInCow():
                 print "HYPOTENUSE CORRECTION"
         #if hypotenuse > 
         
-        com.forwardNCm(int(hypotenuse/2))
+        com.forwardNCm(int(hypotenuse))#com.forwardNCm(int(hypotenuse/2))
 
         if turnedLeft :
             turnRight(90)
@@ -318,7 +319,7 @@ if __name__ == "__main__":
     # getTerrines()
 
     # STARTING EXPLORTION HERE #
-    turnLeft(90)
+    #turnLeft(90)
     walkingDetecting()
     triangleToGetInCow()
     com.getInCow()
