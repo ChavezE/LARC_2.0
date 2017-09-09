@@ -49,7 +49,7 @@ def getPhotos():
 		_ = raw_input("Press any key to take photo ")
 		takePicture()
 		cv2.imshow('frame',mainFrame)
-		cv2.waitKey(10)
+		cv2.waitKey(500)
 		k = raw_input("press any key to continue or \'r\' to retake")
 		cv2.destroyWindow('frame')
 		if k == 'r':
@@ -72,5 +72,5 @@ def emptyFolder():
 	output = subprocess.check_output(['bash','-c', bashCommand])
 
 
-emptyFolder()
+#emptyFolder()
 getPhotos()
