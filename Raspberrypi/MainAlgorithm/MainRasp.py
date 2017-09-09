@@ -12,7 +12,7 @@ import thread
 import sys
 sys.path.insert(0, '../lib/')
 import Larc_vision_2017 as rb
-import communication as com
+# import communication as com
 
 '''
 VARIABLES GLOBALES
@@ -44,7 +44,7 @@ for i in range(10):
 ##### Camara ######
 
 # updates mainFrame
-def takePicture():
+def takePicture(inColor = False):
     global mainFrame
     global clearedMainFrame
     # clear internal buffer
@@ -52,10 +52,14 @@ def takePicture():
         cap.grab()
     # get new image
     goodFrm, mainFrame = cap.read()
+
     print "I took a pic"
     if goodFrm:
         #cv2.imshow('main', mainFrame)
-        clearedMainFrame = rb.clearImage(mainFrame)
+        mainFrame = cv2.resize(mainFrame,(640, 480), interpolation = cv2.INTER_CUBIC)
+        if(not inColor):
+            print "hello"
+            clearedMainFrame = rb.clearImage(mainFrame)
         cv2.waitKey(30)
         #cv2.destroyAllWindows()
 
@@ -193,52 +197,6 @@ def walkingDetecting():
                 corner = "EAST"
 
 
-# def walkingDetecting():
-#     global terrinesZone
-#     foundCow=False
-#     missingAngles=0
-#     startedLeft=0
-#     pseudoterrines='l'
-#
-#     if pseudoterrines=='l':
-#         startedLeft=True
-#         BackwardCms(75)
-#     else:
-#         ForwardCms(75)
-#         turnRight(180)
-#
-#     while foundCow == False:
-#         if startedLeft == True:
-#
-#             foundCow=checkingTurningR()
-#             if foundCow:
-#                 break
-#
-#             ForwardCms(75)
-#             foundCow=checkingTurningL()
-#             if foundCow:
-#                 break
-#
-#
-#             BackwardCms(75)
-#             foundCow=checkingTurningR()
-#             if foundCow:
-#                 break
-#
-#
-#         foundCow=checkingTurningL()
-#         if foundCow:
-#             break
-#
-#         ForwardCms(75)
-#         foundCow=checkingTurningR()
-#         if foundCow:
-#             break
-#
-#         BackwardCms(75)
-#         foundCow=checkingTurningL()
-#         startedLeft=True
-
 def alignWithCow():
     centerFrame = rb.getXCenterFrame(mainFrame)
     cowCenter = rb.getCowXCenter(maxLenTissue)
@@ -252,6 +210,18 @@ def alignWithCow():
     elif(pixelDif > 2 ):
         turnLeft(degree)
 
+def alignWithTank(tankCenter):
+    centerFrame = rb.getXCenterFrame(mainFrame)
+
+    pixelDif = centerFrame - tankCenter
+    degree = abs(pixelDif)/12
+    #Constant obtained throught calibration
+
+    if (pixelDif < -2 ):
+        turnRight(degree)
+
+    elif(pixelDif > 2 ):
+        turnLeft(degree)
 
 def paralelism():
     tLevel = rb.getTissueTopLevel(maxLenTissue)
@@ -294,14 +264,28 @@ def triangleToGetInCow():
         if hypotenuse < 0:
                 hypotenuse = hypotenuse * -1
                 print "HYPOTENUSE CORRECTION"
-        #if hypotenuse > 
-        
+        #if hypotenuse >
+
         com.forwardNCm(int(hypotenuse/2))
 
         if turnedLeft :
             turnRight(90)
         else:
             turnLeft(90)
+
+# Robot is facing south rigth after crossing the to the graval zone
+# This function gets the robot in position to drop terrine's milk
+def getToTank():
+    global mainFrame
+
+    tankContour = rb.getTankCenter(mainFrame)
+    x,y,w,h = cv2.boundingRect(tankContour)
+    # CENTER TO THE TANK AND THEN GO FOR
+    alignWithTank((x+w)/2)
+
+
+
+
 
 def control():
     com.controlRobot()
@@ -318,11 +302,13 @@ if __name__ == "__main__":
     # getTerrines()
 
     # STARTING EXPLORTION HERE #
-    turnLeft(90)
-    walkingDetecting()
-    triangleToGetInCow()
-    com.getInCow()
+    # turnLeft(90)
+    # walkingDetecting()
+    # triangleToGetInCow()
+    # com.getInCow()
 
+    takePicture()
+    getToTank()
 
     # print found
     # if (found):
