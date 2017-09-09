@@ -2,8 +2,7 @@
 ## which stores functions used by the computer vision squad.
 ## All rights reserved by Instituo Tecnologico de Monterrey.
 
-## AUTHORS:    Emilio Chavez Madero
-##             Alejandro Garza Castro
+## AUTHORS:    Emilio Chavez Madero, Alejandro Garza Castro
 
 
 #############################################
@@ -630,6 +629,35 @@ def getTissueTopLevel(tissue):
 #############################################
 ##-----------ALLINGMENT AND LIMITS-----------##
 #############################################
+
+# Frame needs to be in BGR
+def getTankCenter(frame):
+
+   lower_blue = np.array([0,100,100])
+   upper_blue = np.array([20,255,255])
+
+   # Convert BGR to HSV
+   hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+   # Threshold the HSV image to get tank colors
+   mask = cv2.inRange(hsv, lower_blue, upper_blue)
+   # Bitwise-AND mask and original image
+   res = cv2.bitwise_and(frame,frame, mask= mask)
+
+   contours = findContours(mask)
+   contourAreas = [cv2.contourArea(c) for c in contours]
+   # this line sorts contours by theirs area
+   cnts, contourAreas = zip(*sorted(zip(contours, contourAreas),key=lambda b:b[1], reverse=True))
+
+   cv2.drawContours(frame,cnts,0,(0,255,0),1)
+   cv2.imshow('p',frame)
+   cv2.waitKey(0)
+   cv2.destroyAllWindows()
+
+   # biggest area must be the tank!
+   return cnts[0]
+
+
+
 
 
 def getCowXCenter(tissue):
