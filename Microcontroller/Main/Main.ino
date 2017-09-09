@@ -223,7 +223,7 @@ void setup()
   //Angle for East
   iEast = iNorth + 90;
   //Cheack if is not bigger than 360
-  if(iEast > 360){
+  if (iEast > 360) {
     iEast -= 360;
   }
   //Angle for east
@@ -234,7 +234,21 @@ void setup()
 
 void loop()
 {
-  communication();
+  turnNDegrees(-30);
+  delay(500);
+  turnToObjectiveN(54);
+  delay(500);
+  while (true)
+  {
+    turnToObjectiveN(iEast);
+    delay(500);
+    turnToObjectiveN(iWest);
+    delay(500);
+    turnToObjectiveN(iNorth);
+    delay(500);
+    turnToObjectiveN(iSouth);
+  }
+  //communication();
   // delay(500);
   // writeLCD("   ", 13, 1);
   // writeLCD(String(getCompass()), 13, 1);

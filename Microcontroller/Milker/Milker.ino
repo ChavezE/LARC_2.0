@@ -11,6 +11,9 @@ byte pinLU = 6;
 //Limit switch of down part of milker
 byte pinLD = 7;
 
+byte pinServo = 5;
+byte pinServoAux = 4;
+
 void setup() {
   Serial.begin(9600);
 
@@ -23,8 +26,48 @@ void setup() {
   sMilker2.write(90);
 
   //Limit switches
-  pinMode(6, INPUT);
-  pinMode(7, INPUT);
+  pinMode(pinLU, INPUT);
+  pinMode(pinLD, INPUT);
+  pinMode(pinServo, INPUT);
+  pinMode(pinServoAux, INPUT);
+}
+
+void getReady()
+{
+  bool bMilker = digitalRead(pinServo);
+  bool bMilker2 = digitalRead(pinServoAux);
+  
+  sMilker2.write(90);
+  sMilker.write(90);
+  
+  if(!bMilker)
+  {
+    sMilker.write(100);
+    while(!bMilker)
+    {
+      bMilker = digitalRead(pinServo);
+    }
+    sMilker.write(90);
+  }
+  
+  if(!bMilker2)
+  {
+    sMilker2.write(100);
+    while(!bMilker2)
+    {
+      bMilker2 = digitalRead(pinServoAux);
+    }
+    sMilker2.write(90);
+  }
+}
+
+void push()
+{
+  sMilker2.write(100);
+  sMilker.write(100);
+  delay(4000);
+  sMilker2.write(90);
+  sMilker.write(90);
 }
 
 //Milk the cow, close the upper part and try to milk three times
@@ -72,5 +115,21 @@ void Milk()
 }
 
 void loop() {
-  Milk();
+  getReady();
+  Serial.println("Ready");
+  sMilker2.write(150);
+  sMilker.write(150);
+  //Keep moving the servos until it touch the limit switch
+  while(digitalRead(pinLU) == 0);
+  //delay(300);
+  //Stop servos
+  sMilker2.write(90);
+  sMilker.write(90);
+  delay(1000);
+  sMilker2.write(150);
+  sMilker.write(150);
+  delay(100);
+  sMilker2.write(90);
+  sMilker.write(90);
+  delay(3000);
 }
