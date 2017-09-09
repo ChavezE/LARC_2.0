@@ -300,9 +300,9 @@ def triangleToGetInCow():
         com.forwardNCm(int(hypotenuse))#com.forwardNCm(int(hypotenuse/2))
 
         if turnedLeft :
-            turnRight(90)
+            turnRight(90+15)
         else:
-            turnLeft(90)
+            turnLeft(90+15)
 
 def control():
     com.controlRobot()
