@@ -181,7 +181,9 @@ def walkingDetecting():
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningR()
                     if foundCow:
-                        break
+                        success = triangleToGetInCow()
+                        if success:
+                            return
                 corner = "WEST"
             else:
                 com.turnEast()
@@ -189,7 +191,9 @@ def walkingDetecting():
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningL()
                     if foundCow:
-                        break
+                        success = triangleToGetInCow()
+                        if success:
+                            return
                 corner = "EAST"
 
 
@@ -288,6 +292,7 @@ def triangleToGetInCow():
     degs, turnedLeft = paralelism()
     print degs
     print "TRIANGLE"
+    ninetyDegs = 90 + 15
     if degs > 0:
         print "ACTION"
         hypotenuse = (1/math.cos(math.radians(degs))) * adyacent
@@ -300,9 +305,40 @@ def triangleToGetInCow():
         com.forwardNCm(int(hypotenuse))#com.forwardNCm(int(hypotenuse/2))
 
         if turnedLeft :
-            turnRight(90+15)
+            turnRight(ninetyDegs)
         else:
-            turnLeft(90+15)
+            turnLeft(ninetyDegs)
+
+        #LETS CONFIRM AGAIN IF THERE IS A COW, 
+        #AND THEN ALLIGN TO IT, ELSE LETS RETURN
+
+        takePicture()
+        found, filtered = rb.detectCow(clearedMainFrame)
+        #first validation, haar cascade
+        if found:
+            # second validation, tissue algorithm
+            foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
+            if foundCow:
+                alignWithCow()
+                return success=True
+
+        #If found nothing, lets return
+        if turnedLeft :
+            turnLeft(ninetyDegs)
+        else:
+            turnRight(ninetyDegs)
+
+        com.backwardNCm(int(hypotenuse))
+
+        if turnedLeft :
+            turnRight(degs)
+        else:
+            turnLeft(degs)
+
+    return success = False
+
+
+
 
 def control():
     com.controlRobot()
@@ -321,7 +357,7 @@ if __name__ == "__main__":
     # STARTING EXPLORTION HERE #
     #turnLeft(90)
     walkingDetecting()
-    triangleToGetInCow()
+    #triangleToGetInCow()
     com.getInCow()
 
 
