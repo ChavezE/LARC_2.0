@@ -132,7 +132,11 @@ def checkingTurningR():
                 # cv2.imshow("cow",mainFrame)
                 # cv2.waitKey(0)
                 # cv2.destroyAllWindows()
-                return True
+
+
+                success = triangleToGetInCow()
+                
+                return success
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
@@ -160,7 +164,11 @@ def checkingTurningL():
                 # cv2.imshow("cow",mainFrame)
                 # cv2.waitKey(0)
                 # cv2.destroyAllWindows()
-                return True
+
+
+                success = triangleToGetInCow()
+                
+                return success
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
@@ -181,9 +189,7 @@ def walkingDetecting():
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningR()
                     if foundCow:
-                        success = triangleToGetInCow()
-                        if success:
-                            return
+                        break
                 corner = "WEST"
             else:
                 com.turnEast()
@@ -191,9 +197,7 @@ def walkingDetecting():
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningL()
                     if foundCow:
-                        success = triangleToGetInCow()
-                        if success:
-                            return
+                        break
                 corner = "EAST"
 
 
@@ -336,7 +340,8 @@ def triangleToGetInCow():
         else:
             turnLeft(degs)
 
-    return False #success
+        return False
+    return True #success
 
 
 
