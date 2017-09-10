@@ -283,6 +283,7 @@ def paralelism():
     return finalDeg, turnedLeft
 
 def triangleToGetInCow():
+    global maxLenTissue
     L,R,Top = rb.calcCowLimits(maxLenTissue)
     adyacent = rb.getDistanceFromTop(Top)
     print "ADYACENT"
@@ -320,7 +321,7 @@ def triangleToGetInCow():
             foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
             if foundCow:
                 alignWithCow()
-                return success=True
+                return True #success
 
         #If found nothing, lets return
         if turnedLeft :
@@ -335,7 +336,7 @@ def triangleToGetInCow():
         else:
             turnLeft(degs)
 
-    return success = False
+    return False #success
 
 
 
