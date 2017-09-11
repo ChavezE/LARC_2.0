@@ -40,7 +40,7 @@ steps = 5
 eps = 30
 eps2 = 30
 #HAAR Cascade Sansitivity
-cascadeSensitivity = 200
+cascadeSensitivity = 150
 
 #----HAAR Cascade---
 #importing the trained cascade of cow

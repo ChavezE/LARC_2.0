@@ -136,7 +136,8 @@ def checkingTurningR():
 
                 success = triangleToGetInCow()
                 
-                return success
+                if success:
+                        return True
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
@@ -168,7 +169,8 @@ def checkingTurningL():
 
                 success = triangleToGetInCow()
                 
-                return success
+                if success:
+                        return True
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
