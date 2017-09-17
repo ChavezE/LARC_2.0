@@ -46,8 +46,8 @@ cascadeSensitivity = 200
 #importing the trained cascade of cow
 cowCascade = cv2.CascadeClassifier('../Cascades/COW3.xml')
 #using a black frame to filter
-blackFrame = cv2.imread("../images/white.jpg",0)
-
+blackFrame = np.zeros((480,640), np.uint8)
+blackFrame = np.ones((480,640), np.uint8)
 
 # Simple class to manage individual squares in the image
 # ATRIBUTES:

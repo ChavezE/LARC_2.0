@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 
 
-cow = cv2.CascadeClassifier('../Cascades/COW1.xml')
+cow = cv2.CascadeClassifier('../Cascades/COWTUMMY.xml')
 
 
 for i in range(1, 35):
@@ -11,7 +11,7 @@ for i in range(1, 35):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # add this
     # image, reject levels level weights.
-    cows = cow.detectMultiScale(gray, 1.3, 65)
+    cows = cow.detectMultiScale(gray, 1.2, 70)
     # add this
 
     if cows is ():
@@ -24,7 +24,9 @@ for i in range(1, 35):
         cv2.rectangle(img,(x,y),(x+w,y+h),(0,0,255),2)
 
     cv2.imshow('img',img)
-    cv2.waitKey(0)
+    k = cv2.waitKey(0)
+    if k == 27:
+    	break
 
-cap.release()
+
 cv2.destroyAllWindows()
