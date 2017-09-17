@@ -1,7 +1,7 @@
 void getInCow(){
   //Clear LCD and write that we are getting under the cow
-  lcd.clear();
-  writeLCD("Entrando a vaca", 0, 0);
+  ////lcd.clear();
+  ////writeLCD("Entrando a vaca", 0, 0);
 
   //Angle at start
   int iAm = getCompass();

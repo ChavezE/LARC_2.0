@@ -1,8 +1,8 @@
 //Function to go to the terrines zone and grab a terrine
 void goGrabTerrines(int iDeg)
 {
-  lcd.clear();
-  writeLCD("GRAB TERRINE", 0, 0);
+  //lcd.clear();
+  //writeLCD("GRAB TERRINE", 0, 0);
   //If the claw sharp detect something
   bool bTerrine = false;
   //Vel to move on function
@@ -21,9 +21,9 @@ void goGrabTerrines(int iDeg)
   {
     clawDistance = getDistance(pinSC);
     frontDistance = getDistance(pinSF);
-    writeLCD("WHILE", 0, 0);
+    //writeLCD("WHILE", 0, 0);
   }
-  lcd.clear();
+  //lcd.clear();
   //Stop moving
   brake();
   //If left limit switch is pushed

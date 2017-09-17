@@ -1,13 +1,9 @@
-///////////////////
-// Todo Funciona //
-///////////////////
-
 //Move plattaform In
 void platIn()
 {
   //Display function in LCD
-  //lcd.clear();
-  // writeLCD("PLAT IN", 0, 0);
+  ////lcd.clear();
+  // //writeLCD("PLAT IN", 0, 0);
   //Check the inner limit switch of the robot
   while (digitalRead(pinLI) == 1)
   {
@@ -22,8 +18,8 @@ void platIn()
 void platInMid()
 {
   //Display function in LCD
-  //lcd.clear();
-  // writeLCD("PLAT IN MID", 0, 0);
+  ////lcd.clear();
+  // //writeLCD("PLAT IN MID", 0, 0);
   
   //Start moving the plattaform
   sPlattaform.write(100);
@@ -38,8 +34,8 @@ void platInMid()
 void platOut()
 {
   //Display function in LCD
-  //lcd.clear();
-  // writeLCD("PLAT OUT", 0, 0);
+  ////lcd.clear();
+  // //writeLCD("PLAT OUT", 0, 0);
   //Check the inner limit switch of the robot
   while (digitalRead(pinLO) == 1)
   {
@@ -54,8 +50,8 @@ void platOut()
 void openClaw()
 {
   //Display function in LCD
-  //lcd.clear();
-  // writeLCD("OPEN CLAW", 0, 0);
+  ////lcd.clear();
+  // //writeLCD("OPEN CLAW", 0, 0);
   sClaw.write(30);
 }
 
@@ -63,7 +59,7 @@ void openClaw()
 void closeClaw()
 {
   //Display function in LCD
-  //lcd.clear();
-  // writeLCD("CLOSE CLAW", 0, 0);
+  ////lcd.clear();
+  // //writeLCD("CLOSE CLAW", 0, 0);
   sClaw.write(80);
 }

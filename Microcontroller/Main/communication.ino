@@ -1,3 +1,4 @@
+//Communication between the Raspberry and the arduino
 void communication() {
   unsigned long data;
   unsigned long data1, data2;
@@ -147,6 +148,6 @@ void communication() {
         Serial.write('1');
         break;
     }
-    writeLCD("C", 15, 0);
+    ////writeLCD("C", 15, 0);
   }
 }

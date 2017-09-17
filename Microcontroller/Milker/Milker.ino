@@ -11,6 +11,7 @@ byte pinLU = 6;
 //Limit switch of down part of milker
 byte pinLD = 7;
 
+//Servo Pins
 byte pinServo = 5;
 byte pinServoAux = 4;
 
@@ -34,102 +35,122 @@ void setup() {
 
 void getReady()
 {
+  //Limit switch of principal gear
   bool bMilker = digitalRead(pinServo);
+  //Limit switch in auxiliar gear
   bool bMilker2 = digitalRead(pinServoAux);
-  
+
+  //Stop servos
   sMilker2.write(90);
   sMilker.write(90);
-  
-  if(!bMilker)
+
+  //Move principal gear until the limit switch is activated
+  if (!bMilker)
   {
+    //Start moving
     sMilker.write(100);
-    while(!bMilker)
+    while (!bMilker)
     {
+      //Read limit switch
       bMilker = digitalRead(pinServo);
     }
+    //Stop
     sMilker.write(90);
   }
-  
-  if(!bMilker2)
+  //Move auxiliar gear until the limit switch is activated
+  if (!bMilker2)
   {
+    //Start moving
     sMilker2.write(100);
-    while(!bMilker2)
+    while (!bMilker2)
     {
+      //Read limit switch
       bMilker2 = digitalRead(pinServoAux);
     }
+    //Stop
     sMilker2.write(90);
   }
 }
 
-void push()
+void openMilker()
 {
-  sMilker2.write(100);
-  sMilker.write(100);
-  delay(4000);
+  //Timers
+  unsigned long iStartTime;
+  unsigned long iActTime;
+  //Separate the magnet
+  sMilker2.write(140);
+  sMilker.write(180);
+  iStartTime = millis();
+  //Keep moving the servos until it touch the limit switch
+  while (digitalRead(pinLU) == 0)
+  {
+    //Check time of action
+    iActTime = millis();
+    //If the limit wasn't touched after 0.8 sec start over
+    if (iActTime - iStartTime >= 800)
+    {
+      sMilker2.write(90);
+      sMilker.write(90);
+      getReady();
+      sMilker2.write(140);
+      sMilker.write(180);
+      iStartTime = millis();
+    }
+  }
+  //Wait for the aux servo to get out
+  delay(80);
+  //Stop out servo
   sMilker2.write(90);
+  //wait for the principal servo to get out
+  delay(100);
+  //Stop principal servo
   sMilker.write(90);
 }
 
-//Milk the cow, close the upper part and try to milk three times
-void Milk()
+void milk()
 {
-  //Move up part of milker once
-  //Start moving both servos
-  sMilker2.write(100);
-  sMilker.write(100);
-  //Keep moving the servos until it touch the limit switch
-  while(digitalRead(pinLU) == 0);
-  //Stop servos
-  sMilker2.write(90);
-  sMilker.write(90);
-  //Start moving the servos again for security
-  sMilker2.write(100);
-  sMilker.write(100);
-  //Wait 700 miliseconds for the principal servo to pass
-  delay(700);
-  //Stop servos
-  sMilker2.write(90);
-  sMilker.write(90);
-
-  //Move down part of milker three times
-  //Counter of how many times does the movment has benn made
-  int iCont = 0;
-  //Start moving the servo for milk
-  sMilker.write(60);
-  //While the complete move hasn't benn made 3 times
-  while(iCont < 3)
+  //Timers
+  unsigned long iStartTime;
+  unsigned long iActTime;
+  //Start milking
+  sMilker.write(70);
+  //Times the glove has been milked
+  int iCounter = 0;
+  while (iCounter < 3)
   {
-    //If the limit switch is unpressed
-    if(digitalRead(pinLD) == 0)
+    //If the milker is pressing the glove
+    if (digitalRead(pinLD) == 0)
     {
-      //Add one to count
-      iCont++;
-      //Wait till the limit switch is pressed again
-      while(digitalRead(pinLD) == 0);
+      //Start time of the milker pressing the glove
+      iStartTime = millis();
+      //Wait until the milker get back to initial position
+      while (digitalRead(pinLD) == 0);
+      //Time when the milker stop pressing the glove
+      iActTime = millis();
+      //If the start and the finish time of the pressing process was bigger than .4 sec
+      Serial.println(iActTime - iStartTime);
+      if (iActTime - iStartTime >= 400)
+      {
+        //Times the pressing has been succesfull
+        iCounter++;
+      }
     }
-    //delay to secure the rebounce
-    delay(50);
   }
-  //Stop moving
+  //Stop milking process
   sMilker.write(90);
+}
+
+void milker()
+{
+  //Get servos in position
+  getReady();
+  //Open upper part of milker
+  openMilker();
+  //Milk the glove
+  milk();
 }
 
 void loop() {
-  getReady();
-  Serial.println("Ready");
-  sMilker2.write(150);
-  sMilker.write(150);
-  //Keep moving the servos until it touch the limit switch
-  while(digitalRead(pinLU) == 0);
-  //delay(300);
-  //Stop servos
-  sMilker2.write(90);
-  sMilker.write(90);
+  milker();
   delay(1000);
-  sMilker2.write(150);
-  sMilker.write(150);
-  delay(100);
-  sMilker2.write(90);
-  sMilker.write(90);
-  delay(3000);
 }
