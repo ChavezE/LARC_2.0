@@ -1,4 +1,3 @@
-
 #include <Adafruit_BNO055.h>
 #include <Servo.h>
 #include <Wire.h>
@@ -117,11 +116,11 @@ const long velTurn = 60L;
 //Constants of the motors when the motor is treated as  a 4x4
 
 //Cosntants of motors velocity
-const int velLF = 67; //67
-const int velLB = 68; //68
+const int velLF = 87; //67
+const int velLB = 88; //68
 
-const int velRF = 70; //70
-const int velRB = 80; //80
+const int velRF = 90; //70
+const int velRB = 100; //80
 
 //Cosntants of motors velocity for going slow
 const int velSlowLF = 48;
@@ -160,8 +159,8 @@ int iEast = 0;
 
 void setup()
 {
-  lcd.clear();
-  writeLCD("Iniciando", 0, 0);
+  //lcd.clear();
+  //writeLCD("Iniciando", 0, 0);
   //delay(1000);
   //Delay to establish connection with raspberry
   Serial.begin(9600);
@@ -176,7 +175,7 @@ void setup()
   //Initialize lcd, turn backlight on and clear the display
   lcd.init();
   lcd.backlight();
-  //lcd.clear();
+  ////lcd.clear();
 
   pinMode(pinMFRA , OUTPUT);
   pinMode(pinMFRB , OUTPUT);
@@ -212,8 +211,8 @@ void setup()
   encoderState = 1;
 
   //Display the finish of the setup
-  lcd.clear();
-  writeLCD("START FENIX 2.0", 0, 0);
+  //lcd.clear();
+  //writeLCD("START FENIX 2.0", 0, 0);
 
   //Stop plattaform for security
   sPlattaform.write(90);
@@ -234,22 +233,12 @@ void setup()
 
 void loop()
 {
-  turnNDegrees(-30);
-  delay(500);
-  turnToObjectiveN(54);
-  delay(500);
-  while (true)
-  {
-    turnToObjectiveN(iEast);
-    delay(500);
-    turnToObjectiveN(iWest);
-    delay(500);
-    turnToObjectiveN(iNorth);
-    delay(500);
-    turnToObjectiveN(iSouth);
-  }
+  turnToObjectiveN(340);
+  forwardNCm(80, false);
+  goToStart();
+  while(1);
   //communication();
   // delay(500);
-  // writeLCD("   ", 13, 1);
-  // writeLCD(String(getCompass()), 13, 1);
+  // //writeLCD("   ", 13, 1);
+  // //writeLCD(String(getCompass()), 13, 1);
 }

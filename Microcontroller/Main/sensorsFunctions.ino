@@ -1,65 +1,46 @@
-///////////////////
-// Todo Funciona //
-///////////////////
-
 //Get the distance of the sharp given in the parameters
 int getDistance(byte sharp)
 {
-  //Display function in LCD
-  ////lcd.clear();
-  // writeLCD("GETTING DISTANCE", 0, 0);
-  //Number of reads
-  byte numReads = 7;
-
-  //Index of the value to return
-  byte numReturn = numReads;
-  if (numReturn % 2 != 0)
+  int i, j, key, numLength = 7;
+  int num[numLength];
+  
+  float volts = analogRead(sharp) * 0.0048828125;
+  //If the raw data gives zero is really far
+  if (volts == 0)
   {
-    numReturn = (numReturn / 2) + 0.5;
+    num[0] = 30000;
   }
+  //The distance is acceptable save the formula
   else
   {
-    numReturn /= 2;
+    num[0] = round(13 * pow(volts, -1));
   }
-
-  //Values
-  int values[numReads];
-
-  //Get all the values from the sharp
-  for (int iI = 0; iI < numReads; iI++)
+  delay(26);
+  
+  for (j = 1; j < numLength; j++)
   {
     //Raw data
-    float volts = analogRead(sharp) * 0.0048828125;
+    volts = analogRead(sharp) * 0.0048828125;
     //If the raw data gives zero is really far
     if (volts == 0)
     {
-      values[iI] = 30000;
+      num[j] = 30000;
     }
     //The distance is acceptable save the formula
     else
     {
-      values[iI] = round(13 * pow(volts, -1));
+      num[j] = round(13 * pow(volts, -1));
     }
     delay(26);
-  }
 
-  //Sort the data
-  for (int iI = numReads - 1; iI >= 1; iI--)
-  {
-    for (int iJ = 1; iJ <= iI; iJ++)
+    key = num[j];
+    for (i = j - 1; (i >= 0) && (num[i] < key); i--)
     {
-      if (values[iJ - 1] > values[iJ])
-      {
-        int aux = values[iJ];
-        values[iJ] = values[iJ - 1];
-        values[iJ - 1] = aux;
-      }
+      num[i + 1] = num[i];
     }
+    num[i + 1] = key;
   }
-
-  //Return the median of the distances
-  // writeLCD(String(values[numReturn]), 0, 1);
-  return values[numReturn];
+  return num[numLength / 2];
 }
 
 //Return the lecture of the BNO in eulers
@@ -67,9 +48,9 @@ long getCompassX100()
 {
   long angle = bno.getVector(Adafruit_BNO055::VECTOR_EULER).x() * 100;
   //Display function in LCD
-  //lcd.clear();
-  // writeLCD("GETTING ANGLE", 0, 0);
-  // writeLCD(String(angle), 0, 1);
+  ////lcd.clear();
+  // //writeLCD("GETTING ANGLE", 0, 0);
+  // //writeLCD(String(angle), 0, 1);
   return angle;
 }
 
@@ -78,9 +59,9 @@ int getCompass()
 {
   int angle = bno.getVector(Adafruit_BNO055::VECTOR_EULER).x();
   //Display function in LCD
-  //lcd.clear();
-  // writeLCD("GETTING ANGLE", 0, 0);
-  // writeLCD(String(angle), 0, 1);
+  ////lcd.clear();
+  // //writeLCD("GETTING ANGLE", 0, 0);
+  // //writeLCD(String(angle), 0, 1);
   return angle;
 }
 
@@ -102,9 +83,9 @@ void encoderStep()
 void writeLCD(String word, int iCol, int iRow)
 {
   bool firstLine = true;
-  for(int iI = 0; iI < word.length(); iI++)
+  for (int iI = 0; iI < word.length(); iI++)
   {
-    if(iI > 15 && firstLine == true)
+    if (iI > 15 && firstLine == true)
     {
       iRow = 1;
       iCol = 0;

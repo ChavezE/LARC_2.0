@@ -118,18 +118,33 @@ void loop() {
   getReady();
   Serial.println("Ready");
   sMilker2.write(150);
-  sMilker.write(150);
+  sMilker.write(180);
   //Keep moving the servos until it touch the limit switch
   while(digitalRead(pinLU) == 0);
-  //delay(300);
+  delay(80);
   //Stop servos
   sMilker2.write(90);
-  sMilker.write(90);
-  delay(1000);
-  sMilker2.write(150);
-  sMilker.write(150);
   delay(100);
-  sMilker2.write(90);
   sMilker.write(90);
-  delay(3000);
+
+  sMilker.write(70);
+  int iCounter = 0;
+  while(true)
+  {
+    if(digitalRead(pinLD) == 0)
+    {
+      iCounter++;
+      delay(100);
+      while(digitalRead(pinLD) == 0);
+      delay(80);
+    }
+    if(iCounter >= 3)
+    {
+      break;
+    }
+  }
+  sMilker.write(90);
+  //sMilker.write(80);
+  //while(digitalRead(pinLD) == 1);
+  delay(1000);
 }
