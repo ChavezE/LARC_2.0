@@ -233,11 +233,11 @@ void setup()
 
 void loop()
 {
-  turnToObjectiveN(340);
-  forwardNCm(80, false);
-  goToStart();
-  while(1);
-  //communication();
+  //turnToObjectiveN(340);
+  //forwardNCm(80, false);
+  //goToStart();
+  //while(1);
+  communication();
   // delay(500);
   // //writeLCD("   ", 13, 1);
   // //writeLCD(String(getCompass()), 13, 1);

@@ -400,7 +400,7 @@ void turnToObjectiveN(int iWant)
         turnLeft(velLF, velLB, velRF, velRB);
       }
     }
-    else if (iAux > 180 || iAux < -180)
+    else //if (iAux > 180 || iAux < -180)
     {
       if (iAux > 0)
       {
@@ -769,12 +769,15 @@ void goToStart()
       LB = velLB;
       RF = velRF;
       RB = velRB;
-      //Start moving
-      forward(LF, LB, RF, RB);
       //Sharp
       distLF = getDistance(pinSLF);
+      //Limit read
+      bLeft = digitalRead(pinLL);
+      bRight = digitalRead(pinLR);
+      //Start moving
+      forward(LF, LB, RF, RB);
       //Keep moving until we collapse with a wall or find a gape in the left side
-      while(distLF < 25 && !bLeft && !bRight)
+      while(distLF <= 30 && !bLeft && !bRight)
       {
         //P Correction
         forwardP(iWest, LF, LB, RF, RB, false);
@@ -786,11 +789,11 @@ void goToStart()
       }
       brake();
       //If we find the gate
-      if(distLF > 25)
+      if(distLF > 30)
       {
         int distLB = getDistance(pinSLB);
         //Keep moving until the robot get at the center of the gate
-        while(distLB < 25)
+        while(distLB <= 30)
         {
           //P Correction
           forwardP(iWest, LF, LB, RF, RB, false);
@@ -814,12 +817,15 @@ void goToStart()
         LB = velLB;
         RF = velRF;
         RB = velRB;
-        //Start moving
-        forward(LF, LB, RF, RB);
         //Sharp distance
         distRF = getDistance(pinSRF);
+        //Limit read
+        bLeft = digitalRead(pinLL);
+        bRight = digitalRead(pinLR);
+        //Start moving
+        forward(LF, LB, RF, RB);
         //Keep moving until we collaps with a wall or find a gape at the right
-        while(distRF <= 25 && !bLeft && !bRight)
+        while(distRF < 30 && !bLeft && !bRight)
         {
           //P Correction
           forwardP(iEast, LF, LB, RF, RB, false);
@@ -832,17 +838,17 @@ void goToStart()
         //Stop moving
         brake();
         //If we find a gape
-        if(distRF > 25)
+        if(distRF > 30)
         {
           //Start moving
           forward(LF, LB, RF, RB);
           //Sharp distance
           int distRB = getDistance(pinSRB);
           //Keep moving until the robot get at the center of the gate
-          while(distRB < 25)
+          while(distRB <= 30)
           {
             //P Correction
-            forwardP(iWest, LF, LB, RF, RB, false);
+            forwardP(iEast, LF, LB, RF, RB, false);
             //Sharp
             distRB = getDistance(pinSRB);
           }
@@ -856,5 +862,7 @@ void goToStart()
     }
     brake(); 
   }
+  brake();
+  delay(500);
   turnToObjectiveN(iSouth);
 }
