@@ -319,6 +319,8 @@ def triangleToGetInCow():
         #LETS CONFIRM AGAIN IF THERE IS A COW, 
         #AND THEN ALLIGN TO IT, ELSE LETS RETURN
 
+        com.backwardNCm(30)
+
         takePicture()
         found, filtered = rb.detectCow(clearedMainFrame)
         #first validation, haar cascade
@@ -330,6 +332,8 @@ def triangleToGetInCow():
                 return True #success
 
         #If found nothing, lets return
+        com.forwardNCm(30)
+
         if turnedLeft :
             turnLeft(ninetyDegs)
         else:
