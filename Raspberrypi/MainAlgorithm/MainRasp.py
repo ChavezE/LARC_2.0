@@ -132,7 +132,12 @@ def checkingTurningR():
                 # cv2.imshow("cow",mainFrame)
                 # cv2.waitKey(0)
                 # cv2.destroyAllWindows()
-                return True
+
+
+                success = triangleToGetInCow()
+                
+                if success:
+                        return True
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
@@ -160,7 +165,12 @@ def checkingTurningL():
                 # cv2.imshow("cow",mainFrame)
                 # cv2.waitKey(0)
                 # cv2.destroyAllWindows()
-                return True
+
+
+                success = triangleToGetInCow()
+                
+                if success:
+                        return True
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
@@ -279,6 +289,7 @@ def paralelism():
     return finalDeg, turnedLeft
 
 def triangleToGetInCow():
+    global maxLenTissue
     L,R,Top = rb.calcCowLimits(maxLenTissue)
     adyacent = rb.getDistanceFromTop(Top)
     print "ADYACENT"
@@ -288,21 +299,61 @@ def triangleToGetInCow():
     degs, turnedLeft = paralelism()
     print degs
     print "TRIANGLE"
-    if degs > 0:
+    ninetyDegs = 90 + 15
+    if degs > 10:
         print "ACTION"
         hypotenuse = (1/math.cos(math.radians(degs))) * adyacent
         print hypotenuse
         if hypotenuse < 0:
                 hypotenuse = hypotenuse * -1
                 print "HYPOTENUSE CORRECTION"
-        #if hypotenuse > 
+        if hypotenuse > 100:
+                hypotenuse = 100
         
         com.forwardNCm(int(hypotenuse))#com.forwardNCm(int(hypotenuse/2))
 
         if turnedLeft :
-            turnRight(90+15)
+            turnRight(ninetyDegs)
         else:
-            turnLeft(90+15)
+            turnLeft(ninetyDegs)
+
+        #LETS CONFIRM AGAIN IF THERE IS A COW, 
+        #AND THEN ALLIGN TO IT, ELSE LETS RETURN
+
+        com.backwardNCm(30)
+
+        takePicture()
+        found, filtered = rb.detectCow(clearedMainFrame)
+        #first validation, haar cascade
+        if found:
+            # second validation, tissue algorithm
+            foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
+            if foundCow:
+                cv2.imshow("second try",mainFrame)
+                cv2.waitKey(0)
+                alignWithCow()
+                return True #success
+
+        #If found nothing, lets return
+        com.forwardNCm(30)
+
+        if turnedLeft :
+            turnLeft(ninetyDegs)
+        else:
+            turnRight(ninetyDegs)
+
+        com.backwardNCm(int(hypotenuse))
+
+        if turnedLeft :
+            turnRight(degs)
+        else:
+            turnLeft(degs)
+
+        return False
+    return True #success
+
+
+
 
 def control():
     com.controlRobot()
@@ -321,7 +372,7 @@ if __name__ == "__main__":
     # STARTING EXPLORTION HERE #
     #turnLeft(90)
     walkingDetecting()
-    triangleToGetInCow()
+    #triangleToGetInCow()
     com.getInCow()
 
 

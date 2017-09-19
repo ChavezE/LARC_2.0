@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 
-H_cascade = cv2.CascadeClassifier('../Cascades/COW3.xml')
+H_cascade = cv2.CascadeClassifier('../Cascades/COWTUMMY.xml')
 
 cap = cv2.VideoCapture(0)
 
