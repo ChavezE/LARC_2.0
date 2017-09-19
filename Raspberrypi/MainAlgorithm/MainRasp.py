@@ -300,14 +300,15 @@ def triangleToGetInCow():
     print degs
     print "TRIANGLE"
     ninetyDegs = 90 + 15
-    if degs > 0:
+    if degs > 10:
         print "ACTION"
         hypotenuse = (1/math.cos(math.radians(degs))) * adyacent
         print hypotenuse
         if hypotenuse < 0:
                 hypotenuse = hypotenuse * -1
                 print "HYPOTENUSE CORRECTION"
-        #if hypotenuse > 
+        if hypotenuse > 100:
+                hypotenuse = 100
         
         com.forwardNCm(int(hypotenuse))#com.forwardNCm(int(hypotenuse/2))
 
@@ -328,6 +329,8 @@ def triangleToGetInCow():
             # second validation, tissue algorithm
             foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
             if foundCow:
+                cv2.imshow("second try",mainFrame)
+                cv2.waitKey(0)
                 alignWithCow()
                 return True #success
 
