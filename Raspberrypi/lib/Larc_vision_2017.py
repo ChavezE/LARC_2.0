@@ -420,11 +420,12 @@ def detectCow(img):
 
      #determines how much the
      #detected area expands
-      ampliation = (2 * (area/10000))
+      ampliation = (2 * (area/10000)) # FOR COW3.XML
 
      #This condition is also calibratable, by determining
      #a relationship between h/w
-      if relation < 0.77 and relation > 0.74 and area > 11000 and w > 120:
+      #if relation < 0.77 and relation > 0.74 and area > 11000 and w > 120: #FOR COW3.XML
+      if relation < 1.2 and relation > 0.98 and area > 11000 and w > 120: #FOR COWTUMMY.XML
          #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
 
          #Expanding the detected area
@@ -432,6 +433,7 @@ def detectCow(img):
          yc = y - int(1 * ampliation)
          hc = h + int((3 * ampliation))
          wc = w + int((1 * ampliation))
+         
          cowDetected = True
 
          cv2.rectangle(img,(xc,yc),(xc+wc,yc+hc),(0,255,0),1)
