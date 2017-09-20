@@ -42,7 +42,7 @@ long getCompassX100()
 //Return the lecture of the BNO in eulers
 int getCompass()
 {
-  int angle = bno.getVector(Adafruit_BNO055::VECTOR_EULER).x();
+  int angle = round(bno.getVector(Adafruit_BNO055::VECTOR_EULER).x());
   //Display function in LCD
   ////lcd.clear();
   // //writeLCD("GETTING ANGLE", 0, 0);
