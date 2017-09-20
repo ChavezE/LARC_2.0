@@ -1,7 +1,7 @@
 #ifndef ESTADISTICAS_H
     #define ESTADISTICAS_H
 
-#include "QuickSort.h"
+#include <QuickSort.h>
 #include <math.h>
 
 /**

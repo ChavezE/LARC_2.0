@@ -1,26 +1,15 @@
+#include <Estadisticas.h>
+
 //Get the distance of the sharp given in the parameters
 int getDistance(byte sharp)
 {
-  int i, j, key, numLength = 7;
+  const int numLength = 7;
   int num[numLength];
   
-  float volts = analogRead(sharp) * 0.0048828125;
-  //If the raw data gives zero is really far
-  if (volts == 0)
-  {
-    num[0] = 30000;
-  }
-  //The distance is acceptable save the formula
-  else
-  {
-    num[0] = round(13 * pow(volts, -1));
-  }
-  delay(26);
-  
-  for (j = 1; j < numLength; j++)
+  for (int j = 0; j < numLength; j++)
   {
     //Raw data
-    volts = analogRead(sharp) * 0.0048828125;
+    float volts = analogRead(sharp) * 0.0048828125;
     //If the raw data gives zero is really far
     if (volts == 0)
     {
@@ -29,18 +18,14 @@ int getDistance(byte sharp)
     //The distance is acceptable save the formula
     else
     {
-      num[j] = round(13 * pow(volts, -1));
+      num[j] = round(13.0 / volts);
     }
     delay(26);
 
-    key = num[j];
-    for (i = j - 1; (i >= 0) && (num[i] < key); i--)
-    {
-      num[i + 1] = num[i];
-    }
-    num[i + 1] = key;
   }
-  return num[numLength / 2];
+
+  return Estadisticas<int>::createNewMediana(num, numLength).getMediana();
+  
 }
 
 //Return the lecture of the BNO in eulers
