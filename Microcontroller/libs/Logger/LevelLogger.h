@@ -50,6 +50,8 @@ LevelLogger::LevelLogger(const String &title, signed char level):title(title), l
 LevelLogger& LevelLogger::operator=(const LevelLogger &otherLogger) {
     this->title = otherLogger.title;
     this->level = otherLogger.level;
+
+    return *this;
 }
 
 String LevelLogger::getTitle() {
