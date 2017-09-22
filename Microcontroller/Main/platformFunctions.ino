@@ -10,8 +10,8 @@ void platIn()
     //Start moving the plattaform
     sPlattaform.write(100);
   }
-  //Stop the plattaform
-  sPlattaform.write(90);
+  
+  platformStop();
 }
 
 //Move plattaform to a mid distance
@@ -26,8 +26,7 @@ void platInMid()
   
   delay(2500);
   
-  //Stop the plattaform
-  sPlattaform.write(90);
+  platformStop();
 }
 
 //Move plattaform Out
@@ -42,7 +41,15 @@ void platOut()
     //Start moving the plattaform
     sPlattaform.write(80);
   }
-  //Stop the plattaform
+  
+  platformStop();
+}
+
+void platformStartToOut() {
+  sPlattaform.write(80);
+}
+
+void platformStop() {
   sPlattaform.write(90);
 }
 
@@ -52,7 +59,8 @@ void openClaw()
   //Display function in LCD
   ////lcd.clear();
   // //writeLCD("OPEN CLAW", 0, 0);
-  sClaw.write(30);
+  sClaw.write(45);
+  delay(1400);
 }
 
 //Close claw of the robot
@@ -61,5 +69,6 @@ void closeClaw()
   //Display function in LCD
   ////lcd.clear();
   // //writeLCD("CLOSE CLAW", 0, 0);
-  sClaw.write(80);
+  sClaw.write(70);
+  delay(1400);
 }
