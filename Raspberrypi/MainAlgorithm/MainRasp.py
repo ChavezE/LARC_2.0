@@ -299,7 +299,7 @@ def triangleToGetInCow():
     degs, turnedLeft = paralelism()
     print degs
     print "TRIANGLE"
-    ninetyDegs = 90 + 15
+    ninetyDegs = 90 + degs
     if degs > 10:
         print "ACTION"
         hypotenuse = (1/math.cos(math.radians(degs))) * adyacent
