@@ -866,3 +866,70 @@ void goToStart()
   delay(500);
   turnToObjectiveN(iSouth);
 }
+
+// Forward para ir derecho con cierta distancia a la pared derecha
+int forwardWithRightWall(const int &degreesObjetivo, const int &objetivoDistPared, const bool &slow) {
+  //Base for motors velocity
+  const int baseLF = !slow ? velLF : velSlowLF;
+  const int baseLB = !slow ? velLB : velSlowLB;
+  const int baseRF = !slow ? velRF : velSlowRF;
+  const int baseRB = !slow ? velRB : velSlowRB;
+
+  const int front = getDistance(pinSRF);
+  const int back = getDistance(pinSRB);
+
+  const int separacion = (front + back) / 2;
+  const int diffSeparacion = separacion - objetivoDistPared;
+  const int diffSharps = front - back; // (-) voltear a la der
+  const int diffCompass = getAngleDifferenceD(degreesObjetivo, getCompass()); // (-) conviene voltear a la derecha
+  
+  int velLF = formulaForwardWithRightWall(baseLF, diffSeparacion, diffSharps, -diffCompass);//formula(baseLF, -separacion, -separacionOrientado, -diffCompass);
+  int velLB = formulaForwardWithRightWall(baseLB, diffSeparacion, diffSharps, -diffCompass);//formula(baseLB, -separacion, -separacionOrientado, -diffCompass);
+  int velRF = formulaForwardWithRightWall(baseRF, -diffSeparacion, -diffSharps, diffCompass);//formula(baseRF, separacion, separacionOrientado, diffCompass);
+  int velRB = formulaForwardWithRightWall(baseRB, -diffSeparacion, -diffSharps, diffCompass);//formula(baseRB, separacion, separacionOrientado, diffCompass);
+  if (velLF > 255) velLF = 255;
+  else if (velLF < 0) velLF = 0;
+  if (velLB > 255) velLB = 255;
+  else if (velLB < 0) velLB = 0;
+  if (velRF > 255) velRF = 255;
+  else if (velRF < 0) velRF = 0;
+  if (velRB > 255) velRB = 255;
+  else if (velRB < 0) velRB = 0;
+
+  forward(velLF, velLB, velRF, velRB);
+
+  return separacion;
+}
+
+/** 
+ * Formula with the P taking the base, distance from the wall, difference from sharps 
+ * and diff from compass. Used in the forwardWithRightWall.
+ *
+ */
+int formulaForwardWithRightWall(int base, int separacion, int diffBetweenSharps, int diffCompass) {
+  if (diffBetweenSharps > 45) diffBetweenSharps = 45;
+  else if (diffBetweenSharps < -45) diffBetweenSharps = -45;
+//  return base + separacion * 8 + diffBetweenSharps * 2 + diffCompass * 6;
+  return base + separacion * 12 + diffBetweenSharps * 2 + diffCompass * 7;
+//  return base + separacion * 11 + diffBetweenSharps * 2 + diffCompass * 7;
+}
+
+/**
+ * Get the difference between the wanted angles and the actual angles.
+ * Gives always the fastest direction and the smallest angles to turn to.
+ * if result < 0 : best is to turn to the RIGHT
+ * else if result > 0 : best is to turn to the LEFT
+ * Always will be: 180 >= abs(result) >= 0
+ *
+ */
+int getAngleDifferenceD(const int &objetivo, const int &actual) {
+  int diffCompass = actual - objetivo;
+
+  if (diffCompass > 180) {
+    diffCompass = -( 180-(diffCompass-180) );
+  } else if (diffCompass < -180) {
+    diffCompass = ( 180-((-diffCompass)-180) );
+  }
+  
+  return diffCompass; // (-) conviene voltear a la derecha
+}
