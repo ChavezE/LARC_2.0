@@ -8,26 +8,31 @@
 ///////////////////////
 
 //------Motors--------//
+//PWM adelante: 10 9
+//Control adelante: 31 33 35 37
+
+//PWM atras: 11 12
+//Control atras: 22 24 26 28
 
 //Motor Front Right
-const byte pinMFRA = 29;
-const byte pinMFRB = 31;
-const byte pinPWMFR = 2;
+const byte pinMFRA = 24;
+const byte pinMFRB = 26;
+const byte pinPWMFR = 11;
 
 //Motor Front Left
-const byte pinMFLA = 27;
-const byte pinMFLB = 33;
-const byte pinPWMFL = 3;
+const byte pinMFLA = 22;
+const byte pinMFLB = 28;
+const byte pinPWMFL = 12;
 
 //Motor Back Right
-const byte pinMBRA = 35;
-const byte pinMBRB = 41;
-const byte pinPWMBR = 5;
+const byte pinMBRA = 31;
+const byte pinMBRB = 37;
+const byte pinPWMBR = 9;
 
 //Motor Back Left
-const byte pinMBLA = 37;
-const byte pinMBLB = 39;
-const byte pinPWMBL = 4;
+const byte pinMBLA = 35;
+const byte pinMBLB = 33;
+const byte pinPWMBL = 10;
 
 //Encoder
 const byte pinEncoder = 18;
@@ -38,25 +43,25 @@ const byte pinEncoder = 18;
 const byte pinSF = A3;
 
 //Back Sharp
-const byte pinSB = A2;
+const byte pinSB = A11;
 
 //Sharp Right Front
-const byte pinSRF = A4;
+const byte pinSRF = A8;
 
 //Sharp Right Center
 //const byte pinSRC;
 
 //Sharp Right Back
-const byte pinSRB = A1;
+const byte pinSRB = A10;
 
 //Sharp Left Front
-const byte pinSLF = A5;
+const byte pinSLF = A12;
 
 //Sharp Left Center
 //const byte pinSLC;
 
 //Sharp Left Back
-const byte pinSLB = A0;
+const byte pinSLB = A19;
 
 //Sharp Claw
 const byte pinSC = A6;
@@ -233,11 +238,12 @@ void setup()
 
 void loop()
 {
+  forward(100, 100, 100, 100);
   //turnToObjectiveN(340);
   //forwardNCm(80, false);
   //goToStart();
   //while(1);
-  communication();
+  //communication();
   // delay(500);
   // //writeLCD("   ", 13, 1);
   // //writeLCD(String(getCompass()), 13, 1);

@@ -1,17 +1,17 @@
 //Set the motors in the configuration given in the parameters
-void setMotor(bool b1, bool b2, bool b3, bool b4, bool b5, bool b6, bool b7, bool b8)
+void setMotor(bool leftFrontA, bool leftFrontB, bool leftBackA, bool leftBackB, bool rightFrontA, bool rightFrontB, bool rightBackA, bool rightBackB)
 {
-  digitalWrite(pinMFRA, b1);
-  digitalWrite(pinMFRB, b2);
+  digitalWrite(pinMFRA, rightFrontA);
+  digitalWrite(pinMFRB, rightFrontB);
 
-  digitalWrite(pinMFLA, b3);
-  digitalWrite(pinMFLB, b4);
+  digitalWrite(pinMFLA, leftFrontB);
+  digitalWrite(pinMFLB, leftFrontA);
 
-  digitalWrite(pinMBRA, b5);
-  digitalWrite(pinMBRB, b6);
+  digitalWrite(pinMBRA, rightBackB);
+  digitalWrite(pinMBRB, rightBackA);
 
-  digitalWrite(pinMBLA, b7);
-  digitalWrite(pinMBLB, b8);
+  digitalWrite(pinMBLA, leftBackB);
+  digitalWrite(pinMBLB, leftBackA);
 }
 
 //Check if the velocity given in the parameters doesn't pass 255 or be less than 0
