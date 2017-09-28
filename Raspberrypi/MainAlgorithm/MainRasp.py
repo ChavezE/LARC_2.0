@@ -274,11 +274,15 @@ def paralelism():
 
     if theta < -5:
         finalDeg = 90 - (4*degrees)
+        if finalDeg < 0:
+                finalDeg = 11 
         turnLeft(finalDeg)
         turnedLeft = True
         print finalDeg
     elif theta > 5:
         finalDeg = 90 - (5*degrees)
+        if finalDeg < 0:
+                finalDeg = 11 
         turnRight(finalDeg)
         turnedLeft = False
         print finalDeg
@@ -299,7 +303,7 @@ def triangleToGetInCow():
     degs, turnedLeft = paralelism()
     print degs
     print "TRIANGLE"
-    ninetyDegs = 90 + degs
+    ninetyDegs = 90 + 7#degs || 15
     if degs > 10:
         print "ACTION"
         hypotenuse = (1/math.cos(math.radians(degs))) * adyacent
@@ -322,18 +326,25 @@ def triangleToGetInCow():
 
         com.backwardNCm(30)
 
+        time.sleep(1)
+
         takePicture()
+        cv2.imshow("second try",mainFrame)
+        cv2.waitKey(0)
         found, filtered = rb.detectCow(clearedMainFrame)
         #first validation, haar cascade
         if found:
             # second validation, tissue algorithm
+            cv2.imshow("second try",filtered)
+            cv2.waitKey(0)
             foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
             if foundCow:
                 cv2.imshow("second try",mainFrame)
                 cv2.waitKey(0)
                 alignWithCow()
                 return True #success
-
+        cv2.imshow("second try",mainFrame)
+        cv2.waitKey(0)
         #If found nothing, lets return
         com.forwardNCm(30)
 
@@ -374,6 +385,7 @@ if __name__ == "__main__":
     walkingDetecting()
     #triangleToGetInCow()
     com.getInCow()
+    cv2.waitKey(0)
 
 
     # print found

@@ -33,12 +33,12 @@ print "B", B
 maxSquareArea = 3000
 minSquareArea = 100
 #Thresh range for cow squares  #si no detecta suficientes cuadros
-minThresh = 50
-maxThresh = 250
-steps = 5
+minThresh = 5#50
+maxThresh = 255
+steps = 3
 #Tissue Parameters
-eps = 30
-eps2 = 30
+eps = 40
+eps2 = 40
 #HAAR Cascade Sansitivity
 cascadeSensitivity = 100
 
@@ -47,7 +47,7 @@ cascadeSensitivity = 100
 cowCascade = cv2.CascadeClassifier('../Cascades/COWTUMMY.xml')
 #using a black frame to filter
 blackFrame = np.zeros((480,640), np.uint8)
-blackFrame = np.ones((480,640), np.uint8)
+whiteFrame = np.ones((480,640), np.uint8)
 
 # Simple class to manage individual squares in the image
 # ATRIBUTES:
