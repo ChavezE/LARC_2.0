@@ -61,7 +61,7 @@ const byte pinSLF = A12;
 //const byte pinSLC;
 
 //Sharp Left Back
-const byte pinSLB = A19;
+const byte pinSLB = A9;
 
 //Sharp Claw
 const byte pinSC = A6;
@@ -72,14 +72,20 @@ byte pinSharp[9] = {A3, A4, A1, A2, A0, A5, A6};
 //----LimitSwithces----//
 
 //In Limit Switch
-const byte pinLI = 43;
+const byte pinLI = 48;
 
 //Out Limit Switch
-const byte pinLO = 45;
+const byte pinLO = 42;
 
 const byte pinLR = 6;
 
 const byte pinLL = 7;
+
+// Limit down garra
+const byte pinClawDown = 44;
+
+// Limit up garra
+const byte pinClawUp = 46;
 
 //-------Servos-------//
 
@@ -238,7 +244,15 @@ void setup()
 
 void loop()
 {
-  forward(100, 100, 100, 100);
+  /**
+   * <=30 ya no jala, no se mueven nada
+   * 50= lento, pero se mueven, jala. 
+   * 100= caminata con prisa
+   * 150= caminata rapida. Ya con un torque
+   * 200= trotando. Ya el torque remarcable
+   * 255= trotando rapido. Torque chidote
+   */
+   forward(150, 150, 150, 150);
   //turnToObjectiveN(340);
   //forwardNCm(80, false);
   //goToStart();
