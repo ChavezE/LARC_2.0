@@ -9,7 +9,7 @@ from copy import deepcopy
 import sys
 sys.path.insert(0, '../lib/')
 import Larc_vision_2017 as rb
-import communication as com
+
 
 # CODE
 
@@ -78,18 +78,20 @@ if __name__ == "__main__":
                 this_time = time.time()
                 validation2, filtered = rb.detectCow(filteredImage)
                 validation,maxLenT,_ = rb.isThereACow(mainFrame,filtered)
-                
-                print validation, len(maxLenT)
+                print "HAAR: ",validation2
+                print "ALGORITHM: ",validation, len(maxLenT)
                 
                 if validation:
                     print "COW FOUND"
 
                     tLevel = rb.getTissueTopLevel(maxLenT)
-                    # rb.drawCowSquares(mainFrame,100,100,100,tLevel)
+                    rb.drawCowSquares(mainFrame,200,50,200,tLevel)
                     A,B,theta = rb.ajusteDeCurvas(tLevel)
                     rb.drawSlope(mainFrame,A,B)
                     left,right,up=rb.calcCowLimits(maxLenT)
                     rb.drawLimits(mainFrame,left,right,up)
+                    for sqr in maxLenT:
+                            print sqr.getX(), sqr.getY()
 
                 cv2.imshow('im',mainFrame)
                 

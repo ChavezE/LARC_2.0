@@ -48,6 +48,7 @@ cowCascade = cv2.CascadeClassifier('../Cascades/COWTUMMY.xml')
 #using a black frame to filter
 blackFrame = np.zeros((480,640), np.uint8)
 whiteFrame = np.ones((480,640), np.uint8)
+whiteFrame[:] = 255
 
 # Simple class to manage individual squares in the image
 # ATRIBUTES:
@@ -398,7 +399,7 @@ def isThereACow(mainFrame, equalizedFrame):
 #Implementation of the trained cascade classifier,
 #trained to detect the COW pattern
 def detectCow(img):
-   blackTemp = blackFrame.copy()
+   blackTemp = whiteFrame.copy()#whiteFrame.copy()#blackFrame.copy()
 
    cows = cowCascade.detectMultiScale(img, 1.3, cascadeSensitivity)
 
@@ -430,9 +431,9 @@ def detectCow(img):
 
          #Expanding the detected area
          xc = x - int(.5 * ampliation)
-         yc = y - int(1 * ampliation)
-         hc = h + int((3 * ampliation))
-         wc = w + int((1 * ampliation))
+         yc = y - int(.5 * ampliation)
+         hc = h + int((1 * ampliation))
+         wc = w + int((2 * ampliation)) #1.5
          
          cowDetected = True
 
