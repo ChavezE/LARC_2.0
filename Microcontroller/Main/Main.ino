@@ -35,7 +35,7 @@ const byte pinMBLB = 33;
 const byte pinPWMBL = 10;
 
 //Encoder
-const byte pinEncoder = 18;
+const byte pinEncoder = 2;
 
 //-------Sharps--------//
 
@@ -85,7 +85,7 @@ const byte pinLLB = 34;
 
 const byte pinLRB = 32;
 
-//30 32 34 36 38 40
+//Para los limits de arriba y abajo del ordeñador los pins 36 y 38
 
 //-------Servos-------//
 
@@ -244,12 +244,7 @@ void setup()
 
 void loop()
 {
-  Serial.println(digitalRead(pinLL));
-  Serial.println(digitalRead(pinLR));
-  Serial.println(digitalRead(pinLLB));
-  Serial.println(digitalRead(pinLRB));
-  Serial.println();
-  delay(1000);
+  Serial.println(steps);
   //forward(velLF, velLB, velRF, velRB);
   //turnToObjectiveN(340);
   //forwardNCm(80, false);
