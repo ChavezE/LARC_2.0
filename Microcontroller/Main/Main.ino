@@ -77,9 +77,15 @@ const byte pinLI = 48;
 //Out Limit Switch
 const byte pinLO = 42;
 
-const byte pinLR = 6;
+const byte pinLR = 40;
 
-const byte pinLL = 7;
+const byte pinLL = 30;
+
+const byte pinLLB = 34;
+
+const byte pinLRB = 32;
+
+//30 32 34 36 38 40
 
 // Limit down garra
 const byte pinClawDown = 44;
@@ -127,11 +133,11 @@ const long velTurn = 60L;
 //Constants of the motors when the motor is treated as  a 4x4
 
 //Cosntants of motors velocity
-const int velLF = 87; //67
-const int velLB = 88; //68
+const int velLF = 150; //150
+const int velLB = 149; //149
 
-const int velRF = 90; //70
-const int velRB = 100; //80
+const int velRF = 168; //175
+const int velRB = 151; //157
 
 //Cosntants of motors velocity for going slow
 const int velSlowLF = 48;
