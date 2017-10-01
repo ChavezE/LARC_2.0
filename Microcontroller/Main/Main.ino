@@ -72,10 +72,10 @@ byte pinSharp[9] = {A3, A4, A1, A2, A0, A5, A6};
 //----LimitSwithces----//
 
 //In Limit Switch
-const byte pinLI = 43;
+const byte pinLI = 48;
 
 //Out Limit Switch
-const byte pinLO = 45;
+const byte pinLO = 42;
 
 const byte pinLR = 40;
 
@@ -86,6 +86,12 @@ const byte pinLLB = 34;
 const byte pinLRB = 32;
 
 //Para los limits de arriba y abajo del ordeñador los pins 36 y 38
+
+// Limit down garra
+const byte pinClawDown = 44;
+
+// Limit up garra
+const byte pinClawUp = 46;
 
 //-------Servos-------//
 
@@ -244,8 +250,15 @@ void setup()
 
 void loop()
 {
-  Serial.println(steps);
-  //forward(velLF, velLB, velRF, velRB);
+  /**
+     <=30 ya no jala, no se mueven nada
+     50= lento, pero se mueven, jala.
+     100= caminata con prisa
+     150= caminata rapida. Ya con un torque
+     200= trotando. Ya el torque remarcable
+     255= trotando rapido. Torque chidote
+  */
+  forward(150, 150, 150, 150);
   //turnToObjectiveN(340);
   //forwardNCm(80, false);
   //goToStart();
