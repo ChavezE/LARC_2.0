@@ -180,7 +180,7 @@ void turnRight(int vel)
 void turnRight(int leftFront, int leftBack, int rightFront, int rightBack)
 {
   //Set enables of motors to go forward
-  setMotor(0, 1, 1, 0, 0, 1, 1, 0);
+  setMotor(1, 0, 1, 0, 0, 1, 0, 1);
 
   //Set velocity to the motors
   setVelocity(leftFront, leftBack, rightFront, rightBack);
@@ -208,7 +208,7 @@ void turnLeft(int vel)
 void turnLeft(int leftFront, int leftBack, int rightFront, int rightBack)
 {
   //Set enables of motors to turn left
-  setMotor(1, 0, 0, 1, 1, 0, 0, 1);
+  setMotor(0, 1, 0, 1, 1, 0, 1, 0);
 
   //Set velocity to the motors
   setVelocity(leftFront, leftBack, rightFront, rightBack);

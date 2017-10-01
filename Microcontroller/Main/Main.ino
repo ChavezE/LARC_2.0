@@ -120,7 +120,7 @@ const long constPCorrect = 30L;
 const long constPDist = 110L;
 
 //P correction Nestor
-const double constPCorrectN = 0.1;
+const double constPCorrectN = 0.001;
 
 //Constants of motors when the robot is treated as a tank
 
@@ -133,18 +133,18 @@ const long velTurn = 60L;
 //Constants of the motors when the motor is treated as  a 4x4
 
 //Cosntants of motors velocity
-const int velLF = 150; //150
-const int velLB = 149; //149
+const int velLF = 158; //158
+const int velLB = 158; //158
 
-const int velRF = 168; //175
-const int velRB = 151; //157
+const int velRF = 120; //120
+const int velRB = 120; //120
 
 //Cosntants of motors velocity for going slow
-const int velSlowLF = 48;
-const int velSlowLB = 51;
+const int velSlowLF = 120;
+const int velSlowLB = 120;
 
-const int velSlowRF = 42;
-const int velSlowRB = 56;
+const int velSlowRF = 92;
+const int velSlowRB = 92;
 
 /////////////////////
 //    Variables    //
@@ -163,7 +163,7 @@ volatile unsigned long steps = 0;
 volatile byte encoderState = 0;
 
 //Counts of encoder
-const int encoder30Cm = 1500;
+const int encoder30Cm = 5060;
 
 //LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -223,8 +223,8 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
 
   brake();
-  platIn();
-  openClaw();
+  //platIn();
+  //openClaw();
   encoderState = 1;
 
   //Display the finish of the setup
@@ -258,7 +258,16 @@ void loop()
      200= trotando. Ya el torque remarcable
      255= trotando rapido. Torque chidote
   */
-  forward(150, 150, 150, 150);
+  int angle = getCompass();
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+  forward(LF, LB, RF, RB);
+  while(1)
+  {
+    forwardP(angle, LF, LB, RF, RB, false);
+  }
   //turnToObjectiveN(340);
   //forwardNCm(80, false);
   //goToStart();
