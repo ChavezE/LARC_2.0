@@ -8,12 +8,6 @@
 ///////////////////////
 
 //------Motors--------//
-//PWM adelante: 10 9
-//Control adelante: 31 33 35 37
-
-//PWM atras: 11 12
-//Control atras: 22 24 26 28
-
 //Motor Front Right
 const byte pinMFRA = 24;
 const byte pinMFRB = 26;
@@ -71,10 +65,10 @@ byte pinSharp[9] = {A3, A4, A1, A2, A0, A5, A6};
 
 //----LimitSwithces----//
 
-//In Limit Switch
+const bool normalState = 1;
+
 const byte pinLI = 48;
 
-//Out Limit Switch
 const byte pinLO = 42;
 
 const byte pinLR = 40;
@@ -120,7 +114,7 @@ const long constPCorrect = 30L;
 const long constPDist = 110L;
 
 //P correction Nestor
-const double constPCorrectN = 0.001;
+const double constPCorrectN = 0.01;
 
 //Constants of motors when the robot is treated as a tank
 
@@ -176,9 +170,6 @@ int iEast = 0;
 
 void setup()
 {
-  //lcd.clear();
-  //writeLCD("Iniciando", 0, 0);
-  //delay(1000);
   //Delay to establish connection with raspberry
   Serial.begin(9600);
 
@@ -192,7 +183,7 @@ void setup()
   //Initialize lcd, turn backlight on and clear the display
   lcd.init();
   lcd.backlight();
-  ////lcd.clear();
+  lcd.clear();
 
   pinMode(pinMFRA , OUTPUT);
   pinMode(pinMFRB , OUTPUT);
@@ -228,8 +219,7 @@ void setup()
   encoderState = 1;
 
   //Display the finish of the setup
-  //lcd.clear();
-  //writeLCD("START FENIX 2.0", 0, 0);
+  writeLCD("START FENIX 2.0", 0, 0);
 
   //Stop plattaform for security
   sPlattaform.write(90);
@@ -258,22 +248,5 @@ void loop()
      200= trotando. Ya el torque remarcable
      255= trotando rapido. Torque chidote
   */
-  int angle = getCompass();
-  int LF = velLF;
-  int LB = velLB;
-  int RF = velRF;
-  int RB = velRB;
-  forward(LF, LB, RF, RB);
-  while(1)
-  {
-    forwardP(angle, LF, LB, RF, RB, false);
-  }
-  //turnToObjectiveN(340);
-  //forwardNCm(80, false);
-  //goToStart();
-  //while(1);
-  //communication();
-  // delay(500);
-  // //writeLCD("   ", 13, 1);
-  // //writeLCD(String(getCompass()), 13, 1);
+  communication();
 }

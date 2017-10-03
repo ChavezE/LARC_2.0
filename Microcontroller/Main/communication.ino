@@ -101,7 +101,7 @@ void communication() {
         break;
 
       case 'm':
-        getInCow();
+        getInCow(false);
         Serial.write('1');
         break;
 

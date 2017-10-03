@@ -372,105 +372,111 @@ void backwardUntilWallN(int dist)
 //Turn to an exact angle
 void turnToObjectiveN(int iWant)
 {
-  //lcd.clear();
-  //writeLCD("Turning To:", 0, 0);
-  //writeLCD(String(iWant), 0, 1);
-
-  //Actual Angle
-  int iAm = getCompass();
-  //Auxiliar to know limits
-  int iAux = iWant - iAm;
-
-  // +- Error
-  int iError = 2;
-
-  while (!(iAm > iWant - iError && iAm < iWant + iError))
+  for(int iI = 0; iI < 2; iI++)
   {
-    //Move to the angle in the shorter path
-    if (iAux > -180 && iAux < 180)
-    {
-      if (iWant > iAm)
-      {
-        //Turn right
-        turnRight(velLF, velLB, velRF, velRB);
-      }
-      else if (iWant < iAm)
-      {
-        //Turn left
-        turnLeft(velLF, velLB, velRF, velRB);
-      }
-    }
-    else //if (iAux > 180 || iAux < -180)
-    {
-      if (iAux > 0)
-      {
-        //Turn left
-        turnLeft(velLF, velLB, velRF, velRB);
-      }
-      else if (iAux < 0)
-      {
-        //Turn right
-        turnRight(velLF, velLB, velRF, velRB);
-      }
-    }
+    //lcd.clear();
+    //writeLCD("Turning To:", 0, 0);
+    //writeLCD(String(iWant), 0, 1);
 
-    //check angle
-    iAm = getCompass();
-    iAux = iWant - iAm;
+    //Actual Angle
+    int iAm = getCompass();
+    //Auxiliar to know limits
+    int iAux = iWant - iAm;
+
+    // +- Error
+    int iError = 2;
+
+    while (!(iAm > iWant - iError && iAm < iWant + iError))
+    {
+      //Move to the angle in the shorter path
+      if (iAux > -180 && iAux < 180)
+      {
+        if (iWant > iAm)
+        {
+          //Turn right
+          turnRight(velLF, velLB, velRF, velRB);
+        }
+        else if (iWant < iAm)
+        {
+          //Turn left
+          turnLeft(velLF, velLB, velRF, velRB);
+        }
+      }
+      else //if (iAux > 180 || iAux < -180)
+      {
+        if (iAux > 0)
+        {
+          //Turn left
+          turnLeft(velLF, velLB, velRF, velRB);
+        }
+        else if (iAux < 0)
+        {
+          //Turn right
+          turnRight(velLF, velLB, velRF, velRB);
+        }
+      }
+
+      //check angle
+      iAm = getCompass();
+      iAux = iWant - iAm;
+    }
+    brake();
+    //lcd.clear();
+    //writeLCD(String(getCompass()), 0, 0);
   }
-  brake();
-  //lcd.clear();
-  //writeLCD(String(getCompass()), 0, 0);
 }
 
 //Turn to an exact angle
 void turnToObjectiveN(int iWant, int vLF, int vLB, int vRF, int vRB)
 {
-  //Actual Angle
-  int iAm = getCompass();
-  //Auxiliar to know limits
-  int iAux = iWant - iAm;
-
-  // +- Error
-  int iError = 2;
-
-  while (!(iAm > iWant - iError && iAm < iWant + iError))
+  for(int iI = 0; iI < 2; iI++)
   {
-    //Move to the angle in the shorter path
-    if (iAux > -180 && iAux < 180)
-    {
-      if (iWant > iAm)
-      {
-        //Turn right
-        turnRight(vLF, vLB, vRF, vRB);
-      }
-      else if (iWant < iAm)
-      {
-        //Turn left
-        turnLeft(vLF, vLB, vRF, vRB);
-      }
-    }
-    else if (iAux > 180 || iAux < -180)
-    {
-      if (iAux > 0)
-      {
-        //Turn left
-        turnLeft(vLF, vLB, vRF, vRB);
-      }
-      else if (iAux < 0)
-      {
-        //Turn right
-        turnRight(vLF, vLB, vRF, vRB);
-      }
-    }
+    //Actual Angle
+    int iAm = getCompass();
+    //Auxiliar to know limits
+    int iAux = iWant - iAm;
 
-    //check angle
-    iAm = getCompass();
-    iAux = iWant - iAm;
+    // +- Error
+    int iError = 2;
+
+    while (!(iAm > iWant - iError && iAm < iWant + iError))
+    {
+      //Move to the angle in the shorter path
+      if (iAux > -180 && iAux < 180)
+      {
+        if (iWant > iAm)
+        {
+          //Turn right
+          turnRight(vLF, vLB, vRF, vRB);
+        }
+        else if (iWant < iAm)
+        {
+          //Turn left
+          turnLeft(vLF, vLB, vRF, vRB);
+        }
+      }
+      else if (iAux > 180 || iAux < -180)
+      {
+        if (iAux > 0)
+        {
+          //Turn left
+          turnLeft(vLF, vLB, vRF, vRB);
+        }
+        else if (iAux < 0)
+        {
+          //Turn right
+          turnRight(vLF, vLB, vRF, vRB);
+        }
+      }
+
+      //check angle
+      iAm = getCompass();
+      iAux = iWant - iAm;
+    }
+    brake();
+    //lcd.clear();
+    //writeLCD(String(getCompass()), 0, 0);
   }
-  brake();
-  //lcd.clear();
-  //writeLCD(String(getCompass()), 0, 0);
 }
 
 //Turn n amount of degrees, positive turn right, negative turn left
@@ -708,7 +714,7 @@ void goToStart()
 
   //Start moving
   forward(LF, LB, RF, RB);
-  
+
   //Keep moving forward until we face a wall, collapse with one or pass one
   while(!bRight && !bLeft && distF > 25 && distRF > 25 && distLF > 25)
   {
@@ -749,7 +755,7 @@ void goToStart()
   //Write reason in LCD
   lcd.clear();
   writeLCD("Por: " + sReason, 0, 0);
-  
+
   //Get away from the wall
   backwardNCm(10, false);
   //Fix the angle
@@ -783,7 +789,7 @@ void goToStart()
         forwardP(iWest, LF, LB, RF, RB, false);
         //Limit Switches
         bRight = digitalRead(pinLR);
-        bLeft = digitalRead(pinLL);   
+        bLeft = digitalRead(pinLL);
         //Sharp
         distLF = getDistance(pinSLF);
       }
@@ -831,7 +837,7 @@ void goToStart()
           forwardP(iEast, LF, LB, RF, RB, false);
           //Limit Switches
           bRight = digitalRead(pinLR);
-          bLeft = digitalRead(pinLL);   
+          bLeft = digitalRead(pinLL);
           //Sharp
           distRF = getDistance(pinSRF);
         }
@@ -858,9 +864,9 @@ void goToStart()
           bContinue = false;
         }
       }
-      brake();  
+      brake();
     }
-    brake(); 
+    brake();
   }
   brake();
   delay(500);
@@ -882,7 +888,7 @@ int forwardWithRightWall(const int &degreesObjetivo, const int &objetivoDistPare
   const int diffSeparacion = separacion - objetivoDistPared;
   const int diffSharps = front - back; // (-) voltear a la der
   const int diffCompass = getAngleDifferenceD(degreesObjetivo, getCompass()); // (-) conviene voltear a la derecha
-  
+
   int velLF = formulaForwardWithRightWall(baseLF, diffSeparacion, diffSharps, -diffCompass);//formula(baseLF, -separacion, -separacionOrientado, -diffCompass);
   int velLB = formulaForwardWithRightWall(baseLB, diffSeparacion, diffSharps, -diffCompass);//formula(baseLB, -separacion, -separacionOrientado, -diffCompass);
   int velRF = formulaForwardWithRightWall(baseRF, -diffSeparacion, -diffSharps, diffCompass);//formula(baseRF, separacion, separacionOrientado, diffCompass);
@@ -901,8 +907,8 @@ int forwardWithRightWall(const int &degreesObjetivo, const int &objetivoDistPare
   return separacion;
 }
 
-/** 
- * Formula with the P taking the base, distance from the wall, difference from sharps 
+/**
+ * Formula with the P taking the base, distance from the wall, difference from sharps
  * and diff from compass. Used in the forwardWithRightWall.
  *
  */
@@ -930,6 +936,6 @@ int getAngleDifferenceD(const int &objetivo, const int &actual) {
   } else if (diffCompass < -180) {
     diffCompass = ( 180-((-diffCompass)-180) );
   }
-  
+
   return diffCompass; // (-) conviene voltear a la derecha
 }

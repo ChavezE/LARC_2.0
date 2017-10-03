@@ -73,7 +73,7 @@ void tryForwardP()
 
   //Start moving
   forward(leftFront, leftBack, rightFront, rightBack);
-  
+
   //Stay in forwardP forever
   while(true)
   {
@@ -96,7 +96,7 @@ void tryBackwardP()
 
   //Start moving
   backward(leftFront, leftBack, rightFront, rightBack);
-  
+
   //Stay in forwardP forever
   while(true)
   {
@@ -119,6 +119,12 @@ void limitSwitchesCalibration()
   Serial.print("\t");
   Serial.print("LL: ");
   Serial.print(digitalRead(pinLL));
+  Serial.print("\t");
+  Serial.print("LLB: ");
+  Serial.print(digitalRead(pinLLB));
+  Serial.print("\t");
+  Serial.print("LRB: ");
+  Serial.print(digitalRead(pinLRB));
   Serial.print("\t");
   Serial.println();
 }
