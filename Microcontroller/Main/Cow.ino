@@ -1,7 +1,7 @@
 void getInCow(){
   //Clear LCD and write that we are getting under the cow
-  lcd.clear();
-  writeLCD("Entrando a vaca", 0, 0);
+  ////lcd.clear();
+  ////writeLCD("Entrando a vaca", 0, 0);
 
   //Angle at start
   int iAm = getCompass();
@@ -58,46 +58,133 @@ void getInCow(){
   distRB = getDistance(pinSRB);
   distLB = getDistance(pinSLB);
 
+  //If right leg was touched
   if(bRight){
+    //Turn 90 degrees to the left
     turnNDegrees(-90);
+    //Go backward to make sure the sharp of the back havent detect the leg
     backwardNCm(10, false);
+    //Forward till back sharp detect the leg
     forward(LF, LB, RF, RB);
     do{
       distRB = getDistance(pinSRB);
     }while(distRB > 30);
-
+    //Keep moving until the back sharp lose the leg
     while(distRB < 30){
       distRB = getDistance(pinSRB);
     }
+    //Stop
     brake();
-    forwardNCm(4, false);
-
+    //Move forward a little bit to get away from the leg
+    forwardNCm(6, true);
+    //Turn 90 degrees to the right
     turnNDegrees(90);
-    forwardNCm(10, false);
+    //Restart the function
+    getInCow();
+    //forwardNCm(10, false);
   }
+  //If left leg was touched
   else if(bLeft){
+    //Turn 90 degrees to the right
     turnNDegrees(90);
+    //Go backward to make sure the sharp of the back havent detect the leg
     backwardNCm(10, false);
+    //Go forward until the back sharp detect the leg
     forward(LF, LB, RF, RB);
     do{
       distLB = getDistance(pinSLB);
     }while(distLB > 30);
-
+    //Keep moving until the back sharp lose the leg
     while(distLB < 30){
       distLB = getDistance(pinSLB);
     }
+    //Stop
     brake();
+    //Move forward a little to get away from the leg
     forwardNCm(4, false);
-
+    //Turn 90 degrees to th eleft
     turnNDegrees(-90);
-    forwardNCm(10, false);
+    //Start funciton again
+    getInCow();
+    //forwardNCm(10, false);
   }
+  //If no leg was touched
   else{
+    //If right sharp detect the leg
+    if(distRF < 30){
+      //Check actual angle
+      int angle = getCompass();
+      //Turn right until left sharp detect the leg
+      while(distLF > 30){
+        turnNDegrees(3);
+        distLF = getDistance(pinSLF);
+      }
+      //Check new angle
+      int angle2 = getCompass();
+      //Get the biggest from the two angles
+      int biggest = (angle > angle2 ? angle : angle2);
+      //Get the smallest from the two angles
+      int smallest = (angle < angle2 ? angle : angle2);
+      //Diff between the smallest and the biggest angle
+      int counter = 0;
+      //Save the data of the biggest angle
+      int plus = biggest;
+      int sub = biggest;
+      while(true){
+        //If one of the data is equal to the smallest angle break loop
+        if(plus == smallest || sub == smallest){
+          break;
+        }
+        //Add one to variable and check if is not bigger than 360
+        plus = (plus + 1) % 360;
+        //Substract one to variable and check if is not bigget than 360
+        sub = (sub - 1) % 360;
+        //Add one angle of difference
+        counter++;
+      }
+      //Get half of the counter
+      counter /= 2;
+      //Turn to the left the half of degrees of difference between the two angles
+      turnNDegrees(counter * -1);
+    }
+    else if(distLF < 30){
+      //Check actual angle
+      int angle = getCompass();
+      //Turn right until right sharp detect the leg
+      while(distRF > 30){
+        turnNDegrees(-3);
+        distRF = getDistance(pinSRF);
+      }
+      //Check new angle
+      int angle2 = getCompass();
+      //Get the biggest from the two angles
+      int biggest = (angle > angle2 ? angle : angle2);
+      //Get the smallest from the two angles
+      int smallest = (angle < angle2 ? angle : angle2);
+      //Diff between the smallest and the biggest angle
+      int counter = 0;
+      //Save the data of the biggest angle
+      int plus = biggest;
+      int sub = biggest;
+      while(true){
+        //If one of the data is equal to the smallest angle break loop
+        if(plus == smallest || sub == smallest){
+          break;
+        }
+        //Add one to variable and check if is not bigger than 360
+        plus = (plus + 1) % 360;
+        //Substract one to variable and check if is not bigget than 360
+        sub = (sub - 1) % 360;
+        //Add one angle of difference
+        counter++;
+      }
+      //Get half of the counter
+      counter /= 2;
+      //Turn to the right the half of degrees of difference between the two angles
+      turnNDegrees(counter);
+    }
     forwardNCm(10, false);
   }
   //To be sure
   brake();
-  /*
-   *There could be an adjustment with the angle of the robot here
-   */
 }

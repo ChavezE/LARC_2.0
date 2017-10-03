@@ -2,9 +2,11 @@
 # standar libs
 import cv2
 import numpy as np
-import serial
+import math
+# import serial
 import time
 from copy import deepcopy
+import thread
 
 # Roborregos libs
 import sys
@@ -113,7 +115,7 @@ def checkingTurningR():
     turnRight(135)
 
     for x in range(0,95,15) :
-        turnLeft(5)
+        turnLeft(15)
         takePicture()
         found, filtered = rb.detectCow(clearedMainFrame)
         #first validation, haar cascade
@@ -123,15 +125,23 @@ def checkingTurningR():
             foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
             if foundCow:
                 print "TISSUE FOUND COW"
+                L,R,T = rb.calcCowLimits(maxLenTissue)
+                dis = rb.getDistanceFromTop(T)
+                print "DISTANCE O COW", dis
                 # uncomment to show the frame #
                 # cv2.imshow("cow",mainFrame)
                 # cv2.waitKey(0)
                 # cv2.destroyAllWindows()
-                return True
+
+
+                success = triangleToGetInCow()
+                
+                if success:
+                        return True
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
-    com.turnToObjective(270) # EAST
+    com.turnWest() # WEST
     return False
 
 # Checks if the cascade detects a cow, updates maxLenTissue and returns boolean wheather found or not
@@ -155,11 +165,16 @@ def checkingTurningL():
                 # cv2.imshow("cow",mainFrame)
                 # cv2.waitKey(0)
                 # cv2.destroyAllWindows()
-                return True
+
+
+                success = triangleToGetInCow()
+                
+                if success:
+                        return True
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
-    com.turnToObjective(90)  # WEST
+    com.turnEast()  # EAST
     return False
 
 
@@ -167,25 +182,25 @@ def walkingDetecting():
     global terrinesZone
 
     stepping = 20
-    corner = "WEST"
+    corner = "EAST"
     foundCow = False
     while foundCow == False:
-            if(corner == "WEST"):
-                for x in xrange(3):
+            if(corner == "EAST"):
+                com.turnWest()
+                for x in range(3):
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningR()
                     if foundCow:
                         break
-                corner = "EAST"
-                turnRight(179)
+                corner = "WEST"
             else:
+                com.turnEast()
                 for x in range(3):
                     com.forwardNCm(stepping)
                     foundCow=checkingTurningL()
                     if foundCow:
                         break
-                corner = "WEST"
-                turnRight(179)
+                corner = "EAST"
 
 
 # def walkingDetecting():
@@ -248,10 +263,116 @@ def alignWithCow():
         turnLeft(degree)
 
 
+def paralelism():
+    tLevel = rb.getTissueTopLevel(maxLenTissue)
+    top = rb.getTissueTopLevel(maxLenTissue)
+    A,B,theta = rb.ajusteDeCurvas(top)
+    rb.drawSlope(mainFrame,A,B)
+    cv2.imshow("slope",mainFrame)
+    cv2.waitKey(0)
+    degrees = int(abs(theta))
+
+    if theta < -5:
+        finalDeg = 90 - (4*degrees)
+        if finalDeg < 0:
+                finalDeg = 11 
+        turnLeft(finalDeg)
+        turnedLeft = True
+        print finalDeg
+    elif theta > 5:
+        finalDeg = 90 - (5*degrees)
+        if finalDeg < 0:
+                finalDeg = 11 
+        turnRight(finalDeg)
+        turnedLeft = False
+        print finalDeg
+    else:
+        alignWithCow()
+        return 0, False
+
+    return finalDeg, turnedLeft
+
+def triangleToGetInCow():
+    global maxLenTissue
+    L,R,Top = rb.calcCowLimits(maxLenTissue)
+    adyacent = rb.getDistanceFromTop(Top)
+    print "ADYACENT"
+    print adyacent
+    cv2.waitKey(0)
+    print "PARALLEL"
+    degs, turnedLeft = paralelism()
+    print degs
+    print "TRIANGLE"
+    ninetyDegs = 90 + 7#degs || 15
+    if degs > 10:
+        print "ACTION"
+        hypotenuse = (1/math.cos(math.radians(degs))) * adyacent
+        print hypotenuse
+        if hypotenuse < 0:
+                hypotenuse = hypotenuse * -1
+                print "HYPOTENUSE CORRECTION"
+        if hypotenuse > 100:
+                hypotenuse = 100
+        
+        com.forwardNCm(int(hypotenuse))#com.forwardNCm(int(hypotenuse/2))
+
+        if turnedLeft :
+            turnRight(ninetyDegs)
+        else:
+            turnLeft(ninetyDegs)
+
+        #LETS CONFIRM AGAIN IF THERE IS A COW, 
+        #AND THEN ALLIGN TO IT, ELSE LETS RETURN
+
+        com.backwardNCm(30)
+
+        time.sleep(1)
+
+        takePicture()
+        cv2.imshow("second try",mainFrame)
+        cv2.waitKey(0)
+        found, filtered = rb.detectCow(clearedMainFrame)
+        #first validation, haar cascade
+        if found:
+            # second validation, tissue algorithm
+            cv2.imshow("second try",filtered)
+            cv2.waitKey(0)
+            foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
+            if foundCow:
+                cv2.imshow("second try",mainFrame)
+                cv2.waitKey(0)
+                alignWithCow()
+                return True #success
+        cv2.imshow("second try",mainFrame)
+        cv2.waitKey(0)
+        #If found nothing, lets return
+        com.forwardNCm(30)
+
+        if turnedLeft :
+            turnLeft(ninetyDegs)
+        else:
+            turnRight(ninetyDegs)
+
+        com.backwardNCm(int(hypotenuse))
+
+        if turnedLeft :
+            turnRight(degs)
+        else:
+            turnLeft(degs)
+
+        return False
+    return True #success
+
+
+
+
+def control():
+    com.controlRobot()
 
 '''
     MAIN
 '''
+
 if __name__ == "__main__":
 
     # Robot always STARTS facing NORTH, check field in 'information' folder #
@@ -260,11 +381,11 @@ if __name__ == "__main__":
     # getTerrines()
 
     # STARTING EXPLORTION HERE #
-    turnLeft(90)
+    #turnLeft(90)
     walkingDetecting()
-    print("ALINEARSE")
-    alignWithCow()
-    com.forwardNCm(100)
+    #triangleToGetInCow()
+    com.getInCow()
+    cv2.waitKey(0)
 
 
     # print found

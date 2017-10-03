@@ -55,6 +55,7 @@ if __name__ == "__main__":
 		# print "center camera: ",(mainFrame.shape[1])/2
 		if validation:
 			print "COW FOUND"
+
 			tLevel = rb.getTissueTopLevel(maxLenT)
 			# rb.drawCowSquares(mainFrame,100,100,100,tLevel)
 			A,B,theta = rb.ajusteDeCurvas(tLevel)

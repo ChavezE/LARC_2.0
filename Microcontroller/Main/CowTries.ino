@@ -2,7 +2,7 @@
 //Get inside the cow
 void getInCow()
 {
-  lcd.clear();
+  //lcd.clear();
   //Angle at start
   int iAm = getCompass();
   //Velocity of motors
@@ -35,8 +35,8 @@ void getInCow()
   }
   brake();
   //Show distances
-  writeLCD(String(distRF), 0, 0);
-  writeLCD(String(distLF), 0, 1);
+  //writeLCD(String(distRF), 0, 0);
+  //writeLCD(String(distLF), 0, 1);
 
   //If right limit touch
   if (digitalRead(pinLR) == 1)
@@ -56,8 +56,8 @@ void getInCow()
     }
     brake();
     //Show distance
-    lcd.clear();
-    writeLCD(String(distRF), 0, 0);
+    //lcd.clear();
+    //writeLCD(String(distRF), 0, 0);
     //Turn until it lost the leg
     while (distRF < 30)
     {
@@ -66,8 +66,8 @@ void getInCow()
     }
     brake();
     //Show distance
-    lcd.clear();
-    writeLCD(String(distRF), 0, 0);
+    //lcd.clear();
+    //writeLCD(String(distRF), 0, 0);
 
     //Turn until back sharo detect the leg
     distRB = getDistance(pinSRB);
@@ -100,8 +100,8 @@ void getInCow()
     }
     brake();
     //Show distance
-    lcd.clear();
-    writeLCD(String(distLF), 0, 0);
+    //lcd.clear();
+    //writeLCD(String(distLF), 0, 0);
     //Turn until it lost the leg
     while (distLF < 30)
     {
@@ -110,8 +110,8 @@ void getInCow()
     }
     brake();
     //Show distance
-    lcd.clear();
-    writeLCD(String(distLF), 0, 0);
+    //lcd.clear();
+    //writeLCD(String(distLF), 0, 0);
     //Forward until the back sharp detect the leg
     distLB = getDistance(pinSLB);
     forward(LF, LB, RF, RB);
@@ -128,13 +128,13 @@ void getInCow()
   //Angle correction
   if (bRight == true)
   {
-    writeLCD("H", 5, 0);
+    //writeLCD("H", 5, 0);
     while (distRF > 30)
     {
       turnNDegrees(iTurn);
       distRF = getDistance(pinSRF);
     }
-    writeLCD(String(getDistance(pinSRF)), 0, 0);
+    //writeLCD(String(getDistance(pinSRF)), 0, 0);
   }
   else {
     while (distLF > 30)
@@ -142,7 +142,7 @@ void getInCow()
       turnNDegrees(iTurn * -1);
       distLF = getDistance(pinSLF);
     }
-    writeLCD(String(getDistance(pinSLF)), 0, 1);
+    //writeLCD(String(getDistance(pinSLF)), 0, 1);
   }
 
   //Correct the angle
@@ -153,7 +153,7 @@ void getInCow()
       turnNDegrees(iTurn, velSlowLF, velSlowLB, 0, 0);
       distLF = getDistance(pinSLF);
     }
-    writeLCD(String(getDistance(pinSLF)), 0, 1);
+    //writeLCD(String(getDistance(pinSLF)), 0, 1);
   }
   else {
     while (distRF > 30)
@@ -161,7 +161,7 @@ void getInCow()
       turnNDegrees(iTurn * -1, 0, 0, velSlowRF, velSlowRB);
       distRF = getDistance(pinSRF);
     }
-    writeLCD(String(getDistance(pinSRF)), 0, 0);
+    //writeLCD(String(getDistance(pinSRF)), 0, 0);
   }
 
   //Get away from cow
@@ -187,16 +187,16 @@ void getInCow()
 
   brake();
   //Show distances
-  //lcd.clear();
-  //writeLCD(String(distRF), 0, 0);
-  //writeLCD(String(distLF), 0, 1);
+  ////lcd.clear();
+  ////writeLCD(String(distRF), 0, 0);
+  ////writeLCD(String(distLF), 0, 1);
 }
 
 //Get inside the cow
 void getInCow2()
 {
   brake();
-  lcd.clear();
+  //lcd.clear();
   //Angle at start
   int iAm = getCompass();
   //Velocity of motors
@@ -220,7 +220,7 @@ void getInCow2()
 
   if (!(digitalRead(pinLL) == 1 || digitalRead(pinLR) == 1))
   {
-    writeLCD("Buscando Vaca", 0, 0);
+    //writeLCD("Buscando Vaca", 0, 0);
     //Start moving
     forward(LF, LB, RF, RB);
     //Forward until it touch or detect a leg
@@ -237,7 +237,7 @@ void getInCow2()
     //If right limit touch
     if (digitalRead(pinLR) == 1)
     {
-      writeLCD("Encontramos LR", 1, 0);
+      //writeLCD("Encontramos LR", 1, 0);
       bRight = true;
       //Get away form the leg
       backwardNCm(10, true);
@@ -245,8 +245,8 @@ void getInCow2()
       //Distance of right front sharp
       distRF = getDistance(pinSRF);
 
-      lcd.clear();
-      writeLCD("Buscando RF", 0, 0);
+      //lcd.clear();
+      //writeLCD("Buscando RF", 0, 0);
       //Turn until it detect a leg
       while (distRF > 30)
       {
@@ -254,12 +254,12 @@ void getInCow2()
         distRF = getDistance(pinSRF);
       }
       brake();
-      writeLCD("Encontrada", 0, 1);
+      //writeLCD("Encontrada", 0, 1);
       //go to the center of the cow
       distRB = getDistance(pinSRB);
       bool toogle = false;
-      lcd.clear();
-      writeLCD("Centrandose", 0, 0);
+      //lcd.clear();
+      //writeLCD("Centrandose", 0, 0);
       do
       {
         if (toogle == false)
@@ -288,13 +288,13 @@ void getInCow2()
         distRB = getDistance(pinSRB);
       } while (distRB > 30);
       backwardNCm(8, false);
-      writeLCD("Listo", 0, 1);
+      //writeLCD("Listo", 0, 1);
       brake();
     }
     //If left limit touch
     else if (digitalRead(pinLL) == 1)
     {
-      writeLCD("Encontramos LL", 1, 0);
+      //writeLCD("Encontramos LL", 1, 0);
       bLeft = true;
       //Get away form the leg
       backwardNCm(10, true);
@@ -302,8 +302,8 @@ void getInCow2()
       //Distance of left front sharp
       distLF = getDistance(pinSLF);
 
-      lcd.clear();
-      writeLCD("Buscando LF", 0, 0);
+      //lcd.clear();
+      //writeLCD("Buscando LF", 0, 0);
       //turn until it detect a leg
       while (distLF > 30)
       {
@@ -311,13 +311,13 @@ void getInCow2()
         distLF = getDistance(pinSLF);
       }
       brake();
-      writeLCD("Encontrada", 0, 1);
+      //writeLCD("Encontrada", 0, 1);
 
       //go to the center of the cow
       distRB = getDistance(pinSRB);
       bool toogle = false;
-      lcd.clear();
-      writeLCD("Centrandose", 0, 0);
+      //lcd.clear();
+      //writeLCD("Centrandose", 0, 0);
       do
       {
         if (toogle == false)
@@ -342,7 +342,7 @@ void getInCow2()
         distLB = getDistance(pinSLB);
       } while (distLB > 30);
       backwardNCm(8, false);
-      writeLCD("Listo", 0, 1);
+      //writeLCD("Listo", 0, 1);
       brake();
     }
   }
@@ -356,11 +356,11 @@ void getInCow2()
   {
     bLeft = true;
   }
-  lcd.clear();
+  //lcd.clear();
   //Angle correction, turn until it detect the leg
   if (bRight == true)
   {
-    writeLCD("Buscando RF", 0, 0);
+    //writeLCD("Buscando RF", 0, 0);
     distRF = getDistance(pinSRF);
     while (distRF > 30)
     {
@@ -373,7 +373,7 @@ void getInCow2()
     }
   }
   else if (bLeft = true) {
-    writeLCD("Buscando LF", 0, 0);
+    //writeLCD("Buscando LF", 0, 0);
     distLF = getDistance(pinSLF);
     while (distLF > 30)
     {
@@ -389,7 +389,7 @@ void getInCow2()
   //Correct the angle
   if (bRight == true)
   {
-    writeLCD("Buscando LF", 0, 1);
+    //writeLCD("Buscando LF", 0, 1);
     distLF = getDistance(pinSLF);
     while (distLF > 30)
     {
@@ -402,7 +402,7 @@ void getInCow2()
     }
   }
   else if (bLeft = true) {
-    writeLCD("Buscando RF", 0, 1);
+    //writeLCD("Buscando RF", 0, 1);
     distRF = getDistance(pinSRF);
     while (distRF > 30)
     {
@@ -424,8 +424,8 @@ void getInCow2()
   distLF = getDistance(pinSLF);
   if (distRF > 30 && distLF < 30)
   {
-    lcd.clear();
-    writeLCD("Buscando RF", 0, 0);
+    //lcd.clear();
+    //writeLCD("Buscando RF", 0, 0);
     while (distRF > 30)
     {
       turnNDegrees(iTurn * -1, 0, 0, velRF, velRB);
@@ -434,8 +434,8 @@ void getInCow2()
   }
   else if (distRF < 30 && distLF > 30)
   {
-    lcd.clear();
-    writeLCD("Buscando LF", 0, 0);
+    //lcd.clear();
+    //writeLCD("Buscando LF", 0, 0);
     while (distLF > 30)
     {
       turnNDegrees(iTurn, velLF, velLB, 0, 0);
@@ -443,8 +443,8 @@ void getInCow2()
     }
   }
   else {
-    lcd.clear();
-    writeLCD("Listo", 0, 0);
+    //lcd.clear();
+    //writeLCD("Listo", 0, 0);
     //Get away from cow
     backwardNCm(20, true);
 
@@ -480,7 +480,7 @@ void getInCow2()
 
 void getInCow3(bool bRec, int iDeg)
 {
-  lcd.clear();
+  //lcd.clear();
 
   if (bRec)
   {
@@ -541,8 +541,8 @@ void getInCow3(bool bRec, int iDeg)
       //Distance of right front sharp
       distRF = getDistance(pinSRF);
 
-      lcd.clear();
-      writeLCD("Buscando RF", 0, 0);
+      //lcd.clear();
+      //writeLCD("Buscando RF", 0, 0);
       //Turn until it detect a leg
       while (distRF > 30)
       {
@@ -551,11 +551,11 @@ void getInCow3(bool bRec, int iDeg)
         distRF = getDistance(pinSRF);
       }
       brake();
-      writeLCD("Encontrada", 0, 1);
+      //writeLCD("Encontrada", 0, 1);
       if (iError / iTurn < iLittle)
       {
-        lcd.clear();
-        writeLCD("POCO", 0, 0);;
+        //lcd.clear();
+        //writeLCD("POCO", 0, 0);;
         forwardNCm(11, true);
 
         distLF = getDistance(pinSLF);
@@ -571,8 +571,8 @@ void getInCow3(bool bRec, int iDeg)
         //go to the center of the cow
         distRB = getDistance(pinSRB);
         bool toogle = false;
-        lcd.clear();
-        writeLCD("Centrandose", 0, 0);
+        //lcd.clear();
+        //writeLCD("Centrandose", 0, 0);
         do
         {
           if (toogle == false)
@@ -604,8 +604,8 @@ void getInCow3(bool bRec, int iDeg)
 
         //Distance of right front sharp
         distRF = getDistance(pinSRF);
-        lcd.clear();
-        writeLCD("Buscando RF", 0, 0);
+        //lcd.clear();
+        //writeLCD("Buscando RF", 0, 0);
         //Turn until it detect a leg
         while (distRF > 30)
         {
@@ -614,7 +614,7 @@ void getInCow3(bool bRec, int iDeg)
         }
         //Distance of right front sharp
         distLF = getDistance(pinSLF);
-        writeLCD("Buscando LF", 0, 1);
+        //writeLCD("Buscando LF", 0, 1);
         //Turn until it detect a leg
         while (distLF > 30)
         {
@@ -628,8 +628,8 @@ void getInCow3(bool bRec, int iDeg)
       //Distance of right front sharp
       distLF = getDistance(pinSLF);
 
-      lcd.clear();
-      writeLCD("Buscando LF", 0, 0);
+      //lcd.clear();
+      //writeLCD("Buscando LF", 0, 0);
       //Turn until it detect a leg
       while (distLF > 30)
       {
@@ -638,11 +638,11 @@ void getInCow3(bool bRec, int iDeg)
         distLF = getDistance(pinSLF);
       }
       brake();
-      writeLCD("Encontrada", 0, 1);
+      //writeLCD("Encontrada", 0, 1);
       if (iError / iTurn < 11)
       {
-        lcd.clear();
-        writeLCD("POCO", 0, 0);;
+        //lcd.clear();
+        //writeLCD("POCO", 0, 0);;
         forwardNCm(11, true);
 
         distRF = getDistance(pinSRF);
@@ -658,8 +658,8 @@ void getInCow3(bool bRec, int iDeg)
         //go to the center of the cow
         distRB = getDistance(pinSRB);
         bool toogle = false;
-        lcd.clear();
-        writeLCD("Centrandose", 0, 0);
+        //lcd.clear();
+        //writeLCD("Centrandose", 0, 0);
         do
         {
           if (toogle == false)
@@ -691,8 +691,8 @@ void getInCow3(bool bRec, int iDeg)
 
         //Distance of right front sharp
         distLF = getDistance(pinSLF);
-        lcd.clear();
-        writeLCD("Buscando LF", 0, 0);
+        //lcd.clear();
+        //writeLCD("Buscando LF", 0, 0);
         //Turn until it detect a leg
         while (distLF > 30)
         {
@@ -701,7 +701,7 @@ void getInCow3(bool bRec, int iDeg)
         }
         //Distance of right front sharp
         distLF = getDistance(pinSRF);
-        writeLCD("Buscando RF", 0, 1);
+        //writeLCD("Buscando RF", 0, 1);
         //Turn until it detect a leg
         while (distRF > 30)
         {
@@ -711,8 +711,8 @@ void getInCow3(bool bRec, int iDeg)
       }
     }
 
-    lcd.clear();
-    writeLCD("Listo", 0, 0);
+    //lcd.clear();
+    //writeLCD("Listo", 0, 0);
     delay(800);
     //Get away from cow
     backwardNCm(20, true);
@@ -771,7 +771,7 @@ void getInCow3(bool bRec, int iDeg)
 /*
 void getInCow()
 {
-  lcd.clear();
+  //lcd.clear();
 
   //Angle at start
   int iAm = getCompass();
@@ -823,8 +823,8 @@ void getInCow()
     //Distance of right front sharp
     distRF = getDistance(pinSRF);
 
-    lcd.clear();
-    writeLCD("Buscando RF", 0, 0);
+    //lcd.clear();
+    //writeLCD("Buscando RF", 0, 0);
     //Turn until it detect a leg
     while (distRF > 30)
     {
@@ -885,8 +885,8 @@ void getInCow()
     //Distance of right front sharp
     distLF = getDistance(pinSLF);
 
-    lcd.clear();
-    writeLCD("Buscando LF", 0, 0);
+    //lcd.clear();
+    //writeLCD("Buscando LF", 0, 0);
     //Turn until it detect a leg
     while (distLF > 30)
     {
