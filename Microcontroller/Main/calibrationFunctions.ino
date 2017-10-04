@@ -114,6 +114,12 @@ void limitSwitchesCalibration()
   Serial.print("LO: ");
   Serial.print(digitalRead(pinLO));
   Serial.print("\t");
+  Serial.print("LU: ");
+  Serial.print(digitalRead(pinLCU));
+  Serial.print("\t");
+  Serial.print("LD: ");
+  Serial.print(digitalRead(pinLCD));
+  Serial.print("\t");
   Serial.print("LR: ");
   Serial.print(digitalRead(pinLR));
   Serial.print("\t");

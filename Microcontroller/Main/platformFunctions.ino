@@ -5,10 +5,10 @@ void platIn()
   ////lcd.clear();
   // //writeLCD("PLAT IN", 0, 0);
   //Check the inner limit switch of the robot
-  while (digitalRead(pinLI) == 1)
+  while (digitalRead(pinLI) == normalState)
   {
     //Start moving the plattaform
-    sPlattaform.write(100);
+    sPlattaform.write(70);
   }
   
   platformStop();
@@ -32,14 +32,10 @@ void platInMid()
 //Move plattaform Out
 void platOut()
 {
-  //Display function in LCD
-  ////lcd.clear();
-  // //writeLCD("PLAT OUT", 0, 0);
-  //Check the inner limit switch of the robot
-  while (digitalRead(pinLO) == 1)
+  while (digitalRead(pinLO) == normalState)
   {
     //Start moving the plattaform
-    sPlattaform.write(80);
+    sPlattaform.write(110);
   }
   
   platformStop();
@@ -71,4 +67,22 @@ void closeClaw()
   // //writeLCD("CLOSE CLAW", 0, 0);
   sClaw.write(70);
   delay(1400);
+}
+
+void upClaw()
+{
+  while(digitalRead(pinLCU) == normalState)
+  {
+    sCUD.write(100);  
+  }
+  sCUD.write(90);
+}
+
+void downClaw()
+{
+  while(digitalRead(pinLCD) == normalState)
+  {
+    sCUD.write(80);  
+  }
+  sCUD.write(90);
 }

@@ -82,10 +82,10 @@ const byte pinLRB = 32;
 //Para los limits de arriba y abajo del ordeñador los pins 36 y 38
 
 // Limit down garra
-const byte pinClawDown = 44;
+const byte pinLCD = 44;
 
 // Limit up garra
-const byte pinClawUp = 46;
+const byte pinLCU = 46;
 
 //-------Servos-------//
 
@@ -94,8 +94,11 @@ const byte pinServoC = 8;
 Servo sClaw;
 
 //Plattaform Servo
-const byte pinServoP = 9;
+const byte pinServoP = 7;
 Servo sPlattaform;
+
+const byte pinServoCUD = 4;
+Servo sCUD;
 
 /////////////////////
 //    Constants    //
@@ -203,6 +206,7 @@ void setup()
 
   sClaw.attach(pinServoC);
   sPlattaform.attach(pinServoP);
+  sCUD.attach(pinServoCUD);
 
   pinMode(pinLI, INPUT);
   pinMode(pinLO, INPUT);
@@ -223,6 +227,7 @@ void setup()
 
   //Stop plattaform for security
   sPlattaform.write(90);
+  sCUD.write(90);
 
   //Angle for north
   iNorth = getCompass();
