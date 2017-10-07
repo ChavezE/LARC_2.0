@@ -90,7 +90,7 @@ const byte pinLCU = 46;
 //-------Servos-------//
 
 //Claw Servo
-const byte pinServoC = 8;
+const byte pinServoC = 5;
 Servo sClaw;
 
 //Plattaform Servo
@@ -99,6 +99,9 @@ Servo sPlattaform;
 
 const byte pinServoCUD = 4;
 Servo sCUD;
+
+const byte pinServoR = 6;
+Servo sCT;
 
 /////////////////////
 //    Constants    //
@@ -207,6 +210,7 @@ void setup()
   sClaw.attach(pinServoC);
   sPlattaform.attach(pinServoP);
   sCUD.attach(pinServoCUD);
+  sCT.attach(pinSercoR);
 
   pinMode(pinLI, INPUT);
   pinMode(pinLO, INPUT);
@@ -226,8 +230,11 @@ void setup()
   writeLCD("START FENIX 2.0", 0, 0);
 
   //Stop plattaform for security
+  platIn();
+  downClaw();
   sPlattaform.write(90);
   sCUD.write(90);
+  sCT.write(0);
 
   //Angle for north
   iNorth = getCompass();
@@ -253,5 +260,8 @@ void loop()
      200= trotando. Ya el torque remarcable
      255= trotando rapido. Torque chidote
   */
+  //upClaw();
+  //getInCow(false);
+  //while(1);
   communication();
 }
