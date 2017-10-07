@@ -32,21 +32,22 @@ print "B", B
 maxSquareArea = 3000
 minSquareArea = 100
 #Thresh range for cow squares  #si no detecta suficientes cuadros
-minThresh = 50
-maxThresh = 250
-steps = 5
+minThresh = 5#50
+maxThresh = 255
+steps = 3
 #Tissue Parameters
-eps = 30
-eps2 = 30
+eps = 40
+eps2 = 40
 #HAAR Cascade Sansitivity
-cascadeSensitivity = 200
+cascadeSensitivity = 100
 
 #----HAAR Cascade---
 #importing the trained cascade of cow
-cowCascade = cv2.CascadeClassifier('../Cascades/COW3.xml')
+cowCascade = cv2.CascadeClassifier('../Cascades/COWTUMMY.xml')
 #using a black frame to filter
 blackFrame = np.zeros((480,640), np.uint8)
-blackFrame = np.ones((480,640), np.uint8)
+whiteFrame = np.ones((480,640), np.uint8)
+whiteFrame[:] = 255
 
 # Simple class to manage individual squares in the image
 # ATRIBUTES:
@@ -397,7 +398,7 @@ def isThereACow(mainFrame, equalizedFrame):
 #Implementation of the trained cascade classifier,
 #trained to detect the COW pattern
 def detectCow(img):
-   blackTemp = blackFrame.copy()
+   blackTemp = whiteFrame.copy()#whiteFrame.copy()#blackFrame.copy()
 
    cows = cowCascade.detectMultiScale(img, 1.3, cascadeSensitivity)
 
@@ -419,18 +420,20 @@ def detectCow(img):
 
      #determines how much the
      #detected area expands
-      ampliation = (2 * (area/10000))
+      ampliation = (2 * (area/10000)) # FOR COW3.XML
 
      #This condition is also calibratable, by determining
      #a relationship between h/w
-      if relation < 0.77 and relation > 0.74 and area > 11000 and w > 120:
+      #if relation < 0.77 and relation > 0.74 and area > 11000 and w > 120: #FOR COW3.XML
+      if relation < 1.2 and relation > 0.98 and area > 11000 and w > 120: #FOR COWTUMMY.XML
          #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
 
          #Expanding the detected area
          xc = x - int(.5 * ampliation)
-         yc = y - int(1 * ampliation)
-         hc = h + int((3 * ampliation))
-         wc = w + int((1 * ampliation))
+         yc = y - int(.5 * ampliation)
+         hc = h + int((1 * ampliation))
+         wc = w + int((2 * ampliation)) #1.5
+         
          cowDetected = True
 
          cv2.rectangle(img,(xc,yc),(xc+wc,yc+hc),(0,255,0),1)

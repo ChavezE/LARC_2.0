@@ -1,7 +1,3 @@
-////////////////////////////////////////
-//  Nestor Movment Functions          //
-////////////////////////////////////////
-
 //forward with P correction
 void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& rightBack, bool bSlow)
 {
@@ -104,10 +100,10 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
     }
   }
   // Serial.println();
-  // writeLCD(String(leftFront), 0, 0);
-  // writeLCD(String(leftBack), 0, 1);
-  // writeLCD(String(rightFront), 8, 0);
-  // writeLCD(String(rightBack), 8, 1);
+  // //writeLCD(String(leftFront), 0, 0);
+  // //writeLCD(String(leftBack), 0, 1);
+  // //writeLCD(String(rightFront), 8, 0);
+  // //writeLCD(String(rightBack), 8, 1);
   //delay(300);
   setVelocity(leftFront, leftBack, rightFront, rightBack);
 }
@@ -179,9 +175,9 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
 //Go forward the cm given in the parameter, Nestor style
 void forwardNCm(int cm, bool slow)
 {
-  lcd.clear();
-  writeLCD("ForwardNCm", 0, 0);
-  writeLCD(String(cm), 0, 1);
+  //lcd.clear();
+  //writeLCD("ForwardNCm", 0, 0);
+  //writeLCD(String(cm), 0, 1);
   encoderState = 1;
   //Counts of encoder to get to the objective
   int untilSteps = (encoder30Cm / 30) * cm;
@@ -225,9 +221,9 @@ void forwardNCm(int cm, bool slow)
 //Go backward the cm given in the parameter, Nestor style
 void backwardNCm(int cm, bool slow)
 {
-  lcd.clear();
-  writeLCD("backwardNCm", 0, 0);
-  writeLCD(String(cm), 0, 1);
+  //lcd.clear();
+  //writeLCD("backwardNCm", 0, 0);
+  //writeLCD(String(cm), 0, 1);
 
   encoderState = 1;
   //Counts of encoder to get to the objective
@@ -376,9 +372,9 @@ void backwardUntilWallN(int dist)
 //Turn to an exact angle
 void turnToObjectiveN(int iWant)
 {
-  lcd.clear();
-  writeLCD("Turning To:", 0, 0);
-  writeLCD(String(iWant), 0, 1);
+  //lcd.clear();
+  //writeLCD("Turning To:", 0, 0);
+  //writeLCD(String(iWant), 0, 1);
 
   //Actual Angle
   int iAm = getCompass();
@@ -404,7 +400,7 @@ void turnToObjectiveN(int iWant)
         turnLeft(velLF, velLB, velRF, velRB);
       }
     }
-    else if (iAux > 180 || iAux < -180)
+    else //if (iAux > 180 || iAux < -180)
     {
       if (iAux > 0)
       {
@@ -423,8 +419,8 @@ void turnToObjectiveN(int iWant)
     iAux = iWant - iAm;
   }
   brake();
-  lcd.clear();
-  writeLCD(String(getCompass()), 0, 0);
+  //lcd.clear();
+  //writeLCD(String(getCompass()), 0, 0);
 }
 
 //Turn to an exact angle
@@ -473,15 +469,15 @@ void turnToObjectiveN(int iWant, int vLF, int vLB, int vRF, int vRB)
     iAux = iWant - iAm;
   }
   brake();
-  lcd.clear();
-  writeLCD(String(getCompass()), 0, 0);
+  //lcd.clear();
+  //writeLCD(String(getCompass()), 0, 0);
 }
 
 //Turn n amount of degrees, positive turn right, negative turn left
 void turnNDegrees(int n)
 {
   if (n != 0) {
-    //writeLCD(String(n), 0, 0);
+    ////writeLCD(String(n), 0, 0);
     //Get objective angle
     int obj = getCompass() + n;
 
@@ -503,7 +499,7 @@ void turnNDegrees(int n)
 //Turn n amount of degrees, positive turn right, negative turn left
 void turnNDegrees(int n, int vLF, int vLB, int vRF, int vRB)
 {
-  //writeLCD(String(n), 0, 0);
+  ////writeLCD(String(n), 0, 0);
   //Get objective angle
   int obj = getCompass() + n;
 
@@ -686,4 +682,254 @@ void backwardUntilNoLeft()
   }
 
   brake();
+}
+
+void goToStart()
+{
+  //Go back to try get to the venter of the actual area
+  backwardNCm(60, false);
+  //Turn to where the gate is
+  turnToObjectiveN(iSouth);
+
+  //Velocity of movment
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+  //Distances from sharp
+  int distF = getDistance(pinSF);
+  int distRF = getDistance(pinSRF);
+  int distLF = getDistance(pinSLF);
+
+  //the leg that touch was the right one
+  bool bRight = digitalRead(pinLR);
+  //The leg that touch was the left one
+  bool bLeft = digitalRead(pinLL);
+
+  //Start moving
+  forward(LF, LB, RF, RB);
+  
+  //Keep moving forward until we face a wall, collapse with one or pass one
+  while(!bRight && !bLeft && distF > 25 && distRF > 25 && distLF > 25)
+  {
+    //P Correction
+    forwardP(iSouth, LF, LB, RF, RB, false);
+    //Limit swtiches
+    bRight = digitalRead(pinLR);
+    bLeft = digitalRead(pinLL);
+    //Sharp
+    distF = getDistance(pinSF);
+    distRF = getDistance(pinSRF);
+    distLF = getDistance(pinSLF);
+  }
+  //Stop moving
+  brake();
+  //Lecture that made the robot stop
+  String sReason = "";
+  if(distLF <= 25)
+  {
+    sReason = "distLF";
+  }
+  else if(distRF <= 25)
+  {
+    sReason = "disrRF";
+  }
+  else if (distF <= 25)
+  {
+    sReason = "distF";
+  }
+  else if(bRight)
+  {
+    sReason = "bRight";
+  }
+  else
+  {
+    sReason = "bLeft";
+  }
+  //Write reason in LCD
+  lcd.clear();
+  writeLCD("Por: " + sReason, 0, 0);
+  
+  //Get away from the wall
+  backwardNCm(10, false);
+  //Fix the angle
+  turnToObjectiveN(iSouth);
+
+  //If we collapse with the wall or get in front of one
+  if(!(distRF <= 25 || distLF <= 25) || bRight || bLeft || distF <= 25)
+  {
+    //Keep looking for the gate
+    bool bContinue = true;
+    while(bContinue)
+    {
+      //Turn West to find the gate
+      turnToObjectiveN(iWest);
+      //Set velocities
+      LF = velLF;
+      LB = velLB;
+      RF = velRF;
+      RB = velRB;
+      //Sharp
+      distLF = getDistance(pinSLF);
+      //Limit read
+      bLeft = digitalRead(pinLL);
+      bRight = digitalRead(pinLR);
+      //Start moving
+      forward(LF, LB, RF, RB);
+      //Keep moving until we collapse with a wall or find a gape in the left side
+      while(distLF <= 30 && !bLeft && !bRight)
+      {
+        //P Correction
+        forwardP(iWest, LF, LB, RF, RB, false);
+        //Limit Switches
+        bRight = digitalRead(pinLR);
+        bLeft = digitalRead(pinLL);   
+        //Sharp
+        distLF = getDistance(pinSLF);
+      }
+      brake();
+      //If we find the gate
+      if(distLF > 30)
+      {
+        int distLB = getDistance(pinSLB);
+        //Keep moving until the robot get at the center of the gate
+        while(distLB <= 30)
+        {
+          //P Correction
+          forwardP(iWest, LF, LB, RF, RB, false);
+          //Sharp
+          distLB = getDistance(pinSLB);
+        }
+        //Stop moving
+        brake();
+        //We find the gate
+        bContinue = false;
+      }
+      //If we collapse
+      else
+      {
+        //Get away from the wall we collapse with
+        backwardNCm(7, false);
+        //Turn to the other side
+        turnToObjectiveN(iEast);
+        //Set start velocities
+        LF = velLF;
+        LB = velLB;
+        RF = velRF;
+        RB = velRB;
+        //Sharp distance
+        distRF = getDistance(pinSRF);
+        //Limit read
+        bLeft = digitalRead(pinLL);
+        bRight = digitalRead(pinLR);
+        //Start moving
+        forward(LF, LB, RF, RB);
+        //Keep moving until we collaps with a wall or find a gape at the right
+        while(distRF < 30 && !bLeft && !bRight)
+        {
+          //P Correction
+          forwardP(iEast, LF, LB, RF, RB, false);
+          //Limit Switches
+          bRight = digitalRead(pinLR);
+          bLeft = digitalRead(pinLL);   
+          //Sharp
+          distRF = getDistance(pinSRF);
+        }
+        //Stop moving
+        brake();
+        //If we find a gape
+        if(distRF > 30)
+        {
+          //Start moving
+          forward(LF, LB, RF, RB);
+          //Sharp distance
+          int distRB = getDistance(pinSRB);
+          //Keep moving until the robot get at the center of the gate
+          while(distRB <= 30)
+          {
+            //P Correction
+            forwardP(iEast, LF, LB, RF, RB, false);
+            //Sharp
+            distRB = getDistance(pinSRB);
+          }
+          //Stop moving
+          brake();
+          //We fid the gate
+          bContinue = false;
+        }
+      }
+      brake();  
+    }
+    brake(); 
+  }
+  brake();
+  delay(500);
+  turnToObjectiveN(iSouth);
+}
+
+// Forward para ir derecho con cierta distancia a la pared derecha
+int forwardWithRightWall(const int &degreesObjetivo, const int &objetivoDistPared, const bool &slow) {
+  //Base for motors velocity
+  const int baseLF = !slow ? velLF : velSlowLF;
+  const int baseLB = !slow ? velLB : velSlowLB;
+  const int baseRF = !slow ? velRF : velSlowRF;
+  const int baseRB = !slow ? velRB : velSlowRB;
+
+  const int front = getDistance(pinSRF);
+  const int back = getDistance(pinSRB);
+
+  const int separacion = (front + back) / 2;
+  const int diffSeparacion = separacion - objetivoDistPared;
+  const int diffSharps = front - back; // (-) voltear a la der
+  const int diffCompass = getAngleDifferenceD(degreesObjetivo, getCompass()); // (-) conviene voltear a la derecha
+  
+  int velLF = formulaForwardWithRightWall(baseLF, diffSeparacion, diffSharps, -diffCompass);//formula(baseLF, -separacion, -separacionOrientado, -diffCompass);
+  int velLB = formulaForwardWithRightWall(baseLB, diffSeparacion, diffSharps, -diffCompass);//formula(baseLB, -separacion, -separacionOrientado, -diffCompass);
+  int velRF = formulaForwardWithRightWall(baseRF, -diffSeparacion, -diffSharps, diffCompass);//formula(baseRF, separacion, separacionOrientado, diffCompass);
+  int velRB = formulaForwardWithRightWall(baseRB, -diffSeparacion, -diffSharps, diffCompass);//formula(baseRB, separacion, separacionOrientado, diffCompass);
+  if (velLF > 255) velLF = 255;
+  else if (velLF < 0) velLF = 0;
+  if (velLB > 255) velLB = 255;
+  else if (velLB < 0) velLB = 0;
+  if (velRF > 255) velRF = 255;
+  else if (velRF < 0) velRF = 0;
+  if (velRB > 255) velRB = 255;
+  else if (velRB < 0) velRB = 0;
+
+  forward(velLF, velLB, velRF, velRB);
+
+  return separacion;
+}
+
+/** 
+ * Formula with the P taking the base, distance from the wall, difference from sharps 
+ * and diff from compass. Used in the forwardWithRightWall.
+ *
+ */
+int formulaForwardWithRightWall(int base, int separacion, int diffBetweenSharps, int diffCompass) {
+  if (diffBetweenSharps > 45) diffBetweenSharps = 45;
+  else if (diffBetweenSharps < -45) diffBetweenSharps = -45;
+//  return base + separacion * 8 + diffBetweenSharps * 2 + diffCompass * 6;
+  return base + separacion * 12 + diffBetweenSharps * 2 + diffCompass * 7;
+//  return base + separacion * 11 + diffBetweenSharps * 2 + diffCompass * 7;
+}
+
+/**
+ * Get the difference between the wanted angles and the actual angles.
+ * Gives always the fastest direction and the smallest angles to turn to.
+ * if result < 0 : best is to turn to the RIGHT
+ * else if result > 0 : best is to turn to the LEFT
+ * Always will be: 180 >= abs(result) >= 0
+ *
+ */
+int getAngleDifferenceD(const int &objetivo, const int &actual) {
+  int diffCompass = actual - objetivo;
+
+  if (diffCompass > 180) {
+    diffCompass = -( 180-(diffCompass-180) );
+  } else if (diffCompass < -180) {
+    diffCompass = ( 180-((-diffCompass)-180) );
+  }
+  
+  return diffCompass; // (-) conviene voltear a la derecha
 }

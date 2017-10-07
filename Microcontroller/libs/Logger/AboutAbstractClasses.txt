@@ -1,0 +1,57 @@
+C++ es muy poderoso pero tambien es dificil de tratar.
+A pesar que se puede crear una clase abstracta (con almenos un metodo virtual = 0),
+trae muchos problemas porque afuerzas se tiene que guardar en una variable
+reference (&) o pointer(*).
+Y en uso de clases como en un atributo esta en chino.
+Aparte peor con que en arduino se debe de evitar los apuntadores.
+Para acabarla, no hay librerias estandares en arduino.
+
+Por lo que despues de buscar sali con 3 alternativas:
+-Templates: 
+ Que los atributos que van a ser un subclase de una clase en especifico sean 
+ template. Asi se puede guardar la variable en el tipo que verdaderamente es
+ sin necesidad de guardarlo en un apuntador o referencia.
+ El problema es el chequeo de tipo que sea hijo del padre, ni pex.
+
+ ELEGIDA: cuando se necesite guardar solo un valor, osease no en Arrays.
+ Veo que en las librerias estandares de c++ se usa asi.
+
+-Recibir Referencias/Pointers:
+ Jugarle al chido y confiar en la gente que lo que pasa durara al menos
+ el tiempo que la clase que recibe durara.
+ Despues de todo casi siempre los objetos en arduino se declaran en ambito 
+ global...
+
+ Problema: Bueno todos los sabemos.
+
+ ELEGIDA: Apuntadores. Cuando se necesita guardar en una arreglo varios.
+ Que cuiden pasar apuntadores a objetos que no seran destruidos antes 
+ de terminar de usarse por la clase. 
+ Sino, pues que creen con new y pasen ese apuntador, aunque no sera destruido...
+ Aparte con referencias no se podria reasignar.
+ Y si const: https://stackoverflow.com/questions/1143262/what-is-the-difference-between-const-int-const-int-const-and-int-const?rq=1
+
+-Clase BasePointerProvider
+ Cuando se tengan que guardar varios elementos en un array osease se 
+ tenga que usar apuntadores, se tendra que crear en un futuro esta
+ clase:
+class BasePointerProvider{
+    BasePointerProvider(pointer_unique)
+
+    setAsPointer(*){
+        weHaveDynamic=
+        delete pointer_unique
+    }
+
+    operator&(){
+
+    }
+
+    operator->(){
+
+    }
+
+    bool weHaveDynamic
+    & reference
+    PointerUnique pointer_unique
+};

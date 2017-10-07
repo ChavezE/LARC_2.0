@@ -136,7 +136,12 @@ def checkingTurningR():
                 # cv2.imshow("cow",mainFrame)
                 # cv2.waitKey(0)
                 # cv2.destroyAllWindows()
-                return True
+
+
+                success = triangleToGetInCow()
+                
+                if success:
+                        return True
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
@@ -164,7 +169,12 @@ def checkingTurningL():
                 # cv2.imshow("cow",mainFrame)
                 # cv2.waitKey(0)
                 # cv2.destroyAllWindows()
-                return True
+
+
+                success = triangleToGetInCow()
+                
+                if success:
+                        return True
 
             print "TISSUE DIT NOT FIND COW"
     print "HAAR DID NOT FOUND COW"
@@ -234,11 +244,15 @@ def paralelism():
 
     if theta < -5:
         finalDeg = 90 - (4*degrees)
+        if finalDeg < 0:
+                finalDeg = 11 
         turnLeft(finalDeg)
         turnedLeft = True
         print finalDeg
     elif theta > 5:
         finalDeg = 90 - (5*degrees)
+        if finalDeg < 0:
+                finalDeg = 11 
         turnRight(finalDeg)
         turnedLeft = False
         print finalDeg
@@ -249,6 +263,7 @@ def paralelism():
     return finalDeg, turnedLeft
 
 def triangleToGetInCow():
+    global maxLenTissue
     L,R,Top = rb.calcCowLimits(maxLenTissue)
     adyacent = rb.getDistanceFromTop(Top)
     print "ADYACENT"
@@ -258,24 +273,75 @@ def triangleToGetInCow():
     degs, turnedLeft = paralelism()
     print degs
     print "TRIANGLE"
-    if degs > 0:
+    ninetyDegs = 90 + 7#degs || 15
+    if degs > 10:
         print "ACTION"
         hypotenuse = (1/math.cos(math.radians(degs))) * adyacent
         print hypotenuse
         if hypotenuse < 0:
                 hypotenuse = hypotenuse * -1
                 print "HYPOTENUSE CORRECTION"
+<<<<<<< HEAD
 
         #if hypotenuse > 
+=======
+        if hypotenuse > 100:
+                hypotenuse = 100
+>>>>>>> f06ce6da085173a146bdc3d08d382fa2bcc328ad
         
         com.forwardNCm(int(hypotenuse))#com.forwardNCm(int(hypotenuse/2))
 
 
 
         if turnedLeft :
-            turnRight(90+15)
+            turnRight(ninetyDegs)
         else:
-            turnLeft(90+15)
+            turnLeft(ninetyDegs)
+
+        #LETS CONFIRM AGAIN IF THERE IS A COW, 
+        #AND THEN ALLIGN TO IT, ELSE LETS RETURN
+
+        com.backwardNCm(30)
+
+        time.sleep(1)
+
+        takePicture()
+        cv2.imshow("second try",mainFrame)
+        cv2.waitKey(0)
+        found, filtered = rb.detectCow(clearedMainFrame)
+        #first validation, haar cascade
+        if found:
+            # second validation, tissue algorithm
+            cv2.imshow("second try",filtered)
+            cv2.waitKey(0)
+            foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
+            if foundCow:
+                cv2.imshow("second try",mainFrame)
+                cv2.waitKey(0)
+                alignWithCow()
+                return True #success
+        cv2.imshow("second try",mainFrame)
+        cv2.waitKey(0)
+        #If found nothing, lets return
+        com.forwardNCm(30)
+
+        if turnedLeft :
+            turnLeft(ninetyDegs)
+        else:
+            turnRight(ninetyDegs)
+
+        com.backwardNCm(int(hypotenuse))
+
+        if turnedLeft :
+            turnRight(degs)
+        else:
+            turnLeft(degs)
+
+        return False
+    return True #success
+
+
+
 
 # Robot is facing south rigth after crossing the to the graval zone
 # This function gets the robot in position to drop terrine's milk
@@ -306,6 +372,14 @@ if __name__ == "__main__":
     # getTerrines()
 
     # STARTING EXPLORTION HERE #
+<<<<<<< HEAD
+=======
+    #turnLeft(90)
+    walkingDetecting()
+    #triangleToGetInCow()
+    com.getInCow()
+    cv2.waitKey(0)
+>>>>>>> f06ce6da085173a146bdc3d08d382fa2bcc328ad
 
     # turnLeft(90)
     # walkingDetecting()
