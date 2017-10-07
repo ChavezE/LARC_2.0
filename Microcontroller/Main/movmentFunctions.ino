@@ -33,6 +33,9 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
       leftFront += abs(iAux) / constPCorrectN;
       leftBack += abs(iAux) / constPCorrectN;
 
+      rightFront -= abs(iAux) / constPCorrectN;
+      rightBack -= abs(iAux) / constPCorrectN;
+
       // Serial.print("\t");
       // Serial.print("Mayor: ");
       // Serial.print(abs(iAux) / constPCorrectN);
@@ -46,6 +49,9 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
       //Turn left
       rightFront += abs(iAux) / constPCorrectN;
       rightBack += abs(iAux) / constPCorrectN;
+
+      leftFront -= abs(iAux) / constPCorrectN;
+      leftBack -= abs(iAux) / constPCorrectN;
 
       // Serial.print("\t");
       // Serial.print("Menor: ");
@@ -75,6 +81,10 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
       //Turn left
       rightFront += abs(iA) / constPCorrectN;
       rightBack += abs(iA) / constPCorrectN;
+
+      leftFront -= abs(iA) / constPCorrectN;
+      leftBack -= abs(iA) / constPCorrectN;
+      
       //Not needed
       // leftFront -= abs(iA) / constPCorrectN;
       // leftBack -= abs(iA) / constPCorrectN;
@@ -94,6 +104,10 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
       //Turn right
       leftFront += abs(iA) / constPCorrectN;
       leftBack += abs(iA) / constPCorrectN;
+
+      rightFront -= abs(iAux) / constPCorrectN;
+      rightBack -= abs(iAux) / constPCorrectN;
+      
       //Not needed
       // rightFront -= abs(iA) / constPCorrectN;
       // rightBack -= abs(iA) / constPCorrectN;
@@ -372,111 +386,33 @@ void backwardUntilWallN(int dist)
 //Turn to an exact angle
 void turnToObjectiveN(int iWant)
 {
-  for(int iI = 0; iI < 2; iI++)
-  {
-    //lcd.clear();
-    //writeLCD("Turning To:", 0, 0);
-    //writeLCD(String(iWant), 0, 1);
-
-    //Actual Angle
-    int iAm = getCompass();
-    //Auxiliar to know limits
-    int iAux = iWant - iAm;
-
-    // +- Error
-    int iError = 2;
-
-    while (!(iAm > iWant - iError && iAm < iWant + iError))
-    {
-      //Move to the angle in the shorter path
-      if (iAux > -180 && iAux < 180)
-      {
-        if (iWant > iAm)
-        {
-          //Turn right
-          turnRight(velLF, velLB, velRF, velRB);
-        }
-        else if (iWant < iAm)
-        {
-          //Turn left
-          turnLeft(velLF, velLB, velRF, velRB);
-        }
-      }
-      else //if (iAux > 180 || iAux < -180)
-      {
-        if (iAux > 0)
-        {
-          //Turn left
-          turnLeft(velLF, velLB, velRF, velRB);
-        }
-        else if (iAux < 0)
-        {
-          //Turn right
-          turnRight(velLF, velLB, velRF, velRB);
-        }
-      }
-
-      //check angle
-      iAm = getCompass();
-      iAux = iWant - iAm;
-    }
-    brake();
-    //lcd.clear();
-    //writeLCD(String(getCompass()), 0, 0);
-  }
+  turnToObjectiveN(iWant, velTurnLF, velTurnLB, velTurnRF, velTurnRB);
 }
 
 //Turn to an exact angle
 void turnToObjectiveN(int iWant, int vLF, int vLB, int vRF, int vRB)
 {
-  for(int iI = 0; iI < 2; iI++)
-  {
-    //Actual Angle
-    int iAm = getCompass();
-    //Auxiliar to know limits
-    int iAux = iWant - iAm;
-
-    // +- Error
-    int iError = 2;
-
-    while (!(iAm > iWant - iError && iAm < iWant + iError))
-    {
-      //Move to the angle in the shorter path
-      if (iAux > -180 && iAux < 180)
-      {
-        if (iWant > iAm)
-        {
-          //Turn right
-          turnRight(vLF, vLB, vRF, vRB);
-        }
-        else if (iWant < iAm)
-        {
-          //Turn left
-          turnLeft(vLF, vLB, vRF, vRB);
-        }
-      }
-      else if (iAux > 180 || iAux < -180)
-      {
-        if (iAux > 0)
-        {
-          //Turn left
-          turnLeft(vLF, vLB, vRF, vRB);
-        }
-        else if (iAux < 0)
-        {
-          //Turn right
-          turnRight(vLF, vLB, vRF, vRB);
-        }
-      }
-
-      //check angle
-      iAm = getCompass();
-      iAux = iWant - iAm;
+  vLF = velTurnLF; // TODO: Remove the arguments to use always this 
+  vLB = velTurnLB; 
+  vRF = velTurnRF; 
+  vRB = velTurnRB;
+  
+  int x = 0;
+  do {
+    int diff = getAngleDifferenceD(iWant, getCompass());
+    if (diff > 1) {
+      turnLeft(vLF + diff * constPTurn, vLB + diff * constPTurn, vRF + diff * constPTurn, vRB + diff * constPTurn);
+      x = 0;
+    } else if (diff < -1) {
+      turnRight(vLF - diff * constPTurn, vLB - diff * constPTurn, vRF - diff * constPTurn, vRB - diff * constPTurn);
+      x = 0;
+    } else {
+      brake();
+      if (++x == 5) break;
     }
-    brake();
-    //lcd.clear();
-    //writeLCD(String(getCompass()), 0, 0);
-  }
+    delay(30);
+  } while(true);
+  
 }
 
 //Turn n amount of degrees, positive turn right, negative turn left
@@ -508,6 +444,11 @@ void turnNDegrees(int n, int vLF, int vLB, int vRF, int vRB)
   ////writeLCD(String(n), 0, 0);
   //Get objective angle
   int obj = getCompass() + n;
+
+  vLF = velTurnLF; // TODO: Remove the arguments to use always this 
+  vLB = velTurnLB; 
+  vRF = velTurnRF; 
+  vRB = velTurnRB;
 
   //angle correction
   if (obj > 359)

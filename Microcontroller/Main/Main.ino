@@ -110,8 +110,8 @@ Servo sCT;
 //Counts of the encoder for 1 cm --need update
 const unsigned long constEncoder = 5500UL;
 
-//Correction with P for turns
-const long constPTurn = 40L;
+//Correction with P for turns (it is multiplied)
+const int constPTurn = 1;
 
 //Correction with P
 const long constPCorrect = 30L;
@@ -120,7 +120,7 @@ const long constPCorrect = 30L;
 const long constPDist = 110L;
 
 //P correction Nestor
-const double constPCorrectN = 0.01;
+const double constPCorrectN = 0.06;
 
 //Constants of motors when the robot is treated as a tank
 
@@ -136,15 +136,22 @@ const long velTurn = 60L;
 const int velLF = 158; //158
 const int velLB = 158; //158
 
-const int velRF = 120; //120
-const int velRB = 120; //120
+const int velRF = 135; //120
+const int velRB = 135; //120
 
-//Cosntants of motors velocity for going slow
-const int velSlowLF = 120;
-const int velSlowLB = 120;
+//Constants of motors velocity for going slow
+const int velSlowLF = 115;
+const int velSlowLB = 115;
 
-const int velSlowRF = 92;
-const int velSlowRB = 92;
+const int velSlowRF = 98;
+const int velSlowRB = 98;
+
+// Constants of motors for turn
+const int velTurnLF = 115;
+const int velTurnLB = 115;
+
+const int velTurnRF = 98;
+const int velTurnRB = 98;
 
 /////////////////////
 //    Variables    //
@@ -210,7 +217,7 @@ void setup()
   sClaw.attach(pinServoC);
   sPlattaform.attach(pinServoP);
   sCUD.attach(pinServoCUD);
-  sCT.attach(pinSercoR);
+  sCT.attach(pinServoR);
 
   pinMode(pinLI, INPUT);
   pinMode(pinLO, INPUT);
@@ -225,9 +232,6 @@ void setup()
   //platIn();
   //openClaw();
   encoderState = 1;
-
-  //Display the finish of the setup
-  writeLCD("START FENIX 2.0", 0, 0);
 
   //Stop plattaform for security
   platIn();
@@ -248,6 +252,9 @@ void setup()
   iSouth = iEast + 90;
   //Angle for south
   iWest = iSouth + 90;
+
+  //Display the finish of the setup
+  writeLCD("START FENIX 2.0", 0, 0);  
 }
 
 void loop()
