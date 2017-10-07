@@ -170,7 +170,7 @@
 <hole x="236.22" y="97.79" drill="3.2"/>
 <hole x="129.54" y="191.77" drill="3.2"/>
 <hole x="180.34" y="191.77" drill="3.2"/>
-<text x="148.59" y="185.42" size="1.778" layer="16" rot="MR0">+5V</text>
+<text x="148.59" y="184.15" size="1.778" layer="16" rot="MR0">+5V</text>
 <text x="162.56" y="185.42" size="1.778" layer="16" rot="MR0">GND</text>
 <text x="29.21" y="54.61" size="1.778" layer="16" rot="MR270">Gral</text>
 <text x="29.21" y="92.71" size="1.778" layer="16" rot="MR270">Motors</text>
