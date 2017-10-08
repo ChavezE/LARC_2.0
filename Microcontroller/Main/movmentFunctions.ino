@@ -280,6 +280,8 @@ void backwardNCm(int cm, bool slow)
 }
 
 //Go forward until finding a wall at a certain distance
+// NOT TRIED IT with the new robot
+// TODO: Add if it wants 0cms is until limits switches
 void forwardUntilWallN(int dist)
 {
   encoderState = 1;
@@ -298,33 +300,34 @@ void forwardUntilWallN(int dist)
 
   //Check if the function
   bool ready = actualDist == dist ? true : false;
-  bool bSlow = actualDist >= 30 ? false : true;
+  bool bSlow = abs(actualDist - dist) >= 15 ? false : true;
 
+  int countCorrect = 0;
   //While not at ceratin distance from wall
   while (!ready)
   {
     //To far from wall
-    if (actualDist > dist)
+    if (actualDist > dist + 2)
     {
-      forward(LF, LB, RF, RB);
+      forward(LF, LB, RF, RB); // TODO: Brake before changing the direction to avoid fast changes that turn badly the robot
       forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+      countCorrect = 0;
     }
-
-    //To close from wall
-    if (actualDist < dist)
+    else if (actualDist < dist - 2) //To close from wall
     {
       backward(LF, LB, RF, RB);
       backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+      countCorrect = 0;
+    }
+    else //Already at the distance with an error of +- 2 cm.
+    {
+      brake();
+      if (++countCorrect == 5) ready = true;
     }
 
     actualDist = getDistance(pinSF);
-    bSlow = actualDist >= 30 ? false : true;
+    bSlow = abs(actualDist - dist) >= 15 ? false : true;
 
-    //Already at the distance with an error of +- 2 cm.
-    if (actualDist > dist - 2 && actualDist < dist + 2)
-    {
-      ready = true;
-    }
   }
 
   brake();
@@ -350,34 +353,33 @@ void backwardUntilWallN(int dist)
   //Check if the function
   bool ready = actualDist == dist ? true : false;
 
-  bool bSlow = actualDist >= 30 ? false : true;
+  bool bSlow = abs(actualDist - dist) >= 15 ? false : true;
 
+  int countCorrect = 0;
   //While not at ceratin distance from wall
   while (!ready)
   {
     //To far from wall
-    if (actualDist > dist)
+    if (actualDist > dist + 2)
     {
       backward(LF, LB, RF, RB);
       backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
-    }
-
-    //To close from wall
-    if (actualDist < dist)
+      countCorrect = 0;
+    } 
+    else if (actualDist < dist - 2) //To close from wall
     {
       forward(LF, LB, RF, RB);
       forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+      countCorrect = 0;
+    }
+    else //Already at the distance with an error of +- 2 cm.
+    {
+      brake();
+      if (++countCorrect == 5) ready = true;
     }
 
     actualDist = getDistance(pinSB);
-    bSlow = actualDist >= 30 ? false : true;
-
-
-    //Already at the distance with an error of +- 2 cm.
-    if (actualDist > dist - 2 && actualDist < dist + 2)
-    {
-      ready = true;
-    }
+    bSlow = abs(actualDist - dist) >= 15 ? false : true;
   }
 
   brake();

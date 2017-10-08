@@ -169,8 +169,8 @@ volatile unsigned long steps = 0;
 //0->Stop   1->Forward    2->Backwards
 volatile byte encoderState = 0;
 
-//Counts of encoder
-const int encoder30Cm = 5060;
+//Counts of encoder. Perfect at 60cm, 30cm fail by -1.5cm, 100cm by 2cm, 150cm by 3cm
+const int encoder30Cm = 4300; // TODO: Better it depends in the distance.
 
 //LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
