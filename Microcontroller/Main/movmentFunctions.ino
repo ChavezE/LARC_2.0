@@ -859,8 +859,8 @@ int formulaForwardWithRightWall(int base, int separacion, int diffBetweenSharps,
   if (diffBetweenSharps > 45) diffBetweenSharps = 45;
   else if (diffBetweenSharps < -45) diffBetweenSharps = -45;
 //  return base + separacion * 8 + diffBetweenSharps * 2 + diffCompass * 6;
-  return base + separacion * 12 + diffBetweenSharps * 2 + diffCompass * 7;
-//  return base + separacion * 11 + diffBetweenSharps * 2 + diffCompass * 7;
+  return base + separacion * 15 + diffBetweenSharps * 4 + diffCompass * 7; // * 2
+//  return base + separacion * 12 + diffBetweenSharps * 2 + diffCompass * 7;
 }
 
 /**
