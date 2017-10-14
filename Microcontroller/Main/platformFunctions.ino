@@ -86,3 +86,14 @@ void downClaw()
   }
   sCUD.write(90);
 }
+
+void verticalClaw()
+{
+  sCT.write(90);
+}
+
+void horizontalClaw()
+{
+  sCT.write(175);
+}
+

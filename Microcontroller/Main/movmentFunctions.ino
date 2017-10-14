@@ -882,3 +882,18 @@ int getAngleDifferenceD(const int &objetivo, const int &actual) {
 
   return diffCompass; // (-) conviene voltear a la derecha
 }
+
+void parkingRight(bool bSlow)
+{
+  turnNDegrees(-20);
+  backwardNCm(35, false);
+  turnNDegrees(20);
+}
+
+void parkingLeft(bool bSlow)
+{
+  turnNDegrees(20);
+  backwardNCm(35, false);
+  turnNDegrees(-20);
+}
+

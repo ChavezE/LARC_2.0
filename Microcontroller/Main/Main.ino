@@ -90,17 +90,17 @@ const byte pinLCU = 46;
 //-------Servos-------//
 
 //Claw Servo
-const byte pinServoC = 5;
+const byte pinServoC = 6;  //4
 Servo sClaw;
 
 //Plattaform Servo
 const byte pinServoP = 7;
 Servo sPlattaform;
 
-const byte pinServoCUD = 4;
+const byte pinServoCUD = 8;
 Servo sCUD;
 
-const byte pinServoR = 6;
+const byte pinServoR = 4; //5
 Servo sCT;
 
 /////////////////////
@@ -234,8 +234,9 @@ void setup()
   encoderState = 1;
 
   //Stop plattaform for security
-  platIn();
-  downClaw();
+  //horizontalClaw();
+  //platIn();
+  //downClaw();
   sPlattaform.write(90);
   sCUD.write(90);
   sCT.write(0);
@@ -267,8 +268,7 @@ void loop()
      200= trotando. Ya el torque remarcable
      255= trotando rapido. Torque chidote
   */
-  //upClaw();
-  //getInCow(false);
-  //while(1);
-  communication();
+  //communication();
+  turnNDegrees(90);
+  delay(1000);
 }
