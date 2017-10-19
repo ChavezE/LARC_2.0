@@ -134,3 +134,45 @@ void limitSwitchesCalibration()
   Serial.print("\t");
   Serial.println();
 }
+
+void tryServos() {
+  Serial.print("Plat In...");
+  platIn();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Plat Out...");
+  platOut();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Open Claw...");
+  openClaw();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Close Claw...");
+  closeClaw();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Up Claw...");
+  upClaw();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Down Claw...");
+  downClaw();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Vertical Claw...");
+  verticalClaw();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Horizontal Claw...");
+  horizontalClaw();
+  Serial.println("Fin.");
+  delay(1000);
+}
