@@ -8,9 +8,9 @@ void platIn()
   while (digitalRead(pinLI) == normalState)
   {
     //Start moving the plattaform
-    sPlattaform.write(70);
+    sPlattaform.write(100);
   }
-  
+
   platformStop();
 }
 
@@ -35,7 +35,7 @@ void platOut()
   while (digitalRead(pinLO) == normalState)
   {
     //Start moving the plattaform
-    sPlattaform.write(110);
+    sPlattaform.write(80);
   }
   
   platformStop();
@@ -73,7 +73,7 @@ void upClaw()
 {
   while(digitalRead(pinLCU) == normalState)
   {
-    sCUD.write(100);  
+    sCUD.write(98);  
   }
   sCUD.write(90);
 }
@@ -82,7 +82,7 @@ void downClaw()
 {
   while(digitalRead(pinLCD) == normalState)
   {
-    sCUD.write(80);  
+    sCUD.write(85);  
   }
   sCUD.write(90);
 }
