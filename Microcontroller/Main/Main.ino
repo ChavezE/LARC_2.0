@@ -34,10 +34,10 @@ const byte pinEncoder = 2;
 //-------Sharps--------//
 
 //Front Sharp
-const byte pinSF = A3;
+const byte pinSF = A3; // NO esta conectado
 
 //Back Sharp
-const byte pinSB = A11;
+const byte pinSB = A11; // SUSPENDIDO por pinSC
 
 //Sharp Right Front
 const byte pinSRF = A8;
@@ -55,10 +55,10 @@ const byte pinSLF = A12;
 //const byte pinSLC;
 
 //Sharp Left Back
-const byte pinSLB = A9;
+const byte pinSLB = A9; //FALLANDO. Siempre da el mismo valor.
 
 //Sharp Claw
-const byte pinSC = A6;
+const byte pinSC = A11; //MOMENTANEAMENTE es A11. Antes era A6.
 
 //pins Sharps
 byte pinSharp[9] = {A3, A4, A1, A2, A0, A5, A6};
@@ -269,6 +269,6 @@ void loop()
      255= trotando rapido. Torque chidote
   */
   //communication();
-  turnNDegrees(90);
-  delay(1000);
+ turnNDegrees(90);
+ delay(1000);
 }
