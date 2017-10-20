@@ -40,6 +40,7 @@ void sharpCalibration()
   int sharpB = round(13 * pow((analogRead(pinSB) * 0.0048828125), -1));
   int sharpRB = round(13 * pow((analogRead(pinSRB) * 0.0048828125), -1));
   int sharpLB = round(13 * pow((analogRead(pinSLB) * 0.0048828125), -1));
+  int sharpC = round(13 * pow((analogRead(pinSC) * 0.0048828125), -1));
 
   Serial.print("F: ");
   Serial.print(sharpF);
@@ -57,7 +58,10 @@ void sharpCalibration()
   Serial.print(sharpLB);
   Serial.print("\t");
   Serial.print("RB: ");
-  Serial.println(sharpRB);
+  Serial.print(sharpRB);
+  Serial.print("\t");
+  Serial.print("Claw: ");
+  Serial.println(sharpC);
 }
 
 void tryForwardP()
