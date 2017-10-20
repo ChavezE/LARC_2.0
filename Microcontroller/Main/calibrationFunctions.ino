@@ -40,7 +40,7 @@ void sharpCalibration()
   int sharpB = round(13 * pow((analogRead(pinSB) * 0.0048828125), -1));
   int sharpRB = round(13 * pow((analogRead(pinSRB) * 0.0048828125), -1));
   int sharpLB = round(13 * pow((analogRead(pinSLB) * 0.0048828125), -1));
-  int sharpC = round(13 * pow((analogRead(pinSC) * 0.0048828125), -1));
+  int sharpSC = round(13 * pow((analogRead(pinSC) * 0.0048828125), -1));
 
   Serial.print("F: ");
   Serial.print(sharpF);
@@ -137,4 +137,46 @@ void limitSwitchesCalibration()
   Serial.print(digitalRead(pinLRB));
   Serial.print("\t");
   Serial.println();
+}
+
+void tryServos() {
+  Serial.print("Plat In...");
+  platIn();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Plat Out...");
+  platOut();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Open Claw...");
+  openClaw();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Close Claw...");
+  closeClaw();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Up Claw...");
+  upClaw();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Down Claw...");
+  downClaw();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Vertical Claw...");
+  verticalClaw();
+  Serial.println("Fin.");
+  delay(1000);
+
+  Serial.print("Horizontal Claw...");
+  horizontalClaw();
+  Serial.println("Fin.");
+  delay(1000);
 }

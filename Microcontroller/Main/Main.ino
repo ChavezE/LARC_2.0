@@ -130,8 +130,16 @@ const long velForward = 70L;
 //Velocity for motor when turning
 const long velTurn = 60L;
 
-//Constants of the motors when the motor is treated as  a 4x4
-
+/**
+ * Constants of the motors when the motor is treated as  a 4x4
+ *
+ * <=30 ya no jala, no se mueven nada
+ * 50= lento, pero se mueven, jala.
+ * 100= caminata con prisa
+ * 150= caminata rapida. Ya con un torque
+ * 200= trotando. Ya el torque remarcable
+ * 255= trotando rapido. Torque chidote
+ */
 //Cosntants of motors velocity
 const int velLF = 158; //158
 const int velLB = 158; //158
@@ -260,15 +268,7 @@ void setup()
 
 void loop()
 {
-  /**
-     <=30 ya no jala, no se mueven nada
-     50= lento, pero se mueven, jala.
-     100= caminata con prisa
-     150= caminata rapida. Ya con un torque
-     200= trotando. Ya el torque remarcable
-     255= trotando rapido. Torque chidote
-  */
-  //communication();
-  turnNDegrees(90);
-  delay(1000);
+
+  communication();
+
 }
