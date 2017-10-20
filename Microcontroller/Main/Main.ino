@@ -8,29 +8,28 @@
 ///////////////////////
 
 //------Motors--------//
-
 //Motor Front Right
-const byte pinMFRA = 29;
-const byte pinMFRB = 31;
-const byte pinPWMFR = 2;
+const byte pinMFRA = 24;
+const byte pinMFRB = 26;
+const byte pinPWMFR = 11;
 
 //Motor Front Left
-const byte pinMFLA = 27;
-const byte pinMFLB = 33;
-const byte pinPWMFL = 3;
+const byte pinMFLA = 22;
+const byte pinMFLB = 28;
+const byte pinPWMFL = 12;
 
 //Motor Back Right
-const byte pinMBRA = 35;
-const byte pinMBRB = 41;
-const byte pinPWMBR = 5;
+const byte pinMBRA = 31;
+const byte pinMBRB = 37;
+const byte pinPWMBR = 9;
 
 //Motor Back Left
-const byte pinMBLA = 37;
-const byte pinMBLB = 39;
-const byte pinPWMBL = 4;
+const byte pinMBLA = 35;
+const byte pinMBLB = 33;
+const byte pinPWMBL = 10;
 
 //Encoder
-const byte pinEncoder = 18;
+const byte pinEncoder = 2;
 
 //-------Sharps--------//
 
@@ -38,25 +37,25 @@ const byte pinEncoder = 18;
 const byte pinSF = A3;
 
 //Back Sharp
-const byte pinSB = A2;
+const byte pinSB = A13;
 
 //Sharp Right Front
-const byte pinSRF = A4;
+const byte pinSRF = A8;
 
 //Sharp Right Center
 //const byte pinSRC;
 
 //Sharp Right Back
-const byte pinSRB = A1;
+const byte pinSRB = A10;
 
 //Sharp Left Front
-const byte pinSLF = A5;
+const byte pinSLF = A12;
 
 //Sharp Left Center
 //const byte pinSLC;
 
 //Sharp Left Back
-const byte pinSLB = A0;
+const byte pinSLB = A9;
 
 //Sharp Claw
 const byte pinSC = A6;
@@ -66,25 +65,43 @@ byte pinSharp[9] = {A3, A4, A1, A2, A0, A5, A6};
 
 //----LimitSwithces----//
 
-//In Limit Switch
-const byte pinLI = 43;
+const bool normalState = 1;
 
-//Out Limit Switch
-const byte pinLO = 45;
+const byte pinLI = 48;
 
-const byte pinLR = 6;
+const byte pinLO = 42;
 
-const byte pinLL = 7;
+const byte pinLR = 40;
+
+const byte pinLL = 30;
+
+const byte pinLLB = 34;
+
+const byte pinLRB = 32;
+
+//Para los limits de arriba y abajo del ordeñador los pins 36 y 38
+
+// Limit down garra
+const byte pinLCD = 44;
+
+// Limit up garra
+const byte pinLCU = 46;
 
 //-------Servos-------//
 
 //Claw Servo
-const byte pinServoC = 8;
+const byte pinServoC = 6;  //4
 Servo sClaw;
 
 //Plattaform Servo
-const byte pinServoP = 9;
+const byte pinServoP = 7;
 Servo sPlattaform;
+
+const byte pinServoCUD = 8;
+Servo sCUD;
+
+const byte pinServoR = 4; //5
+Servo sCT;
 
 /////////////////////
 //    Constants    //
@@ -93,8 +110,8 @@ Servo sPlattaform;
 //Counts of the encoder for 1 cm --need update
 const unsigned long constEncoder = 5500UL;
 
-//Correction with P for turns
-const long constPTurn = 40L;
+//Correction with P for turns (it is multiplied)
+const int constPTurn = 1;
 
 //Correction with P
 const long constPCorrect = 30L;
@@ -103,7 +120,7 @@ const long constPCorrect = 30L;
 const long constPDist = 110L;
 
 //P correction Nestor
-const double constPCorrectN = 0.1;
+const double constPCorrectN = 0.06;
 
 //Constants of motors when the robot is treated as a tank
 
@@ -113,21 +130,36 @@ const long velForward = 70L;
 //Velocity for motor when turning
 const long velTurn = 60L;
 
-//Constants of the motors when the motor is treated as  a 4x4
-
+/**
+ * Constants of the motors when the motor is treated as  a 4x4
+ *
+ * <=30 ya no jala, no se mueven nada
+ * 50= lento, pero se mueven, jala.
+ * 100= caminata con prisa
+ * 150= caminata rapida. Ya con un torque
+ * 200= trotando. Ya el torque remarcable
+ * 255= trotando rapido. Torque chidote
+ */
 //Cosntants of motors velocity
-const int velLF = 87; //67
-const int velLB = 88; //68
+const int velLF = 158; //158
+const int velLB = 158; //158
 
-const int velRF = 90; //70
-const int velRB = 100; //80
+const int velRF = 135; //120
+const int velRB = 135; //120
 
-//Cosntants of motors velocity for going slow
-const int velSlowLF = 48;
-const int velSlowLB = 51;
+//Constants of motors velocity for going slow
+const int velSlowLF = 115;
+const int velSlowLB = 115;
 
-const int velSlowRF = 42;
-const int velSlowRB = 56;
+const int velSlowRF = 98;
+const int velSlowRB = 98;
+
+// Constants of motors for turn
+const int velTurnLF = 115;
+const int velTurnLB = 115;
+
+const int velTurnRF = 98;
+const int velTurnRB = 98;
 
 /////////////////////
 //    Variables    //
@@ -145,8 +177,8 @@ volatile unsigned long steps = 0;
 //0->Stop   1->Forward    2->Backwards
 volatile byte encoderState = 0;
 
-//Counts of encoder
-const int encoder30Cm = 1500;
+//Counts of encoder. Perfect at 60cm, 30cm fail by -1.5cm, 100cm by 2cm, 150cm by 3cm
+const int encoder30Cm = 4300; // TODO: Better it depends in the distance.
 
 //LCD
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -159,9 +191,6 @@ int iEast = 0;
 
 void setup()
 {
-  //lcd.clear();
-  //writeLCD("Iniciando", 0, 0);
-  //delay(1000);
   //Delay to establish connection with raspberry
   Serial.begin(9600);
 
@@ -175,7 +204,7 @@ void setup()
   //Initialize lcd, turn backlight on and clear the display
   lcd.init();
   lcd.backlight();
-  ////lcd.clear();
+  lcd.clear();
 
   pinMode(pinMFRA , OUTPUT);
   pinMode(pinMFRB , OUTPUT);
@@ -195,6 +224,8 @@ void setup()
 
   sClaw.attach(pinServoC);
   sPlattaform.attach(pinServoP);
+  sCUD.attach(pinServoCUD);
+  sCT.attach(pinServoR);
 
   pinMode(pinLI, INPUT);
   pinMode(pinLO, INPUT);
@@ -206,16 +237,17 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
 
   brake();
-  platIn();
-  openClaw();
+  //platIn();
+  //openClaw();
   encoderState = 1;
 
-  //Display the finish of the setup
-  //lcd.clear();
-  //writeLCD("START FENIX 2.0", 0, 0);
-
   //Stop plattaform for security
+  //horizontalClaw();
+  //platIn();
+  //downClaw();
   sPlattaform.write(90);
+  sCUD.write(90);
+  sCT.write(0);
 
   //Angle for north
   iNorth = getCompass();
@@ -229,16 +261,14 @@ void setup()
   iSouth = iEast + 90;
   //Angle for south
   iWest = iSouth + 90;
+
+  //Display the finish of the setup
+  writeLCD("START FENIX 2.0", 0, 0);  
 }
 
 void loop()
 {
-  //turnToObjectiveN(340);
-  //forwardNCm(80, false);
-  //goToStart();
-  //while(1);
+
   communication();
-  // delay(500);
-  // //writeLCD("   ", 13, 1);
-  // //writeLCD(String(getCompass()), 13, 1);
+
 }
