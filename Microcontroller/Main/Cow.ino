@@ -29,7 +29,7 @@ void getInCow(bool bSlow)
   }
 
   //Degrees the robot will turn to try avoiding the legs when encountering one
-  int iTurn = 6;
+  int iTurn = 9;
 
   //Distances of sided front and back sharps
   int distRF = getDistance(pinSRF);
@@ -41,7 +41,7 @@ void getInCow(bool bSlow)
   bool bRight = digitalRead(pinLR);
   //The leg that touch was the left one
   bool bLeft = digitalRead(pinLL);
-  int distanceToWall = 25;
+  int distanceToWall = 20;
   forward(LF, LB, RF, RB);
   while (digitalRead(pinLR) == normalState && digitalRead(pinLL) == normalState && distLF > distanceToWall && distRF > distanceToWall)
   {
@@ -81,20 +81,70 @@ void getInCow(bool bSlow)
   }
 
   //Check sharps
-  distRB = getDistance(pinSRB);
-  distLB = getDistance(pinSLB);
+  // distRB = getDistance(pinSRB);
+  // distLB = getDistance(pinSLB);
+
    //If right leg was touched
   if (!bRight) {
-    
+    parkingLeft(bSlow);
+    getInCow(bSlow );
   }
    //If left leg was touched
   else if (!bLeft) {
-    
+    parkingRight(bSlow);
+    getInCow(bSlow);
   }
   //If no leg was touched
   else {
-    
+    brake();
+    // unsigned long start = millis();
+    // unsigned long actual = millis();
+    // int iWatchDog = 2000;
+    int iStepsWatchDog = (encoder30Cm / 30) * 20;
+    if(distRF < distanceToWall)
+    {
+      backwardNCm(5, bSlow);
+      distLF = getDistance(pinSLF);
+      steps = 0;
+      forward(LF, LB, RF, RB);
+      while(distLF > distanceToWall)
+      {
+        // actual = millis();
+        // if(actual - start > iWatchDog)
+        if(steps > iStepsWatchDog)
+        {
+          brake();
+          backwardNCm(5, bSlow);
+          parkingLeft(bSlow);
+          turnNDegrees(iTurn);
+          getInCow(bSlow);
+          break;
+        }
+        distLF = getDistance(pinSLF);
+      }
+    }
+    else{
+      backwardNCm(5, bSlow);
+      distRF = getDistance(pinSRF);
+      steps = 0;
+      forward(LF, LB, RF, RB);
+      while(distRF > distanceToWall)
+      {
+        // actual = millis();
+        // if(actual - start > iWatchDog)
+        if(steps > iStepsWatchDog)
+        {
+          brake();
+          backwardNCm(5, bSlow);
+          parkingRight(bSlow);
+          turnNDegrees(iTurn * -1);
+          getInCow(bSlow);
+          break;
+        }
+        distRF = getDistance(pinSRF);
+      }
+    }
   }
   brake();
+  //forwardNCm(5, false);
 }
-
