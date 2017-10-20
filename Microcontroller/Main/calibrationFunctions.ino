@@ -60,8 +60,8 @@ void sharpCalibration()
   Serial.print("RB: ");
   Serial.print(sharpRB);
   Serial.print("\t");
-  Serial.print("SC: ");
-  Serial.println(sharpSC);
+  Serial.print("Claw: ");
+  Serial.println(sharpC);
 }
 
 void tryForwardP()

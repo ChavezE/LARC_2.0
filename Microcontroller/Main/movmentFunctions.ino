@@ -886,14 +886,13 @@ int getAngleDifferenceD(const int &objetivo, const int &actual) {
 void parkingRight(bool bSlow)
 {
   turnNDegrees(-20);
-  backwardNCm(35, false);
+  backwardNCm(35, bSlow);
   turnNDegrees(20);
 }
 
 void parkingLeft(bool bSlow)
 {
   turnNDegrees(20);
-  backwardNCm(35, false);
+  backwardNCm(35, bSlow);
   turnNDegrees(-20);
 }
-
