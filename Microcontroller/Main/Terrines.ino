@@ -4,6 +4,129 @@
 #include <LevelLogger.h>
 
 /**
+ * Move the claw to the initial point: in, down, horizontal.
+ * It has two modes: fast and slowAndSecure.
+ * +fast: horizontalClaw, platIn, downClaw
+ * +slowAndSecure: clawUp, clawIn, clawHorizontal, clawDown
+ * 
+ * NOTE: This method doesnt do anything with close/open claw.
+ *
+ * @param safeAndSlow {bool}
+ *
+ */
+ void clawToStartPoint(bool safeAndSlow) {
+   if (safeAndSlow) {
+     upClaw();
+ 
+     platIn();
+ 
+     horizontalClaw();
+ 
+     downClaw();
+   } else {
+     horizontalClaw();
+ 
+     platIn();
+     
+     downClaw();
+   }
+ 
+ }
+ 
+ /**
+  * Move up the claw and check if the distance of the claw is
+  * less than certain distance.
+  * 
+  * Note: This leaves the claw up
+  *
+  * @return bool if we have the terrine
+  */
+ bool checkHaveTerrine() {
+   const int distMin = 25;
+ 
+   upClaw();
+ 
+   return getDistance(pinSC) < distMin;
+ }
+ 
+ /**
+  * Function to move out the claw and try to grab the terrine.
+  * It does NOT close the claw in case the limit was reached 
+  * and maybe if we close we could push a terrine.
+  * 
+  * @return {bool} false if limit was touch
+  */
+ bool tryToGrabTerrine() {
+   openClaw();
+   
+   // Claw out until 5cms to the terrine
+   platformStartToOut();
+   int clawDistance = getDistance(pinSC);
+   while (clawDistance > 5 && digitalRead(pinLO) == HIGH) {
+     clawDistance = getDistance(pinSC); 
+   }
+ 
+   platformStop();
+ 
+   if (digitalRead(pinLO) == HIGH) {
+     
+     // We move it a little more
+     platformStartToOut();
+     
+     // TODO: Medir velocidad para predecir la cant de tiempo que hay que sumar
+     unsigned long timeToStop = millis() + 200;
+     while (digitalRead(pinLO) == HIGH && timeToStop > millis());
+     platformStop();
+   }
+   
+   return digitalRead(pinLO) == HIGH;
+ }
+
+
+/**
+ * Routine Basic form to go and grab terrine
+ *
+ * @param gradosObjetivo {int} Angle to point to
+ *
+ */
+void goGrabTerrineBasic(const int gradosObjetivo) {
+  SerialLog serialLogger;
+  serialLogger.init();
+  LCDLogger lcdLogger;
+//  lcdLogger.init();
+
+  AbstractLoggable *loggerArray[2]{&serialLogger, &lcdLogger};
+  Logger logger("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 1);
+
+  while (1) {
+    clawToStartPoint(false);
+    logger.log("En inicio");
+    delay(2000);
+   
+    if (tryToGrabTerrine()) {
+      logger.log("No tocamos limit");
+      delay(2000);
+  
+      closeClaw();
+    
+      if (checkHaveTerrine()) {
+        logger.log("Lo agarramos");  
+        clawToStartPoint(true);
+        return;
+      } else {
+        logger.log("No agarramos terrine");
+        delay(2000);
+      }
+    } else {
+      logger.log("Tocamos limit");
+      delay(2000);
+    }
+  }
+  
+}
+
+
+/**
  * NO PROBADA DESPUES DE CAMBIARLA A DEVELOPMENT. Antes si funcionaba, esperemos que en esta branch tambien.
  * Function to go to the terrines zone and grab a terrine.
  * This is expected to be called when the robot it already fully in the
