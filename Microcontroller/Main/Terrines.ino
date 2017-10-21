@@ -98,30 +98,69 @@ void goGrabTerrineBasic(const int gradosObjetivo) {
   AbstractLoggable *loggerArray[2]{&serialLogger, &lcdLogger};
   Logger logger("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 1);
 
-  while (1) {
-    clawToStartPoint(false);
+
+  clawToStartPoint(false);
+  backwardNCm(65, false);
+
+  int mientr1, mientr2, mientr3, mientr4;
+  bool grabbed = false;
+  do {
     logger.log("En inicio");
     delay(2000);
-   
-    if (tryToGrabTerrine()) {
-      logger.log("No tocamos limit");
-      delay(2000);
-  
-      closeClaw();
+
     
-      if (checkHaveTerrine()) {
-        logger.log("Lo agarramos");  
-        clawToStartPoint(true);
-        return;
+    // Backward until we find a "blank space"
+    // This make sense in the correct field
+    backward(velSlowLF, velSlowLB, velSlowRF, velSlowRB);
+    while (getDistance(pinSC) < 30) {
+      backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true);
+    }
+
+    do {
+      logger.log("Inside while");
+      // Backward until we dont find a "blank space" that is a terrine
+      while (getDistance(pinSC) > 28 && digitalRead(pinLLB) == HIGH && digitalRead(pinLRB) == HIGH) {
+        backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true);
+      }    
+      brake();
+      logger.log("Encontramos un NO blank space");
+
+      // If we get to the wall, lets return and restart
+      if (digitalRead(pinLLB) == LOW || digitalRead(pinLRB) == LOW) {
+        logger.log("Limits tocando");
+        forwardNCm(65, true);
+        break;
+      }
+
+      
+      if (tryToGrabTerrine()) {
+        logger.log("No tocamos limit sacando plataforma");
+        delay(2000);
+        // TODO: Look for the terrine with the claw in one side and change it to grab it
+        closeClaw();
+      
+        if (checkHaveTerrine()) {
+          logger.log("Lo agarramos");  
+          clawToStartPoint(true);
+          grabbed = true;
+        } else {
+          logger.log("No agarramos terrine");
+          delay(2000);
+        }
       } else {
-        logger.log("No agarramos terrine");
+        logger.log("Tocamos limit");
         delay(2000);
       }
-    } else {
-      logger.log("Tocamos limit");
-      delay(2000);
-    }
-  }
+
+      if (!grabbed) {
+        clawToStartPoint(false);
+        closeClaw();
+        backwardNCm(2, true);
+      }
+
+    } while(!grabbed);
+   
+  } while (!grabbed);
   
 }
 
