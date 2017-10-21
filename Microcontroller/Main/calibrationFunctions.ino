@@ -61,7 +61,7 @@ void sharpCalibration()
   Serial.print(sharpRB);
   Serial.print("\t");
   Serial.print("Claw: ");
-  Serial.println(sharpC);
+  Serial.println(sharpSC);
 }
 
 void tryForwardP()
