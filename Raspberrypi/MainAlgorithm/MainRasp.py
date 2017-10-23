@@ -70,37 +70,7 @@ def takePicture(inColor = False):
 
 ##### Rutinas ######
 
-def goToTerrines():
-    turnLeft(90)
-    result="n"
-    global terrinesZone;
-    if(terrinesZone == "c" or terrinesZone == "r"):
-        arduino.write("v")
-        time.sleep(1);
-        while(True):
-            if(arduino.inWaiting()>0):
-                result= arduino.read()
-                break
-
-        #Si agarramos vaso pues nos vamos al centro a buscar vaca, sino pues para ir al otro lado a buscar vasos
-        fowardUntilNotLeft();
-
-        if(result=="1"):
-            terrinesZone= "r";
-            return;
-
-
-    #No hubo en la derecha o ya sabiamos que es izq
-    arduino.write("k")
-    time.sleep(1);
-    while(arduino.inWaiting()<=0):
-        pass;
-    terrinesZone= "l"
-
-    #Nos vamos al centro a buscar vacas siempre
-    #BackwardUntilNotLeft();
-
-def getTerrines():
+def goAndGrabTerrine():
     com.goGrabTerrine()
 
 ##### Movimientos ######
@@ -368,8 +338,7 @@ if __name__ == "__main__":
 
     # Robot always STARTS facing NORTH, check field in 'information' folder #
 
-    # goToTerrines()
-    # getTerrines()
+    # goAndGrabTerrine()
 
     # STARTING EXPLORTION HERE #
 <<<<<<< HEAD

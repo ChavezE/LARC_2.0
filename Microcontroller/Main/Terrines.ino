@@ -84,12 +84,15 @@
 
 
 /**
- * Routine Basic form to go and grab terrine
+ * Routine Basic form to go and grab terrine. 
+ * The robot starts in the center of the field pointing to the north, 
+ * it turns left 90 and then it starts backwards.
  *
- * @param gradosObjetivo {int} Angle to point to
+ * @param northAngle {int} Angle where the north is (the angle where the 
+ *  robot starts pointing to).
  *
  */
-void goGrabTerrineBasic(const int gradosObjetivo) {
+void goGrabTerrineBasic(const int northAngle) {
   SerialLog serialLogger;
   serialLogger.init();
   LCDLogger lcdLogger;
@@ -98,8 +101,13 @@ void goGrabTerrineBasic(const int gradosObjetivo) {
   AbstractLoggable *loggerArray[2]{&serialLogger, &lcdLogger};
   Logger logger("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 1);
 
-  // TODO: Start with the turn 90 
+
+  const int gradosObjetivo = northAngle - 90 < 0 ? 
+    northAngle - 90 + 360 : northAngle - 90;
+  
   clawToStartPoint(false);
+
+  turnToObjectiveN(gradosObjetivo);
   backwardNCm(65, false);
 
   int mientr1, mientr2, mientr3, mientr4;
