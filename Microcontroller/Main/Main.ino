@@ -248,6 +248,7 @@ void setup()
   sPlattaform.write(90);
   sCUD.write(90);
   sCT.write(0);
+  openClaw();
 
   //Angle for north
   iNorth = getCompass();
@@ -263,12 +264,12 @@ void setup()
   iWest = iSouth + 90;
 
   //Display the finish of the setup
-  writeLCD("START FENIX 2.0", 0, 0);  
+  writeLCD("START FENIX 2.0", 0, 0); 
 }
 
 void loop()
-{
-
+{ 
+  
   communication();
 
 }

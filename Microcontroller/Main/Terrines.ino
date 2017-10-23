@@ -98,7 +98,7 @@ void goGrabTerrineBasic(const int gradosObjetivo) {
   AbstractLoggable *loggerArray[2]{&serialLogger, &lcdLogger};
   Logger logger("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 1);
 
-
+  // TODO: Start with the turn 90 
   clawToStartPoint(false);
   backwardNCm(65, false);
 
@@ -112,18 +112,23 @@ void goGrabTerrineBasic(const int gradosObjetivo) {
     // Backward until we find a "blank space"
     // This make sense in the correct field
     backward(velSlowLF, velSlowLB, velSlowRF, velSlowRB);
-    while (getDistance(pinSC) < 30) {
+    while (getDistance(pinSLB) < 30) {
       backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true);
     }
+    brake(); // TODO: Check if we need to implement a harder brake with seconds to the other direction
+    logger.log("Salimos de find a blank");
+    delay(1000);
 
     do {
       logger.log("Inside while");
       // Backward until we dont find a "blank space" that is a terrine
-      while (getDistance(pinSC) > 28 && digitalRead(pinLLB) == HIGH && digitalRead(pinLRB) == HIGH) {
-        backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true);
+      backward(velSlowLF, velSlowLB, velSlowRF, velSlowRB);
+      while (getDistance(pinSLB) > 15 && digitalRead(pinLLB) == HIGH && digitalRead(pinLRB) == HIGH) { // MIENTRAS la distancia es 15 por pista de pruebas
+        backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true); // TODO: Check if it is neccesary to quit only if n times
       }    
       brake();
       logger.log("Encontramos un NO blank space");
+      delay(1000);
 
       // If we get to the wall, lets return and restart
       if (digitalRead(pinLLB) == LOW || digitalRead(pinLRB) == LOW) {
@@ -132,6 +137,7 @@ void goGrabTerrineBasic(const int gradosObjetivo) {
         break;
       }
 
+      backwardNCm(6, true); // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
       
       if (tryToGrabTerrine()) {
         logger.log("No tocamos limit sacando plataforma");
@@ -155,7 +161,7 @@ void goGrabTerrineBasic(const int gradosObjetivo) {
       if (!grabbed) {
         clawToStartPoint(false);
         closeClaw();
-        backwardNCm(2, true);
+        // backwardNCm(2, true);
       }
 
     } while(!grabbed);

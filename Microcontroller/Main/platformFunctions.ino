@@ -8,7 +8,7 @@ void platIn()
   while (digitalRead(pinLI) == normalState)
   {
     //Start moving the plattaform
-    sPlattaform.write(100);
+    sPlattaform.write(97);
   }
 
   platformStop();
@@ -22,7 +22,7 @@ void platInMid()
   // //writeLCD("PLAT IN MID", 0, 0);
   
   //Start moving the plattaform
-  sPlattaform.write(100);
+  sPlattaform.write(97);
   
   delay(2500);
   
@@ -55,7 +55,7 @@ void openClaw()
   //Display function in LCD
   ////lcd.clear();
   // //writeLCD("OPEN CLAW", 0, 0);
-  sClaw.write(40);
+  sClaw.write(5);
   delay(1400);
 }
 
@@ -65,7 +65,7 @@ void closeClaw()
   //Display function in LCD
   ////lcd.clear();
   // //writeLCD("CLOSE CLAW", 0, 0);
-  sClaw.write(55);
+  sClaw.write(29);
   delay(1400);
 }
 
@@ -75,7 +75,7 @@ void upClaw()
   {
     sCUD.write(98);  
   }
-  sCUD.write(90);
+  sCUD.write(89);
 }
 
 void downClaw()
@@ -84,7 +84,7 @@ void downClaw()
   {
     sCUD.write(85);  
   }
-  sCUD.write(90);
+  sCUD.write(89);
 }
 
 void verticalClaw()
