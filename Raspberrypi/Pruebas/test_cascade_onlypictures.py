@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 
 
-cow = cv2.CascadeClassifier('../Cascades/COWTUMMY.xml')
+cow = cv2.CascadeClassifier('../Cascades/COWTUMMY2.0.xml')
 
 
 for i in range(1, 35):

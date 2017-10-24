@@ -57,7 +57,7 @@ if __name__ == "__main__":
 			print "COW FOUND"
 
 			tLevel = rb.getTissueTopLevel(maxLenT)
-			# rb.drawCowSquares(mainFrame,100,100,100,tLevel)
+			rb.drawCowSquares(mainFrame,130,100,255,tLevel)
 			A,B,theta = rb.ajusteDeCurvas(tLevel)
 			rb.drawSlope(mainFrame,A,B)
 			left,right,up=rb.calcCowLimits(maxLenT)
