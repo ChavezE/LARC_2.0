@@ -13,8 +13,8 @@ import thread
 # Roborregos libs
 import sys
 sys.path.insert(0, '../lib/')
-import Larc_vision_2017 as rb
-import communication as com
+#import Larc_vision_2017 as rb
+#import communication as com
 
 '''
 VARIABLES GLOBALES
@@ -38,7 +38,7 @@ maxLenTissue = []
 
 ############### BOTONS INTERRUPT SETUP ####################
 
-START_PIN = 3
+START_PIN = 20
 END_PIN = 4
 LED_PIN = 21
 
@@ -406,11 +406,13 @@ if __name__ == "__main__":
     # STARTING EXPLORTION HERE #
 
     #turnLeft(90)
-    walkingDetecting()
+    #walkingDetecting()
     #triangleToGetInCow()
-    com.getInCow()
-    cv2.waitKey(0)
-
+    #com.getInCow()
+    #cv2.waitKey(0)
+    while True:
+        print "code"
+        pass
 
 
 
