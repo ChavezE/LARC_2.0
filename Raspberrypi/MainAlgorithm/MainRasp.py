@@ -3,7 +3,9 @@
 import cv2
 import numpy as np
 import math
-# import serial
+import RPi.GPIO as GPIO
+import sys
+import serial
 import time
 from copy import deepcopy
 import thread
@@ -33,6 +35,38 @@ mainFrame = []
 clearedMainFrame = []
 maxLenTissue = []
 
+
+############### BOTONS INTERRUPT SETUP ####################
+
+START_PIN = 3
+END_PIN = 4
+LED_PIN = 21
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(START_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(END_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(LED_PIN, GPIO.OUT)
+
+
+# setting up interrupt on pin 3 to exit the abort the program
+def my_callback(channel):
+    print "exiting the program..."
+    GPIO.cleanup()
+    sys.exit()
+# this line waits for the interrupt and calles the function above
+GPIO.add_event_detect(END_PIN, GPIO.FALLING, callback=my_callback, bouncetime=1000)
+
+# loop in this function until begin button is pressed
+def waitToBegin():
+    print "waiting for input"
+    GPIO.output(LED_PIN,1)
+    GPIO.wait_for_edge(START_PIN, GPIO.FALLING)
+    GPIO.output(LED_PIN,0)
+    print "begining program"
+########################################################
+
+
+# Global variable for camera
 cap = cv2.VideoCapture(0)
 # let camara calibrate light
 for i in range(10):
@@ -363,6 +397,7 @@ def control():
 
 if __name__ == "__main__":
 
+    waitToBegin()
     # Robot always STARTS facing NORTH, check field in 'information' folder #
 
     # goToTerrines()
