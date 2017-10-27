@@ -64,6 +64,33 @@ void sharpCalibration()
   Serial.println(sharpSC);
 }
 
+void limitsCalibration()
+{
+  Serial.print("LO: ");
+  Serial.print(digitalRead(pinLO));
+  Serial.print("\t");
+  Serial.print("LI: ");
+  Serial.print(digitalRead(pinLI));
+  Serial.print("\t");
+  Serial.print("CU: ");
+  Serial.print(digitalRead(pinLCU));
+  Serial.print("\t");
+  Serial.print("CD: ");
+  Serial.print(digitalRead(pinLCD));
+  Serial.print("\t");
+  Serial.print("L: ");
+  Serial.print(digitalRead(pinLL));
+  Serial.print("\t");
+  Serial.print("R: ");
+  Serial.print(digitalRead(pinLR));
+  Serial.print("\t");
+  Serial.print("LB: ");
+  Serial.print(digitalRead(pinLLB));
+  Serial.print("\t");
+  Serial.print("RB: ");
+  Serial.println(digitalRead(pinLRB));
+}
+
 void tryForwardP()
 {
   //Stay in zero
