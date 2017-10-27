@@ -34,7 +34,7 @@ const byte pinEncoder = 2;
 //-------Sharps--------//
 
 //Front Sharp
-const byte pinSF = A3;
+const byte pinSF = A7;
 
 //Back Sharp
 const byte pinSB = A13;
@@ -87,10 +87,14 @@ const byte pinLCD = 44;
 // Limit up garra
 const byte pinLCU = 46;
 
+//Ordeñador
+const byte pinMotA = 4;
+const byte pinMotB = 6;
+
 //-------Servos-------//
 
 //Claw Servo
-const byte pinServoC = 6;  //4
+const byte pinServoC = 19;  //4
 Servo sClaw;
 
 //Plattaform Servo
@@ -263,12 +267,16 @@ void setup()
   iWest = iSouth + 90;
 
   //Display the finish of the setup
-  writeLCD("START FENIX 2.0", 0, 0);  
+  writeLCD("START FENIX 2.0", 0, 0);
+  sClaw.write(0);//abre la garra
 }
 
 void loop()
 {
-
-  communication();
+  //Trigger ultrasonico en garra pin 14
+  //Echo ultrasonico en garra pin 18
+  upClaw();
+  downClaw();
+  //communication();
 
 }
