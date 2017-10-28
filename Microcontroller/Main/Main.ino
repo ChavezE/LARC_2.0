@@ -278,8 +278,5 @@ void loop()
 {
   //Trigger ultrasonico en garra pin 14
   //Echo ultrasonico en garra pin 18
-  upClaw();
-  downClaw();
-  //communication();
-
+  communication();
 }
