@@ -226,6 +226,9 @@ void setup()
   pinMode(pinMBLB, OUTPUT);
   pinMode(pinPWMBL, OUTPUT);
 
+  pinMode(pinMotA, OUTPUT);
+  pinMode(pinMotB, OUTPUT);
+
   sClaw.attach(pinServoC);
   sPlattaform.attach(pinServoP);
   sCUD.attach(pinServoCUD);
