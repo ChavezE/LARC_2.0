@@ -1,5 +1,3 @@
-#include <Estadisticas.h>
-
 //Get the distance of the sharp given in the parameters
 int getDistance(byte sharp)
 {

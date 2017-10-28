@@ -4,6 +4,13 @@
 #include <LiquidCrystal_I2C.h>
 #include <NewPing.h>
 
+#include <Logger.h>
+#include <SerialLog.h>
+#include <LCDLogger.h>
+#include <LevelLogger.h>
+#include <Estadisticas.h>
+
+
 ///////////////////////
 //        PINS       //
 ///////////////////////

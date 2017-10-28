@@ -1,8 +1,3 @@
-#include <Logger.h> // TODO: Mover includes al Main
-#include <SerialLog.h>
-#include <LCDLogger.h>
-#include <LevelLogger.h>
-
 /**
  * Move the claw to the initial point: in, down, horizontal.
  * It has two modes: fast and slowAndSecure.
