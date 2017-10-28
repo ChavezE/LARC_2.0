@@ -211,6 +211,7 @@ int iEast = 0;
 ///////////////////////
 //  Methods headers  //
 ///////////////////////
+void clawToStartPoint(bool safeAndSlow = false);
 
 
 void setup()
@@ -278,7 +279,7 @@ void setup()
   encoderState = 1;
 
   openClaw();
-  clawToStartPoint(false);
+  clawToStartPoint();
 
   //Get angle for north, south, west and east
   iNorth = getCompass();
