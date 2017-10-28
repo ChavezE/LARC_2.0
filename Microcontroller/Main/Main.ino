@@ -120,17 +120,8 @@ const byte pinUSC_E = 18;
 /////////////////////
 
 //--------Corrections-------//
-//Counts of the encoder for 1 cm --need update
-const unsigned long constEncoder = 5500UL;
-
 //P for turns (it is multiplied)
 const int constPTurn = 1;
-
-//Correction with P
-const long constPCorrect = 30L;
-
-//Correction P in distance
-const long constPDist = 110L;
 
 //P correction Nestor
 const double constPCorrectN = 0.06;
