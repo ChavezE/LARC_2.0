@@ -34,7 +34,7 @@ const byte pinEncoder = 2;
 //-------Sharps--------//
 
 //Front Sharp
-const byte pinSF = A7;
+const byte pinSF = A4;
 
 //Back Sharp
 const byte pinSB = A13;
