@@ -55,7 +55,7 @@ void openClaw()
   //Display function in LCD
   ////lcd.clear();
   // //writeLCD("OPEN CLAW", 0, 0);
-  sClaw.write(0);
+  sClaw.write(5);
   delay(1400);
 }
 
@@ -65,7 +65,7 @@ void closeClaw()
   //Display function in LCD
   ////lcd.clear();
   // //writeLCD("CLOSE CLAW", 0, 0);
-  sClaw.write(45);
+  sClaw.write(30);
   delay(1400);
 }
 
@@ -73,9 +73,9 @@ void upClaw()
 {
   while(digitalRead(pinLCU) == normalState)
   {
-    sCUD.write(98);  
+    sCUD.write(96);  
   }
-  sCUD.write(89);
+  sCUD.write(90);
 }
 
 void downClaw()
@@ -84,7 +84,7 @@ void downClaw()
   {
     sCUD.write(85);  
   }
-  sCUD.write(89);
+  sCUD.write(90);
 }
 
 void verticalClaw()
