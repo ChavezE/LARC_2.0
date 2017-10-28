@@ -208,6 +208,10 @@ int iSouth = 0;
 int iWest = 0;
 int iEast = 0;
 
+///////////////////////
+//  Methods headers  //
+///////////////////////
+
 
 void setup()
 {
