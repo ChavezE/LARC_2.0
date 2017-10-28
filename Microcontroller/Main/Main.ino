@@ -212,6 +212,7 @@ int iEast = 0;
 //  Methods headers  //
 ///////////////////////
 void clawToStartPoint(bool safeAndSlow = false);
+int getDistance(byte sharp, byte cantReads = 7);
 
 
 void setup()
