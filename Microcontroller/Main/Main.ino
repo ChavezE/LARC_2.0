@@ -36,11 +36,14 @@ const byte pinMBLA = 35;
 const byte pinMBLB = 33;
 const byte pinPWMBL = 10;
 
-//Encoder
+//Milker up/down
+const byte pinMotA = 4;
+const byte pinMotB = 6;
+
+//-------Encoder--------//
 const byte pinEncoder = 2;
 
 //-------Sharps--------//
-
 //Front Sharp
 const byte pinSF = A4;
 
@@ -72,7 +75,6 @@ const byte pinSC = A11;
 byte pinSharp[9] = {A3, A4, A1, A2, A0, A5, A6};
 
 //----LimitSwithces----//
-
 const bool normalState = 1;
 
 const byte pinLI = 48;
@@ -95,40 +97,33 @@ const byte pinLCD = 44;
 // Limit up garra
 const byte pinLCU = 46;
 
-//Ordeñador
-const byte pinMotA = 4;
-const byte pinMotB = 6;
-
 //-------Servos-------//
-
-//Claw Servo
+//Close open claw servo
 const byte pinServoC = 19;  //4
-Servo sClaw;
 
-//Plattaform Servo
+//In out Plattaform Servo
 const byte pinServoP = 7;
-Servo sPlattaform;
 
+//Up down claw/plat servo
 const byte pinServoCUD = 8;
-Servo sCUD;
 
+//Rotate claw servo
 const byte pinServoR = 4; //5
-Servo sCT;
 
 //------Ultrasonic----//
+// Ultrasonic of the Claw
 const byte pinUSC_T = 14;
 const byte pinUSC_E = 18;
-
-NewPing ultrasonicClaw(pinUSC_T, pinUSC_E, 200);
 
 /////////////////////
 //    Constants    //
 /////////////////////
 
+//--------Corrections-------//
 //Counts of the encoder for 1 cm --need update
 const unsigned long constEncoder = 5500UL;
 
-//Correction with P for turns (it is multiplied)
+//P for turns (it is multiplied)
 const int constPTurn = 1;
 
 //Correction with P
@@ -140,17 +135,18 @@ const long constPDist = 110L;
 //P correction Nestor
 const double constPCorrectN = 0.06;
 
-//Constants of motors when the robot is treated as a tank
+//Const for encoder. Perfect at 60cm, 30cm fail by -1.5cm, 100cm by 2cm, 150cm by 3cm
+const int encoder30Cm = 4300; // TODO: Better it depends in the distance.
 
+//------Velocities as a tank------//
 //Velocity for motors when moving forward or backwards
 const long velForward = 70L;
 
 //Velocity for motor when turning
 const long velTurn = 60L;
 
+//-------Velocities as a 4x4------//
 /**
- * Constants of the motors when the motor is treated as  a 4x4
- *
  * <=30 ya no jala, no se mueven nada
  * 50= lento, pero se mueven, jala.
  * 100= caminata con prisa
@@ -158,21 +154,21 @@ const long velTurn = 60L;
  * 200= trotando. Ya el torque remarcable
  * 255= trotando rapido. Torque chidote
  */
-//Cosntants of motors velocity
+//Normal velocity
 const int velLF = 158; //158
 const int velLB = 158; //158
 
 const int velRF = 135; //120
 const int velRB = 135; //120
 
-//Constants of motors velocity for going slow
+//Slow velocity
 const int velSlowLF = 115;
 const int velSlowLB = 115;
 
 const int velSlowRF = 98;
 const int velSlowRB = 98;
 
-// Constants of motors for turn
+//-----Velocities for turn----//
 const int velTurnLF = 115;
 const int velTurnLB = 115;
 
@@ -186,8 +182,23 @@ const int velTurnRB = 98;
 //------BNO-------//
 Adafruit_BNO055 bno;
 
-//------Encoder-----//
+//------Servos------//
+//Close open claw servo
+Servo sClaw;
 
+//In out Plattaform Servo
+Servo sPlattaform;
+
+//Up down claw/plat servo
+Servo sCUD;
+
+//Rotate claw servo
+Servo sCT;
+
+//------Ultrasonics----//
+NewPing ultrasonicClaw(pinUSC_T, pinUSC_E, 200);
+
+//------Encoder-------//
 //Steps counted by the encoder
 volatile unsigned long steps = 0;
 
@@ -195,17 +206,17 @@ volatile unsigned long steps = 0;
 //0->Stop   1->Forward    2->Backwards
 volatile byte encoderState = 0;
 
-//Counts of encoder. Perfect at 60cm, 30cm fail by -1.5cm, 100cm by 2cm, 150cm by 3cm
-const int encoder30Cm = 4300; // TODO: Better it depends in the distance.
-
-//LCD
+//--------LCD-------//
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
+
+//--------DIRECTIONS------//
 //Angles of West, East, North, South
 int iNorth = 0;
 int iSouth = 0;
 int iWest = 0;
 int iEast = 0;
+
 
 void setup()
 {
