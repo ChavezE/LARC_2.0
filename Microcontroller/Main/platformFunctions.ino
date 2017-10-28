@@ -35,14 +35,14 @@ void platOut()
   while (digitalRead(pinLO) == normalState)
   {
     //Start moving the plattaform
-    sPlattaform.write(80);
+    sPlattaform.write(83);
   }
   
   platformStop();
 }
 
 void platformStartToOut() {
-  sPlattaform.write(80);
+  sPlattaform.write(83);
 }
 
 void platformStop() {

@@ -2,6 +2,7 @@
 #include <Servo.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
+#include <NewPing.h>
 
 ///////////////////////
 //        PINS       //
@@ -46,7 +47,7 @@ const byte pinSRF = A8;
 //const byte pinSRC;
 
 //Sharp Right Back
-const byte pinSRB = A10;
+const byte pinSRB = A10; 
 
 //Sharp Left Front
 const byte pinSLF = A12;
@@ -102,6 +103,12 @@ Servo sCUD;
 
 const byte pinServoR = 4; //5
 Servo sCT;
+
+//------Ultrasonic----//
+const byte pinUSC_T = 14;
+const byte pinUSC_E = 18;
+
+NewPing ultrasonicClaw(pinUSC_T, pinUSC_E, 200);
 
 /////////////////////
 //    Constants    //
@@ -270,6 +277,6 @@ void setup()
 void loop()
 { 
   
-  communication();
+ communication();
 
 }

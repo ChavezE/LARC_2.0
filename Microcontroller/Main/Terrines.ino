@@ -39,14 +39,21 @@
   * 
   * Note: This leaves the claw up
   *
-  * @return bool if we have the terrine
+  * @return {bool} if we have the terrine
   */
  bool checkHaveTerrine() {
-   const int distMin = 25;
- 
+   const int valorMax = 9;
+
    upClaw();
- 
-   return getDistance(pinSC) < distMin;
+
+   const int cantReads = 6;
+   int sum = 0;
+   for (int x = 1; x <= cantReads; x++) {
+    sum += ultrasonicClaw.ping_cm(); // TODO: Create separate ping function with already average 
+    delay(50);
+   }
+
+   return sum / cantReads < valorMax && sum / cantReads > 0;
  }
  
  /**
@@ -57,29 +64,35 @@
   * @return {bool} false if limit was touch
   */
  bool tryToGrabTerrine() {
-   openClaw();
-   
-   // Claw out until 5cms to the terrine
-   platformStartToOut();
-   int clawDistance = getDistance(pinSC);
-   while (clawDistance > 5 && digitalRead(pinLO) == HIGH) {
-     clawDistance = getDistance(pinSC); 
-   }
- 
-   platformStop();
- 
-   if (digitalRead(pinLO) == HIGH) {
-     
-     // We move it a little more
-     platformStartToOut();
-     
-     // TODO: Medir velocidad para predecir la cant de tiempo que hay que sumar
-     unsigned long timeToStop = millis() + 200;
-     while (digitalRead(pinLO) == HIGH && timeToStop > millis());
-     platformStop();
-   }
-   
-   return digitalRead(pinLO) == HIGH;
+    const int maxValue = 9;
+
+    openClaw();
+    
+    // Claw out until feel the terrine or limit
+    int suma = 0, cant = 0;
+    const int cantToProm = 5;
+
+    platformStartToOut();
+    while (digitalRead(pinLO) == HIGH) {
+      int mientr = ultrasonicClaw.ping_cm();
+      suma += mientr;
+
+      if (++cant == cantToProm) {
+        if (suma / cantToProm < maxValue && suma / cantToProm > 0) {
+          delay(100); // Delay to get nearer to the terrine
+          break;
+        } else {
+          suma = 0;
+          cant = 0;
+        }
+      }
+
+      delay(50);
+    }
+    
+    platformStop();
+
+    return digitalRead(pinLO) == HIGH;
  }
 
 
@@ -108,7 +121,7 @@ void goGrabTerrineBasic(const int northAngle) {
   clawToStartPoint(false);
 
   turnToObjectiveN(gradosObjetivo);
-  backwardNCm(65, false);
+  backwardNCm(75, false);
 
   int mientr1, mientr2, mientr3, mientr4;
   bool grabbed = false;
@@ -131,7 +144,7 @@ void goGrabTerrineBasic(const int northAngle) {
       logger.log("Inside while");
       // Backward until we dont find a "blank space" that is a terrine
       backward(velSlowLF, velSlowLB, velSlowRF, velSlowRB);
-      while (getDistance(pinSLB) > 15 && digitalRead(pinLLB) == HIGH && digitalRead(pinLRB) == HIGH) { // MIENTRAS la distancia es 15 por pista de pruebas
+      while (getDistance(pinSLB) > 35 && digitalRead(pinLLB) == HIGH && digitalRead(pinLRB) == HIGH) { // MIENTRAS la distancia es 10 por pista de pruebas
         backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true); // TODO: Check if it is neccesary to quit only if n times
       }    
       brake();
@@ -146,6 +159,7 @@ void goGrabTerrineBasic(const int northAngle) {
       }
 
       backwardNCm(6, true); // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
+      // TODO: Also implement checking the limits in this backwardNCm
       
       if (tryToGrabTerrine()) {
         logger.log("No tocamos limit sacando plataforma");
@@ -496,3 +510,45 @@ void goGrabTerrines(const int gradosObjetivo)
   logger.log("Grab FINISHED");
 
 }
+
+
+/*
+/////Alternate versions with sharp////
+
+bool checkHaveTerrine() {
+   const int distMin = 25;
+ 
+   upClaw();
+ 
+   return getDistance(pinSC) < distMin;
+}
+
+
+bool tryToGrabTerrine() {
+   openClaw();
+   
+   // Claw out until 5cms to the terrine
+   platformStartToOut();
+   int clawDistance = getDistance(pinSC);
+  while (clawDistance > 5 && digitalRead(pinLO) == HIGH) {
+    clawDistance = getDistance(pinSC); 
+  }
+ 
+  platformStop();
+ 
+  if (digitalRead(pinLO) == HIGH) {
+    
+    // We move it a little more
+    platformStartToOut();
+    
+    // TODO: Medir velocidad para predecir la cant de tiempo que hay que sumar
+    unsigned long timeToStop = millis() + 700;
+    while (digitalRead(pinLO) == HIGH && timeToStop > millis());
+    platformStop();
+  }
+   
+  return digitalRead(pinLO) == HIGH;
+}
+
+
+*/
