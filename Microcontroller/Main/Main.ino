@@ -211,21 +211,23 @@ int iEast = 0;
 
 void setup()
 {
-  //Delay to establish connection with raspberry
   Serial.begin(9600);
-
-  //Check BNO
-  if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_NDOF))
-  {
-    Serial.println("NO BNO");
-  }
-  bno.setExtCrystalUse(true);
 
   //Initialize lcd, turn backlight on and clear the display
   lcd.init();
   lcd.backlight();
   lcd.clear();
 
+  //Check BNO
+  if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_NDOF))
+  {
+    Serial.println("NO BNO, while(1)");
+    writeLCD("NO BNO", 0, 0); 
+    while(1);
+  }
+  bno.setExtCrystalUse(true);
+
+  //Pin mode motors
   pinMode(pinMFRA , OUTPUT);
   pinMode(pinMFRB , OUTPUT);
   pinMode(pinPWMFR, OUTPUT);
@@ -245,54 +247,53 @@ void setup()
   pinMode(pinMotA, OUTPUT);
   pinMode(pinMotB, OUTPUT);
 
+  //Pin mode limits
+  pinMode(pinLI, INPUT);
+  pinMode(pinLO, INPUT);
+  pinMode(pinLCD, INPUT);
+  pinMode(pinLCU, INPUT);
+  
+  pinMode(pinLL, INPUT);
+  pinMode(pinLR, INPUT);
+  pinMode(pinLLB, INPUT);
+  pinMode(pinLRB, INPUT);
+  
+  //Add the encoder
+  pinMode(pinEncoder, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
+
+  //Attach servos
   sClaw.attach(pinServoC);
   sPlattaform.attach(pinServoP);
   sCUD.attach(pinServoCUD);
   sCT.attach(pinServoR);
 
-  pinMode(pinLI, INPUT);
-  pinMode(pinLO, INPUT);
-  pinMode(pinLL, INPUT);
-  pinMode(pinLR, INPUT);
-
-  pinMode(pinEncoder, INPUT_PULLUP);
-  //attachInterrupt(pinEncoder, encoderStep, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
-
+  //Stop motors, encoders and servos
   brake();
-  platIn();
-  openClaw();
+  
   encoderState = 1;
 
-  //Stop plattaform for security
-  //horizontalClaw();
-  //platIn();
-  //downClaw();
-  sPlattaform.write(90);
-  sCUD.write(90);
-  sCT.write(0);
   openClaw();
+  clawToStartPoint(false);
 
-  //Angle for north
+  //Get angle for north, south, west and east
   iNorth = getCompass();
-  //Angle for East
   iEast = iNorth + 90;
-  //Cheack if is not bigger than 360
   if (iEast > 360) {
     iEast -= 360;
   }
-  //Angle for east
   iSouth = iEast + 90;
-  //Angle for south
   iWest = iSouth + 90;
 
   //Display the finish of the setup
-  writeLCD("START FENIX 2.0", 0, 0); 
+  writeLCD("      FENIX 2.0", 0, 0);
+  delay(1000);
+  writeLCD("START FENIX 2.0", 0, 0);
 }
 
 void loop()
 { 
-  
- communication();
 
+  communication();
+ 
 }
