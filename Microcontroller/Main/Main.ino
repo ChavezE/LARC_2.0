@@ -35,7 +35,7 @@ const byte pinEncoder = 2;
 //-------Sharps--------//
 
 //Front Sharp
-const byte pinSF = A3;
+const byte pinSF = A4;
 
 //Back Sharp
 const byte pinSB = A13;
@@ -88,10 +88,14 @@ const byte pinLCD = 44;
 // Limit up garra
 const byte pinLCU = 46;
 
+//Ordeñador
+const byte pinMotA = 4;
+const byte pinMotB = 6;
+
 //-------Servos-------//
 
 //Claw Servo
-const byte pinServoC = 6;  //4
+const byte pinServoC = 19;  //4
 Servo sClaw;
 
 //Plattaform Servo
@@ -229,6 +233,9 @@ void setup()
   pinMode(pinMBLB, OUTPUT);
   pinMode(pinPWMBL, OUTPUT);
 
+  pinMode(pinMotA, OUTPUT);
+  pinMode(pinMotB, OUTPUT);
+
   sClaw.attach(pinServoC);
   sPlattaform.attach(pinServoP);
   sCUD.attach(pinServoCUD);
@@ -244,8 +251,8 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
 
   brake();
-  //platIn();
-  //openClaw();
+  platIn();
+  openClaw();
   encoderState = 1;
 
   //Stop plattaform for security

@@ -3,7 +3,9 @@
 import cv2
 import numpy as np
 import math
-# import serial
+import RPi.GPIO as GPIO
+import sys
+import serial
 import time
 from copy import deepcopy
 import thread
@@ -11,8 +13,8 @@ import thread
 # Roborregos libs
 import sys
 sys.path.insert(0, '../lib/')
-import Larc_vision_2017 as rb
-import communication as com
+#import Larc_vision_2017 as rb
+#import communication as com
 
 '''
 VARIABLES GLOBALES
@@ -33,6 +35,38 @@ mainFrame = []
 clearedMainFrame = []
 maxLenTissue = []
 
+
+############### BOTONS INTERRUPT SETUP ####################
+
+START_PIN = 20
+END_PIN = 4
+LED_PIN = 21
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(START_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(END_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(LED_PIN, GPIO.OUT)
+
+
+# setting up interrupt on pin 3 to exit the abort the program
+def my_callback(channel):
+    print "exiting the program..."
+    GPIO.cleanup()
+    sys.exit()
+# this line waits for the interrupt and calles the function above
+GPIO.add_event_detect(END_PIN, GPIO.FALLING, callback=my_callback, bouncetime=1000)
+
+# loop in this function until begin button is pressed
+def waitToBegin():
+    print "waiting for input"
+    GPIO.output(LED_PIN,1)
+    GPIO.wait_for_edge(START_PIN, GPIO.FALLING)
+    GPIO.output(LED_PIN,0)
+    print "begining program"
+########################################################
+
+
+# Global variable for camera
 cap = cv2.VideoCapture(0)
 # let camara calibrate light
 for i in range(10):
@@ -251,13 +285,10 @@ def triangleToGetInCow():
         if hypotenuse < 0:
                 hypotenuse = hypotenuse * -1
                 print "HYPOTENUSE CORRECTION"
-<<<<<<< HEAD
 
-        #if hypotenuse > 
-=======
         if hypotenuse > 100:
                 hypotenuse = 100
->>>>>>> f06ce6da085173a146bdc3d08d382fa2bcc328ad
+
         
         com.forwardNCm(int(hypotenuse))#com.forwardNCm(int(hypotenuse/2))
 
@@ -336,33 +367,26 @@ def control():
 
 if __name__ == "__main__":
 
+    waitToBegin()
     # Robot always STARTS facing NORTH, check field in 'information' folder #
 
     # goAndGrabTerrine()
 
     # STARTING EXPLORTION HERE #
-<<<<<<< HEAD
-=======
+
     #turnLeft(90)
-    walkingDetecting()
+    #walkingDetecting()
     #triangleToGetInCow()
-    com.getInCow()
-    cv2.waitKey(0)
->>>>>>> f06ce6da085173a146bdc3d08d382fa2bcc328ad
+    #com.getInCow()
+    #cv2.waitKey(0)
+    while True:
+        print "code"
+        pass
 
-    # turnLeft(90)
-    # walkingDetecting()
-    # triangleToGetInCow()
-    # com.getInCow()
 
-    takePicture()
-    getToTank()
-    com.forwardNCm(200)
 
-    # print found
-    # if (found):
-    #     print "ALINEANDOSE"
-    #     alignWithCow()
-    #     print "ALINEADO TERMINADO"
-    #     com.forwardNCm(100)
-    # cv2.destroyAllWindows()
+    # takePicture()
+    # getToTank()
+    # com.forwardNCm(200)
+
+

@@ -150,7 +150,23 @@ void milker()
   milk();
 }
 
+void tryLimits()
+{
+  Serial.print("pinLU: ");
+  Serial.print(digitalRead(pinLU));
+  Serial.print("    ");
+  Serial.print("pinLD: ");
+  Serial.print(digitalRead(pinLD));
+  Serial.print("    ");
+  Serial.print("pinServo: ");
+  Serial.print(digitalRead(pinServo));
+  Serial.print("    ");
+  Serial.print("pinServoAux: ");
+  Serial.println(digitalRead(pinServoAux));
+}
+
 void loop() {
+  //tryLimits();
   milker();
   delay(1000);
 }
