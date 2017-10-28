@@ -213,3 +213,18 @@ void tryServos() {
   Serial.println("Fin.");
   delay(1000);
 }
+
+void tryRobot()
+{
+  //forward(velLF, velLB, velRF, velRB);
+  //Serial.println(getCompass());
+  //delay(800);
+  //limitsCalibration();
+  //platOut();
+  //upClaw();
+  //sClaw.write(0);
+  //sharpCalibration();
+  //analogWrite(pinMotA, 0);
+  //analogWrite(pinMotB, 100);
+}
+
