@@ -87,6 +87,10 @@ const byte pinLCD = 44;
 // Limit up garra
 const byte pinLCU = 46;
 
+//Milker
+const byte pinMotA = 15;
+const byte pinMotB = 16;
+
 //-------Servos-------//
 
 //Claw Servo
@@ -221,6 +225,8 @@ void setup()
   pinMode(pinMBLA, OUTPUT);
   pinMode(pinMBLB, OUTPUT);
   pinMode(pinPWMBL, OUTPUT);
+
+  stopMilker();
 
   sClaw.attach(pinServoC);
   sPlattaform.attach(pinServoP);
