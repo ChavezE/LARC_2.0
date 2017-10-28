@@ -244,8 +244,8 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
 
   brake();
-  //platIn();
-  //openClaw();
+  platIn();
+  openClaw();
   encoderState = 1;
 
   //Stop plattaform for security
@@ -271,7 +271,6 @@ void setup()
 
   //Display the finish of the setup
   writeLCD("START FENIX 2.0", 0, 0);
-  sClaw.write(0);//abre la garra
 }
 
 void loop()
