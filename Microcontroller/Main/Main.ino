@@ -127,14 +127,14 @@ const int constPTurn = 1;
 const double constPCorrectN = 0.06;
 
 //Const for encoder. Perfect at 60cm, 30cm fail by -1.5cm, 100cm by 2cm, 150cm by 3cm
-const int encoder30Cm = 4300; // TODO: Better it depends in the distance.
+const long encoder30Cm = 4300L; // TODO: Better it depends in the distance.
 
 //------Velocities as a tank------//
 //Velocity for motors when moving forward or backwards
-const long velForward = 70L;
+const int velForward = 70;
 
 //Velocity for motor when turning
-const long velTurn = 60L;
+const int velTurn = 60;
 
 //-------Velocities as a 4x4------//
 /**
