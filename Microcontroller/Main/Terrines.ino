@@ -1,8 +1,3 @@
-#include <Logger.h> // TODO: Mover includes al Main
-#include <SerialLog.h>
-#include <LCDLogger.h>
-#include <LevelLogger.h>
-
 /**
  * Move the claw to the initial point: in, down, horizontal.
  * It has two modes: fast and slowAndSecure.
@@ -107,12 +102,12 @@
  */
 void goGrabTerrineBasic(const int northAngle) {
   SerialLog serialLogger;
-  serialLogger.init();
+  //serialLogger.init();
   LCDLogger lcdLogger;
 //  lcdLogger.init();
 
   AbstractLoggable *loggerArray[2]{&serialLogger, &lcdLogger};
-  Logger logger("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 1);
+  Logger logger("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 0);
 
 
   const int gradosObjetivo = northAngle - 90 < 0 ? 
@@ -219,8 +214,8 @@ void goGrabTerrines(const int gradosObjetivo)
   lcdLogger.init();
 
   AbstractLoggable *loggerArray[2]{&serialLogger, &lcdLogger};
-  Logger logger("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 2);
-  Logger loggerOnlySerial("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 1);
+  Logger logger("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 0);
+  Logger loggerOnlySerial("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 0);
 
   logger.log("Grab Terrines");
   delay(2000);
