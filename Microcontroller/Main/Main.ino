@@ -274,7 +274,7 @@ void setup()
 
 void loop()
 {
-
-  communication();
+  upMilker();
+  //communication();
 
 }
