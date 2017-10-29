@@ -370,13 +370,13 @@ if __name__ == "__main__":
     waitToBegin()
     # Robot always STARTS facing NORTH, check field in 'information' folder #
 
-    goAndGrabTerrine()
+    #goAndGrabTerrine()
 
     # STARTING EXPLORTION HERE #
-    com.turnWest()
-    turnRight(90)
+    #com.turnWest()
+    #turnRight(90)
     walkingDetecting()
-    triangleToGetInCow()
+    #triangleToGetInCow()
     com.getInCow()
     #cv2.waitKey(0)
     while True:

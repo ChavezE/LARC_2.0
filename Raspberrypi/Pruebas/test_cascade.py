@@ -21,7 +21,7 @@ while 1:
     for (x,y,w,h) in H:
        
         relation = float(h)/w
-        if relation < 0.77 and relation > 0.74 and (w*h) > 11000 and w > 120:#(w*h) > 11000 and w > 120:
+        if relation < 0.77 and relation > 0.55 and (w*h) > 11000 and w > 120:#(w*h) > 11000 and w > 120:
             cv2.rectangle(img,(x,y),(x+w,y+h),(0,0,255),2)
         else:
             cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)

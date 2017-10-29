@@ -29,17 +29,17 @@ B = float(dstFile.readline().strip("\n"))
 
 print "A", A
 print "B", B
-maxSquareArea = 3000
-minSquareArea = 100
+maxSquareArea = 9000
+minSquareArea = 500
 #Thresh range for cow squares  #si no detecta suficientes cuadros
 minThresh = 5#50
-maxThresh = 200
+maxThresh = 150
 steps = 3
 #Tissue Parameters
 eps = 40
 eps2 = 40
 #HAAR Cascade Sansitivity
-cascadeSensitivity = 70
+cascadeSensitivity = 50
 
 #----HAAR Cascade---
 #importing the trained cascade of cow
@@ -382,7 +382,7 @@ def isThereACow(mainFrame, equalizedFrame):
       del cp2
 
    print "donde with bin values"
-   if len(allSquares) > minNumSquares:
+   if len(allSquares) >= minNumSquares:
       tempAllSquares = deepcopy(allSquares)
       maxLenT = doTissue(tempAllSquares)
       for sqr in maxLenT:
@@ -426,14 +426,14 @@ def detectCow(img):
      #a relationship between h/w
       #if relation < 0.77 and relation > 0.74 and area > 11000 and w > 120: #FOR COW3.XML
       #if relation < 1.2 and relation > 0.98 and area > 11000 and w > 120: #FOR COWTUMMY.XML
-      if relation < 0.7 and relation > 0.55 and area > 11000 and w > 120: #FOR COWTUMMY2.0.XML
+      if relation < 0.77 and relation > 0.55 and area > 11000 and w > 120: #FOR COWTUMMY2.0.XML
          #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
 
          #Expanding the detected area
          xc = x - int(.5 * ampliation)
          yc = y - int(.5 * ampliation)
          hc = h + int((1 * ampliation))
-         wc = w + int((2 * ampliation)) #1.5
+         wc = w + int((3 * ampliation)) #1.5
          
          cowDetected = True
 

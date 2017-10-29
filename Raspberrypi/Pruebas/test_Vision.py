@@ -51,8 +51,9 @@ if __name__ == "__main__":
         if analyse == '1':
                 takePicture()
                 filteredImage = rb.clearImage(mainFrame)
+                gray4Cascade = cv2.cvtColor(mainFrame, cv2.COLOR_BGR2GRAY)
                 this_time = time.time()
-                validation2, filtered = rb.detectCow(filteredImage)
+                validation2, filtered = rb.detectCow(gray4Cascade)
                 validation,maxLenT,_ = rb.isThereACow(mainFrame,filtered)
                 print "HAAR: ",validation2
                 print "ALGORITHM: ",validation, len(maxLenT)
@@ -63,11 +64,12 @@ if __name__ == "__main__":
                     tLevel = rb.getTissueTopLevel(maxLenT)
                     rb.drawCowSquares(mainFrame,200,50,200,tLevel)
                     A,B,theta = rb.ajusteDeCurvas(tLevel)
+                    print "A and B: ",A,B
                     rb.drawSlope(mainFrame,A,B)
                     left,right,up=rb.calcCowLimits(maxLenT)
                     rb.drawLimits(mainFrame,left,right,up)
-                    for sqr in maxLenT:
-                            print sqr.getX(), sqr.getY()
+                    #for sqr in maxLenT:
+                    #   print sqr.getX(), sqr.getY()
 
                 cv2.imshow('im',mainFrame)
                 
