@@ -123,8 +123,9 @@ class cowSquare:
 def clearImage(imgOriginal):
 
    imGray = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2GRAY)
-   imGray = cv2.GaussianBlur(imGray, (3,3), 2)
-   imGray = cv2.equalizeHist(imGray)
+   # imGray = cv2.GaussianBlur(imGray, (3,3), 2) #HAAR showed better result without these two
+   # imGray = cv2.equalizeHist(imGray)
+   
    # imGray = cv2.fastNlMeansDenoisingColored(imgOriginal,None,10,10,7,21)
 
    return imGray

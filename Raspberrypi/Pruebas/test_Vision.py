@@ -51,9 +51,8 @@ if __name__ == "__main__":
         if analyse == '1':
                 takePicture()
                 filteredImage = rb.clearImage(mainFrame)
-                gray4Cascade = cv2.cvtColor(mainFrame, cv2.COLOR_BGR2GRAY)
                 this_time = time.time()
-                validation2, filtered = rb.detectCow(gray4Cascade)
+                validation2, filtered = rb.detectCow(filteredImage)
                 validation,maxLenT,_ = rb.isThereACow(mainFrame,filtered)
                 print "HAAR: ",validation2
                 print "ALGORITHM: ",validation, len(maxLenT)
