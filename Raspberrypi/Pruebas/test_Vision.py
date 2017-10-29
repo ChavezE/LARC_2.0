@@ -39,30 +39,6 @@ def takePicture():
 		print ("There is an error with the camera")
 	return goodFrm
 
-def getCowXcenter(left,right):
-        center = (left+right)/2
-        cv2.line(mainFrame,(center,0),(center,480),(0,255,255),1)
-        return center
-
-def getXCenterFrame():
-        center = (mainFrame.shape[1])/2
-        cv2.line(mainFrame,(center,0),(center,480),(255,255,0),1)
-        return center
-
-def getLimits(maxLenT):
-        left,right,up=rb.calcCowLimits(maxLenT)
-        drawLimits(left,right,up)
-        return left,right,up
-
-def drawLimits(left,right,y):
-        global mainFrame
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.line(mainFrame,(left,0),(left,480),(255,0,0),3)
-        cv2.line(mainFrame,(right,0),(right,480),(255,0,0),3)
-        cv2.line(mainFrame,(0,y),(640,y),(255,0,0),3)
-        # cv2.putText(mainFrame,("diff L: " + str(left)),(30,20), font, 0.8,(0,0,255),1,cv2.LINE_AA)
-        # cv2.putText(mainFrame,("diff R: " + str(640-right)),(30,50), font, 0.8,(0,0,255),1,cv2.LINE_AA)
-        # cv2.putText(mainFrame,("diff Top: " + str(y)),(30,80), font, 0.8,(0,0,255),1,cv2.LINE_AA)
 
 '''
     MAIN

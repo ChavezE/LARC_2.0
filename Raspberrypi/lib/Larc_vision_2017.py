@@ -33,13 +33,13 @@ maxSquareArea = 3000
 minSquareArea = 100
 #Thresh range for cow squares  #si no detecta suficientes cuadros
 minThresh = 5#50
-maxThresh = 255
+maxThresh = 200
 steps = 3
 #Tissue Parameters
 eps = 40
 eps2 = 40
 #HAAR Cascade Sansitivity
-cascadeSensitivity = 100
+cascadeSensitivity = 70
 
 #----HAAR Cascade---
 #importing the trained cascade of cow
@@ -349,7 +349,7 @@ def makeTissue(tActSqr,tAllSqrs,tissue,eps,lvl):
 def isThereACow(mainFrame, equalizedFrame):
    maxLenT = [] # maximumLenghtTissue
    allSquares = [] # Store in each iteration of the binarization the squares found in the image
-   minNumSquares = 4
+   minNumSquares = 3
    # iterate to get max squares from the image
    # best way so far to counter ligh strokes
 
@@ -400,7 +400,7 @@ def isThereACow(mainFrame, equalizedFrame):
 def detectCow(img):
    blackTemp = whiteFrame.copy()#whiteFrame.copy()#blackFrame.copy()
 
-   cows = cowCascade.detectMultiScale(img, 1.3, cascadeSensitivity)
+   cows = cowCascade.detectMultiScale(img, 1.2, cascadeSensitivity)
 
    xc,yc,hc,wc = 0,0,0,0
    individualCow = []
@@ -425,7 +425,8 @@ def detectCow(img):
      #This condition is also calibratable, by determining
      #a relationship between h/w
       #if relation < 0.77 and relation > 0.74 and area > 11000 and w > 120: #FOR COW3.XML
-      if relation < 1.2 and relation > 0.98 and area > 11000 and w > 120: #FOR COWTUMMY.XML
+      #if relation < 1.2 and relation > 0.98 and area > 11000 and w > 120: #FOR COWTUMMY.XML
+      if relation < 0.7 and relation > 0.55 and area > 11000 and w > 120: #FOR COWTUMMY2.0.XML
          #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
 
          #Expanding the detected area
@@ -480,8 +481,12 @@ def ajusteDeCurvas(cSquares):
       sXi2 = sum(Xi2)
 
       # Now its time to compute A and B
-      A = float((n*sXiYi)-(sXi*sYi))/((n*sXi2)-(pow(sXi,2)))
-      B = float(((sXi2*sYi)-(sXiYi*sXi))/((n*sXi2)-(pow(sXi,2))))
+      if (n*sXi2) == pow(sXi,2):
+         A = 0
+         B = 0
+      else:
+         A = float((n*sXiYi)-(sXi*sYi))/((n*sXi2)-(pow(sXi,2)))
+         B = float(((sXi2*sYi)-(sXiYi*sXi))/((n*sXi2)-(pow(sXi,2))))
       theta = float(math.atan(A))
       theta = float(theta*180/math.pi)
 
@@ -627,8 +632,47 @@ def getTissueTopLevel(tissue):
          levelTissue = []
          levelTissue.append(tissue[x])
 
+   filtered,_,_ = filterTopLevel(levelTissue)
 
-   return levelTissue
+   return levelTissue #filtered #levelTissue
+
+
+def filterTopLevel(tLevel):
+   filteredLevel = []
+   '''
+   ytLevel = []
+
+   for sqr in tLevel:
+      ytLevel.append(sqr.getY())
+
+   npYtLevel = np.array(ytLevel)                  #aproach to filter y distance throught stdev
+
+   mean = np.mean(npYtLevel)
+   std = np.std(npYtLevel)
+
+   for sqr in tLevel:
+      if sqr.getY() < (mean+std) and sqr.getY() > (mean-std):
+         filteredLevel.append(sqr)
+
+   '''
+
+   #filter for area with stdev
+   areas = []
+   for sqr in tLevel:
+      areas.append(sqr.getArea())
+
+   npAreas = np.array(areas)
+   mean = np.mean(npAreas)
+   std = np.std(npAreas)
+   std = std * 1.5
+
+   for sqr in tLevel:
+      if sqr.getArea() < (mean+std) and sqr.getArea() > (mean-std):
+         filteredLevel.append(sqr)
+
+
+
+   return filteredLevel,mean, std   
 #############################################
 ##-----------ALLINGMENT AND LIMITS-----------##
 #############################################
