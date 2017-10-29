@@ -281,13 +281,9 @@ def triangleToGetInCow():
         if hypotenuse < 0:
                 hypotenuse = hypotenuse * -1
                 print "HYPOTENUSE CORRECTION"
-<<<<<<< HEAD
 
-        #if hypotenuse > 
-=======
         if hypotenuse > 100:
                 hypotenuse = 100
->>>>>>> f06ce6da085173a146bdc3d08d382fa2bcc328ad
         
         com.forwardNCm(int(hypotenuse))#com.forwardNCm(int(hypotenuse/2))
 
@@ -372,14 +368,12 @@ if __name__ == "__main__":
     # getTerrines()
 
     # STARTING EXPLORTION HERE #
-<<<<<<< HEAD
-=======
+
     #turnLeft(90)
     walkingDetecting()
     #triangleToGetInCow()
     com.getInCow()
     cv2.waitKey(0)
->>>>>>> f06ce6da085173a146bdc3d08d382fa2bcc328ad
 
     # turnLeft(90)
     # walkingDetecting()
