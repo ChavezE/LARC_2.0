@@ -13,8 +13,8 @@ import thread
 # Roborregos libs
 import sys
 sys.path.insert(0, '../lib/')
-#import Larc_vision_2017 as rb
-#import communication as com
+import Larc_vision_2017 as rb
+import communication as com
 
 '''
 VARIABLES GLOBALES
@@ -370,14 +370,14 @@ if __name__ == "__main__":
     waitToBegin()
     # Robot always STARTS facing NORTH, check field in 'information' folder #
 
-    # goAndGrabTerrine()
+    goAndGrabTerrine()
 
     # STARTING EXPLORTION HERE #
-
-    #turnLeft(90)
-    #walkingDetecting()
-    #triangleToGetInCow()
-    #com.getInCow()
+    com.turnWest()
+    turnRight(90)
+    walkingDetecting()
+    triangleToGetInCow()
+    com.getInCow()
     #cv2.waitKey(0)
     while True:
         print "code"

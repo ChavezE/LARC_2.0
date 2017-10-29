@@ -43,7 +43,7 @@ cascadeSensitivity = 100
 
 #----HAAR Cascade---
 #importing the trained cascade of cow
-cowCascade = cv2.CascadeClassifier('../Cascades/COWTUMMY.xml')
+cowCascade = cv2.CascadeClassifier('../Cascades/COWTUMMY2.0.xml')
 #using a black frame to filter
 blackFrame = np.zeros((480,640), np.uint8)
 whiteFrame = np.ones((480,640), np.uint8)
