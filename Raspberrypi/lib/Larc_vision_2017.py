@@ -349,7 +349,7 @@ def makeTissue(tActSqr,tAllSqrs,tissue,eps,lvl):
 def isThereACow(mainFrame, equalizedFrame):
    maxLenT = [] # maximumLenghtTissue
    allSquares = [] # Store in each iteration of the binarization the squares found in the image
-   minNumSquares = 4
+   minNumSquares = 3
    # iterate to get max squares from the image
    # best way so far to counter ligh strokes
 
