@@ -7,10 +7,17 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
   int iAux = iWant - iAm;
 
   //Reset vel to default
-  leftFront = bSlow == false ? velLF : velSlowLF;
-  leftBack = bSlow == false ? velLB : velSlowLB;
-  rightFront = bSlow == false ? velRF : velSlowRF;
-  rightBack = bSlow == false ? velRB : velSlowRB;
+  if (bSlow) {
+    leftFront = velSlowLF;
+    leftBack = velSlowLB;
+    rightFront = velSlowRF;
+    rightBack = velSlowRB;
+  } else {
+    leftFront = velLF;
+    leftBack = velLB;
+    rightFront = velRF;
+    rightBack = velRB;
+  }
 
   //Debug info
   // Serial.print("iAm: ");
@@ -121,10 +128,17 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
   int iAux = iWant - iAm;
 
   //Reset vel to default
-  leftFront = bSlow == false ? velLF : velSlowLF;
-  leftBack = bSlow == false ? velLB : velSlowLB;
-  rightFront = bSlow == false ? velRF : velSlowRF;
-  rightBack = bSlow == false ? velRB : velSlowRB;
+  if (bSlow) {
+    leftFront = velSlowLF;
+    leftBack = velSlowLB;
+    rightFront = velSlowRF;
+    rightBack = velSlowRB;
+  } else {
+    leftFront = velLF;
+    leftBack = velLB;
+    rightFront = velRF;
+    rightBack = velRB;
+  }
 
   //Change speed if needed
   if (iAux > -180 && iAux < 180)
