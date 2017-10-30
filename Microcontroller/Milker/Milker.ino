@@ -121,11 +121,11 @@ void openMilker()
   */
   Serial.println("listo");
   //Wait for the aux servo to get out
-  delay(80);
+  //delay(80);
   //Stop out servo
   sMilker2.write(90);
   //wait for the principal servo to get out
-  delay(400);
+  //delay(400);
   //Stop principal servo
   sMilker.write(90);
 }
@@ -139,7 +139,7 @@ void milk()
   sMilker.write(70);
   //Times the glove has been milked
   int iCounter = 0;
-  while (iCounter < 3)
+  while (iCounter < 8)
   {
     //If the milker is pressing the glove
     if (digitalRead(pinLD) == 0)
@@ -171,10 +171,20 @@ void milker()
   //delay(1000);
   //Open upper part of milker
   openMilker();
+  delay(4000);
+  sMilker2.write(140);
+  sMilker.write(180);
+  delay(80);
+  //Stop out servo
+  sMilker2.write(90);
+  //wait for the principal servo to get out
+  delay(400);
+  //Stop principal servo
+  sMilker.write(90);
   Serial.println("Guante adentro");
   //delay(1000);
   //Milk the glove
-  //milk();
+  milk();
 }
 
 void tryLimits()
