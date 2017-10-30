@@ -128,18 +128,18 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
       //Turn right
       rightFront += abs(iAux) / constPCorrectN;
       rightBack += abs(iAux) / constPCorrectN;
-      //Not needed
-      // leftFront -= abs(iAux) / constPCorrect;
-      // leftBack -= abs(iAux) / constPCorrect;
+
+      leftFront -= abs(iAux) / constPCorrectN;
+      leftBack -= abs(iAux) / constPCorrectN;
     }
     else if (iWant < iAm)
     {
       //Turn left
       leftFront += abs(iAux) / constPCorrectN;
       leftBack += abs(iAux) / constPCorrectN;
-      //Not needed
-      // rightFront -= abs(iAux) / constPCorrect;
-      // rightBack -= abs(iAux) / constPCorrect;
+      
+      rightFront -= abs(iAux) / constPCorrectN;
+      rightBack -= abs(iAux) / constPCorrectN;
     }
   }
   else if (iAux > 180 || iAux < -180)
@@ -151,9 +151,9 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
       //Turn left
       leftFront += abs(iA) / constPCorrectN;
       leftBack += abs(iA) / constPCorrectN;
-      //Not needed
-      // rightFront -= abs(iA) / constPCorrect;
-      // rightBack -= abs(iA) / constPCorrect;
+      
+      rightFront -= abs(iA) / constPCorrectN;
+      rightBack -= abs(iA) / constPCorrectN;
     }
     else if (iAux < 0)
     {
@@ -162,9 +162,9 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
       //Turn right
       rightFront += abs(iA) / constPCorrectN;
       rightBack += abs(iA) / constPCorrectN;
-      //Not needed
-      // leftFront -= abs(iA) / constPCorrect;
-      // leftBack -= abs(iA) / constPCorrect;
+      
+      leftFront -= abs(iA) / constPCorrectN;
+      leftBack -= abs(iA) / constPCorrectN;
     }
   }
   setVelocity(leftFront, leftBack, rightFront, rightBack);
