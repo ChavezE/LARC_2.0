@@ -39,10 +39,6 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
       // Serial.print("\t");
       // Serial.print("Mayor: ");
       // Serial.print(abs(iAux) / constPCorrectN);
-
-      //Not needed
-      // rightFront -= abs(iAux) / constPCorrectN;
-      // rightBack -= abs(iAux) / constPCorrectN;
     }
     else if (iWant < iAm)
     {
@@ -56,10 +52,6 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
       // Serial.print("\t");
       // Serial.print("Menor: ");
       // Serial.print(abs(iAux) / constPCorrectN);
-
-      //Not needed
-      // leftFront -= abs(iAux) / constPCorrectN;
-      // leftBack -= abs(iAux) / constPCorrectN;
     }
   }
   else if (iAux > 180 || iAux < -180)
@@ -84,10 +76,6 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
 
       leftFront -= abs(iA) / constPCorrectN;
       leftBack -= abs(iA) / constPCorrectN;
-      
-      //Not needed
-      // leftFront -= abs(iA) / constPCorrectN;
-      // leftBack -= abs(iA) / constPCorrectN;
     }
     else if (iAux < 0)
     {
@@ -105,12 +93,8 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
       leftFront += abs(iA) / constPCorrectN;
       leftBack += abs(iA) / constPCorrectN;
 
-      rightFront -= abs(iAux) / constPCorrectN;
-      rightBack -= abs(iAux) / constPCorrectN;
-      
-      //Not needed
-      // rightFront -= abs(iA) / constPCorrectN;
-      // rightBack -= abs(iA) / constPCorrectN;
+      rightFront -= abs(iAux) / constPCorrectN; // TODO: Should it be instead of iAux a iA?: rightFront -= abs(iA) / constPCorrectN, rightBack -= abs(iA) / constPCorrectN;
+      rightBack -= abs(iAux) / constPCorrectN; // - - -
     }
   }
   // Serial.println();
