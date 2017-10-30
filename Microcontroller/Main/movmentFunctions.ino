@@ -93,8 +93,8 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
       leftFront += abs(iA) / constPCorrectN;
       leftBack += abs(iA) / constPCorrectN;
 
-      rightFront -= abs(iAux) / constPCorrectN; // TODO: Should it be instead of iAux a iA?: rightFront -= abs(iA) / constPCorrectN, rightBack -= abs(iA) / constPCorrectN;
-      rightBack -= abs(iAux) / constPCorrectN; // - - -
+      rightFront -= abs(iA) / constPCorrectN;
+      rightBack -= abs(iA) / constPCorrectN;
     }
   }
   // Serial.println();
