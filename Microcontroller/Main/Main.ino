@@ -123,8 +123,8 @@ const byte pinUSC_E = 18;
 //P for turns (it is multiplied)
 const int constPTurn = 1;
 
-//P for forward and backward
-const double constPCorrect = 0.06;
+//P for forward and backward (it is multiplied)
+const int constPCorrect = 17; // 1/0.06
 
 //Const for encoder. Perfect at 60cm, 30cm fail by -1.5cm, 100cm by 2cm, 150cm by 3cm
 const long encoder30Cm = 4300L; // TODO: Better it depends in the distance.
@@ -300,6 +300,6 @@ void setup()
 void loop()
 { 
 
-  communication();
+ communication();
  
 }

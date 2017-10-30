@@ -36,7 +36,7 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
     // Serial.print("Normal");
     if (iWant > iAm)
     {
-      const int toAdd = abs(iAux) / constPCorrect; // TODO: Change the operation (for the sign) instead of using the abs()
+      const int toAdd = abs(iAux) * constPCorrect; // TODO: Change the operation (for the sign) instead of using the abs()
 
       //Turn right
       leftFront += toAdd;
@@ -51,7 +51,7 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
     }
     else if (iWant < iAm)
     {
-      const int toAdd = abs(iAux) / constPCorrect;
+      const int toAdd = abs(iAux) * constPCorrect;
 
       //Turn left
       rightFront += toAdd;
@@ -73,7 +73,7 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
     {
       //Ther shouldn't be any operation inside abs
       int iA = iAux - 360;
-      const int toAdd = abs(iA) / constPCorrect;
+      const int toAdd = abs(iA) * constPCorrect;
 
       // Serial.print("\t");
       // Serial.print("iA: ");
@@ -93,7 +93,7 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
     {
       //Ther shouldn't be any operation inside abs
       int iA = iAux + 360;
-      const int toAdd = abs(iA) / constPCorrect;
+      const int toAdd = abs(iA) * constPCorrect;
 
       // Serial.print("\t");
       // Serial.print("iA: ");
@@ -145,7 +145,7 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
   {
     if (iWant > iAm)
     {
-      const int toAdd = abs(iAux) / constPCorrect;
+      const int toAdd = abs(iAux) * constPCorrect;
 
       //Turn right
       rightFront += toAdd;
@@ -156,7 +156,7 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
     }
     else if (iWant < iAm)
     {
-      const int toAdd = abs(iAux) / constPCorrect;
+      const int toAdd = abs(iAux) * constPCorrect;
 
       //Turn left
       leftFront += toAdd;
@@ -172,7 +172,7 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
     {
       //Ther shouldn't be any operation inside abs
       int iA = iAux - 360;
-      const int toAdd = abs(iA) / constPCorrect;
+      const int toAdd = abs(iA) * constPCorrect;
 
       //Turn left
       leftFront += toAdd;
@@ -185,7 +185,7 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
     {
       //Ther shouldn't be any operation inside abs
       int iA = iAux + 360;
-      const int toAdd = abs(iA) / constPCorrect;
+      const int toAdd = abs(iA) * constPCorrect;
 
       //Turn right
       rightFront += toAdd;
