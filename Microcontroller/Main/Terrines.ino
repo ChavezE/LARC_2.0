@@ -6,7 +6,7 @@
  * 
  * NOTE: This method doesnt do anything with close/open claw.
  *
- * @param safeAndSlow {bool}
+ * @param safeAndSlow {bool=false}
  *
  */
  void clawToStartPoint(bool safeAndSlow) {
