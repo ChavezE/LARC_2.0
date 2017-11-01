@@ -89,6 +89,8 @@ const byte pinLLB = 34;
 
 const byte pinLRB = 32;
 
+const byte pinLMD = 28;
+
 //Para los limits de arriba y abajo del ordeñador los pins 36 y 38
 
 // Limit down garra
@@ -212,6 +214,8 @@ int iEast = 0;
 //  Methods headers  //
 ///////////////////////
 
+const byte iMilkerA = 36;
+const byte iMilkerB = 17;
 
 void setup()
 {
@@ -256,15 +260,18 @@ void setup()
   pinMode(pinLO, INPUT);
   pinMode(pinLCD, INPUT);
   pinMode(pinLCU, INPUT);
-  
+
   pinMode(pinLL, INPUT);
   pinMode(pinLR, INPUT);
   pinMode(pinLLB, INPUT);
   pinMode(pinLRB, INPUT);
-  
+
   //Add the encoder
   pinMode(pinEncoder, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
+
+  pinMode(iMilkerA, OUTPUT);
+  pinMode(iMilkerB, OUTPUT);
 
   //Attach servos
   sClaw.attach(pinServoC);
