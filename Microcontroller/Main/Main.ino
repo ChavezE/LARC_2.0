@@ -36,10 +36,6 @@ const byte pinMBLA = 35;
 const byte pinMBLB = 33;
 const byte pinPWMBL = 10;
 
-//Milker up/down
-const byte pinMotA = 4;
-const byte pinMotB = 6;
-
 //-------Encoder--------//
 const byte pinEncoder = 2;
 
@@ -110,7 +106,7 @@ const byte pinServoP = 7;
 const byte pinServoCUD = 8;
 
 //Rotate claw servo
-const byte pinServoR = 4; //5
+const byte pinServoR = 0; //5
 
 //------Ultrasonic----//
 // Ultrasonic of the Claw
@@ -216,8 +212,17 @@ int iEast = 0;
 void clawToStartPoint(bool safeAndSlow = false);
 int getDistance(byte sharp, byte cantReads = 7);
 
+//Communication with milker
 const byte iMilkerA = 36;
 const byte iMilkerB = 17;
+
+//Milker up/down
+const byte pinMotA = 15;
+const byte pinMotB = 16;
+
+//Pins of extractor
+const byte pinExtractorA = 6;
+const byte pinExtractorB = 4;
 
 void setup()
 {
@@ -267,6 +272,7 @@ void setup()
   pinMode(pinLR, INPUT);
   pinMode(pinLLB, INPUT);
   pinMode(pinLRB, INPUT);
+  pinMode(pinLMD, INPUT);
 
   //Add the encoder
   pinMode(pinEncoder, INPUT_PULLUP);
@@ -274,6 +280,9 @@ void setup()
 
   pinMode(iMilkerA, OUTPUT);
   pinMode(iMilkerB, OUTPUT);
+
+  pinMode(pinExtractorA, OUTPUT);
+  pinMode(pinExtractorB, OUTPUT);
 
   //Attach servos
   sClaw.attach(pinServoC);
