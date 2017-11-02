@@ -29,3 +29,16 @@ void stopExtract()
   digitalWrite(pinExtractorA, 0);
   digitalWrite(pinExtractorB, 0);
 }
+
+void moveMilkerDown()
+{
+  milkerDown();
+  while(digitalRead(pinLMD) == normalState);
+  milkerStop();
+}
+
+void moveMilkerUp()
+{
+  milkerUp();
+  delay(35000);
+}
