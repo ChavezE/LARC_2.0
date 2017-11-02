@@ -11,10 +11,10 @@ from copy import deepcopy
 import thread
 
 # Roborregos libs
-import sys
-sys.path.insert(0, '../lib/')
+sys.path.insert(0,'../lib')
+
 import Larc_vision_2017 as rb
-#import communication as com
+import communication as com
 
 '''
 VARIABLES GLOBALES
@@ -67,10 +67,10 @@ def waitToBegin():
 
 
 # Global variable for camera
-cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture(0)
 # let camara calibrate light
-for i in range(10):
-        cap.read()
+# for i in range(10):
+#         cap.read()
 
 '''
     METODOS
@@ -378,8 +378,8 @@ if __name__ == "__main__":
     # STARTING EXPLORTION HERE #
     #com.turnWest()
     #turnRight(90)
-    walkingDetecting()
-    com.getInCow()
+    #walkingDetecting()
+    #com.getInCow()
     #cv2.waitKey(0)
     while True:
         print "code"
