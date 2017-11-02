@@ -1,4 +1,3 @@
-<<<<<<< current
 #include <Adafruit_BNO055.h>
 #include <Servo.h>
 #include <Wire.h>
