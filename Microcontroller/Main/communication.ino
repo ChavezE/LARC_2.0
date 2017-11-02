@@ -147,6 +147,21 @@ void communication() {
         turnLeft(velLF, velLB, velRF, velRB);
         Serial.write('1');
         break;
+
+      case 't':
+        goToStart();
+        Serial.write('1');
+        break;
+
+      case 'u':
+        moveMilkerUp();
+        Serial.write('1');
+        break;
+
+      case 'v':
+        moveMilkerDown();
+        Serial.write('1');
+        break;
     }
     ////writeLCD("C", 15, 0);
   }
