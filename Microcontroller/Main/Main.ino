@@ -119,10 +119,10 @@ const byte pinUSC_E = 18;
 
 //--------Corrections-------//
 //P for turns (it is multiplied)
-const int constPTurn = 1;
+const int constPTurn = 3;
 
 //P for forward and backward (it is multiplied)
-const int constPCorrect = 17; // 1/0.06
+const int constPCorrect = 19; // 1/0.06
 
 //Const for encoder. Perfect at 60cm, 30cm fail by -1.5cm, 100cm by 2cm, 150cm by 3cm
 const long encoder30Cm = 4300L; // TODO: Better it depends in the distance.
@@ -158,11 +158,11 @@ const int velSlowRF = 98;
 const int velSlowRB = 98;
 
 //-----Velocities for turn----//
-const int velTurnLF = 115;
-const int velTurnLB = 115;
+const int velTurnLF = 175;
+const int velTurnLB = 140;
 
-const int velTurnRF = 98;
-const int velTurnRB = 98;
+const int velTurnRF = 150;
+const int velTurnRB = 165;
 
 /////////////////////
 //    Variables    //
@@ -316,6 +316,6 @@ void setup()
 void loop()
 { 
 
- communication();
+communication();
  
 }
