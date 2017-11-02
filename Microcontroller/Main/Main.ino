@@ -36,10 +36,6 @@ const byte pinMBLA = 35;
 const byte pinMBLB = 33;
 const byte pinPWMBL = 10;
 
-//Milker up/down
-const byte pinMotA = 4;
-const byte pinMotB = 6;
-
 //-------Encoder--------//
 const byte pinEncoder = 2;
 
@@ -89,6 +85,8 @@ const byte pinLLB = 34;
 
 const byte pinLRB = 32;
 
+const byte pinLMD = 38;
+
 //Para los limits de arriba y abajo del ordeñador los pins 36 y 38
 
 // Limit down garra
@@ -108,7 +106,7 @@ const byte pinServoP = 7;
 const byte pinServoCUD = 8;
 
 //Rotate claw servo
-const byte pinServoR = 4; //5
+const byte pinServoR = 0; //5
 
 //------Ultrasonic----//
 // Ultrasonic of the Claw
@@ -121,10 +119,10 @@ const byte pinUSC_E = 18;
 
 //--------Corrections-------//
 //P for turns (it is multiplied)
-const int constPTurn = 1;
+const int constPTurn = 3;
 
-//P correction Nestor
-const double constPCorrectN = 0.06;
+//P for forward and backward (it is multiplied)
+const int constPCorrect = 19; // 1/0.06
 
 //Const for encoder. Perfect at 60cm, 30cm fail by -1.5cm, 100cm by 2cm, 150cm by 3cm
 const long encoder30Cm = 4300L; // TODO: Better it depends in the distance.
@@ -160,11 +158,11 @@ const int velSlowRF = 98;
 const int velSlowRB = 98;
 
 //-----Velocities for turn----//
-const int velTurnLF = 115;
-const int velTurnLB = 115;
+const int velTurnLF = 175;
+const int velTurnLB = 140;
 
-const int velTurnRF = 98;
-const int velTurnRB = 98;
+const int velTurnRF = 150;
+const int velTurnRB = 165;
 
 /////////////////////
 //    Variables    //
@@ -211,7 +209,20 @@ int iEast = 0;
 ///////////////////////
 //  Methods headers  //
 ///////////////////////
+void clawToStartPoint(bool safeAndSlow = false);
+int getDistance(byte sharp, byte cantReads = 7);
 
+//Communication with milker
+const byte iMilkerA = 36;
+const byte iMilkerB = 17;
+
+//Milker up/down
+const byte pinMotA = 15;
+const byte pinMotB = 16;
+
+//Pins of extractor
+const byte pinExtractorA = 6;
+const byte pinExtractorB = 4;
 
 void setup()
 {
@@ -256,15 +267,22 @@ void setup()
   pinMode(pinLO, INPUT);
   pinMode(pinLCD, INPUT);
   pinMode(pinLCU, INPUT);
-  
+
   pinMode(pinLL, INPUT);
   pinMode(pinLR, INPUT);
   pinMode(pinLLB, INPUT);
   pinMode(pinLRB, INPUT);
-  
+  pinMode(pinLMD, INPUT);
+
   //Add the encoder
   pinMode(pinEncoder, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(pinEncoder), encoderStep, CHANGE);
+
+  pinMode(iMilkerA, OUTPUT);
+  pinMode(iMilkerB, OUTPUT);
+
+  pinMode(pinExtractorA, OUTPUT);
+  pinMode(pinExtractorB, OUTPUT);
 
   //Attach servos
   sClaw.attach(pinServoC);
@@ -278,7 +296,7 @@ void setup()
   encoderState = 1;
 
   openClaw();
-  clawToStartPoint(false);
+  clawToStartPoint();
 
   //Get angle for north, south, west and east
   iNorth = getCompass();
@@ -298,6 +316,6 @@ void setup()
 void loop()
 { 
 
-  communication();
+communication();
  
 }
