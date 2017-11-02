@@ -382,6 +382,51 @@ def left():
             print("False")
             return False
 
+def goToStart():
+    print("goToStart")
+    #Tell the to go to start
+    arduino.write("t")
+    #Wait for arduino response
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
+
+def moveMilkerUp():
+    print("moveMilkerUp")
+    #Tell the to move Milker Up
+    arduino.write("u")
+    #Wait for arduino response
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
+
+def moveMilkerDown():
+    print("moveMilkerDown")
+    #Tell the to move Milker Down
+    arduino.write("v")
+    #Wait for arduino response
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
+
 #Control the robot with the keyboard
 def controlRobot():
     print "Control Robot"
