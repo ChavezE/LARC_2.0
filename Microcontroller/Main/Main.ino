@@ -76,7 +76,7 @@ const bool normalState = 1;
 
 const byte pinLI = 48;
 
-const byte pinLO = 42;
+const byte pinLO = 36;
 
 const byte pinLR = 40;
 
