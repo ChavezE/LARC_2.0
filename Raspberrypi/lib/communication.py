@@ -397,25 +397,10 @@ def goToStart():
             print("False")
             return False
 
-def moveMilkerUp():
-    print("moveMilkerUp")
+def milk():
+    print("milk")
     #Tell the to move Milker Up
     arduino.write("u")
-    #Wait for arduino response
-    while(arduino.inWaiting() <= 0):
-            pass;
-    #Completed
-    if(arduino.read() == "1"):
-            print("True")
-            return True
-    else:
-            print("False")
-            return False
-
-def moveMilkerDown():
-    print("moveMilkerDown")
-    #Tell the to move Milker Down
-    arduino.write("v")
     #Wait for arduino response
     while(arduino.inWaiting() <= 0):
             pass;
@@ -450,7 +435,7 @@ def controlRobot():
                         if event.type == pygame.KEYUP and event.key == pygame.K_s:
                             brake()
                             cont = False
-                            
+
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_a:
                 left()
                 cont = True
@@ -459,7 +444,7 @@ def controlRobot():
                         if event.type == pygame.KEYUP and event.key == pygame.K_a:
                             brake()
                             cont = False
-                            
+
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_d:
                 right()
                 cont = True
@@ -468,7 +453,7 @@ def controlRobot():
                         if event.type == pygame.KEYUP and event.key == pygame.K_d:
                             brake()
                             cont = False
-                            
+
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_c:
                 control = False
             else:

@@ -42,3 +42,11 @@ void moveMilkerUp()
   milkerUp();
   delay(15000);
 }
+
+void milk()
+{
+  moveMilkerUp();
+  delay(1000);
+  //Put milker functions here
+  moveMilkerDown();
+}

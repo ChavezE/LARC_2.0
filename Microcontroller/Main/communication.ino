@@ -154,12 +154,7 @@ void communication() {
         break;
 
       case 'u':
-        moveMilkerUp();
-        Serial.write('1');
-        break;
-
-      case 'v':
-        moveMilkerDown();
+        milk();
         Serial.write('1');
         break;
     }
