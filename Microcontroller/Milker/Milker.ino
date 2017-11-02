@@ -92,7 +92,7 @@ void getReady()
 void openMilker()
 {
   //Separate the magnet
-  sMilker2.write(140);
+  sMilker2.write(180);
   sMilker.write(180);
   delay(200);
   //while (digitalRead(pinLServo) == 1 || digitalRead(pinLServoAux) == 1);
