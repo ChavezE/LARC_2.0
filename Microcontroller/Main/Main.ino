@@ -213,7 +213,7 @@ void clawToStartPoint(bool safeAndSlow = false);
 int getDistance(byte sharp, byte cantReads = 7);
 
 //Communication with milker
-const byte iMilkerA = 36;
+const byte iMilkerA = 0;
 const byte iMilkerB = 17;
 
 //Milker up/down
