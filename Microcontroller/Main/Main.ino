@@ -85,7 +85,7 @@ const byte pinLLB = 34;
 
 const byte pinLRB = 32;
 
-const byte pinLMD = 28;
+const byte pinLMD = 38;
 
 //Para los limits de arriba y abajo del ordeñador los pins 36 y 38
 
