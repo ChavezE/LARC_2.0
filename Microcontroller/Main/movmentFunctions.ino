@@ -664,11 +664,11 @@ bool checkCrossingGate(const Logger &logger) {
     brake();
     logger.log("Wall LF");
     delay(1000);
-    backwardNCm(5, false);
+    backwardNCm(8, false);
 
     int mientr1, mientr2, mientr3, mientr4;
     encoderState = 1;
-    int untilSteps = (encoder30Cm / 30) * 8;
+    int untilSteps = (encoder30Cm / 30) * 9;
     steps = 0;
     forward(0,0,0,0);
     do {
@@ -681,22 +681,22 @@ bool checkCrossingGate(const Logger &logger) {
     if (steps >= untilSteps) {
       logger.log("Not found wall");
       delay(1000);
-      backwardNCm(8, false);
+      backwardNCm(9, false);
       
       forward(0,0,0,0);
       return false;
     }
     
     // We found something, then lets look with sharp left-back
-    logger.log("Wall LF again");
-    delay(1000);
-    forward(0,0,0,0);
-    while (getDistance(pinSLB) > 30) {
-      forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, true);
-    }
-    brake();
+    // logger.log("Wall LF again");
+    // delay(1000);
+    // forward(0,0,0,0);
+    // while (getDistance(pinSLB) > 30) {
+    //   forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, true);
+    // }
+    // brake();
 
-    forwardNCm(1, false);
+    forwardNCm(45, false);
 
     return true;
   }
@@ -738,20 +738,20 @@ void goToStart()
 
   // We check if we are near from any side wall
   int distSideWalls = getDistance(pinSLF);
-  if (distSideWalls <= 30) {
+  if (distSideWalls < 32) {
     logger.log("Near left wall");
     delay(1000);
     
     turnToObjectiveN(iWest);
-    forwardNCm(55 - distSideWalls, false);
+    forwardNCm(60 - distSideWalls, false);
   } else {
     distSideWalls = getDistance(pinSRF);
-    if (distSideWalls <= 30) {
+    if (distSideWalls < 32) {
       logger.log("Near left wall");
       delay(1000);
     
       turnToObjectiveN(iEast);
-      forwardNCm(55 - distSideWalls, false);
+      forwardNCm(60 - distSideWalls, false);
     }
   }
   turnToObjectiveN(iSouth);
