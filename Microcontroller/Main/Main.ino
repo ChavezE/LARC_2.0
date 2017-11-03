@@ -67,6 +67,8 @@ const byte pinSLB = A9;
 //Sharp Claw
 const byte pinSC = A11;
 
+const byte pinSFunel = A7;
+
 //pins Sharps
 byte pinSharp[9] = {A3, A4, A1, A2, A0, A5, A6};
 
