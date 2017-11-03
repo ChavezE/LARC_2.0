@@ -310,9 +310,9 @@ void setup()
   iWest = iSouth + 90;
 
   //Display the finish of the setup
-  writeLCD("      FENIX 2.0", 0, 0);
+  writeLCD("      The Mitasão", 0, 0);
   delay(1000);
-  writeLCD("START FENIX 2.0", 0, 0);
+  writeLCD("START The Mitasão", 0, 0);
 }
 
 void loop()
