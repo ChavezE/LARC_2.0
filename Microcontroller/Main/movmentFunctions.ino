@@ -717,9 +717,10 @@ void goToStart()
   
 
   //Get out of the cow
-  backwardNCm(20, false); //50
+  backwardNCm(30, false);
   //Turn to where the gate is
   turnToObjectiveN(iSouth);
+  forwardNCm(35, false);
 
   //Velocity of movment
   int LF = velLF;
@@ -735,16 +736,35 @@ void goToStart()
   
   logger.log("Forward to start");
 
+  // We check if we are near from any side wall
+  int distSideWalls = getDistance(pinSLF);
+  if (distSideWalls <= 30) {
+    logger.log("Near left wall");
+    delay(1000);
+    
+    turnToObjectiveN(iWest);
+    forwardNCm(55 - distSideWalls, false);
+  } else {
+    distSideWalls = getDistance(pinSRF);
+    if (distSideWalls <= 30) {
+      logger.log("Near left wall");
+      delay(1000);
+    
+      turnToObjectiveN(iEast);
+      forwardNCm(55 - distSideWalls, false);
+    }
+  }
+  turnToObjectiveN(iSouth);
+
   //Start moving
   forward(LF, LB, RF, RB);
   //Keep moving forward until we face a wall, or detect a wall at right or left
   bool crossed;
-  do  // TODO: Use the sharps from sides to check if to near to walls to see if part in the terrines
-  {
+  do {
     forwardP(iSouth, LF, LB, RF, RB, false);
 
     crossed = checkCrossingGate(logger);
-  } while(!crossed && getDistance(pinSF) > 17 && digitalRead(pinLR) == HIGH && digitalRead(pinLL) == HIGH);
+  } while(!crossed && getDistance(pinSF) > 16 && digitalRead(pinLR) == HIGH && digitalRead(pinLL) == HIGH);
   brake();
   logger.log("Out of forward");
   delay(1000);
@@ -773,7 +793,7 @@ void goToStart()
       {
         backwardP(iWest, LF, LB, RF, RB, false);
     
-      } while(getDistance(pinSLB) < 35 && getDistance(pinSB) > 15);
+      } while(getDistance(pinSLB) < 35 && getDistance(pinSB) > 15); // TODO: CHANGE to read front to less probability of reading the terrine part
       brake();
 
       // See if arrive to the gate
