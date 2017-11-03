@@ -53,7 +53,7 @@ const byte pinSRF = A8;
 //const byte pinSRC;
 
 //Sharp Right Back
-const byte pinSRB = A10; 
+const byte pinSRB = A10;
 
 //Sharp Left Front
 const byte pinSLF = A12;
@@ -75,7 +75,7 @@ const bool normalState = 1;
 
 const byte pinLI = 48;
 
-const byte pinLO = 42;
+const byte pinLO = 36;
 
 const byte pinLR = 40;
 
@@ -85,7 +85,7 @@ const byte pinLLB = 34;
 
 const byte pinLRB = 32;
 
-const byte pinLMD = 28;
+const byte pinLMD = 38;
 
 //Para los limits de arriba y abajo del ordeñador los pins 36 y 38
 
@@ -213,7 +213,7 @@ void clawToStartPoint(bool safeAndSlow = false);
 int getDistance(byte sharp, byte cantReads = 7);
 
 //Communication with milker
-const byte iMilkerA = 36;
+const byte iMilkerA = 0;
 const byte iMilkerB = 17;
 
 //Milker up/down
@@ -237,7 +237,7 @@ void setup()
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_NDOF))
   {
     Serial.println("NO BNO, while(1)");
-    writeLCD("NO BNO", 0, 0); 
+    writeLCD("NO BNO", 0, 0);
     while(1);
   }
   bno.setExtCrystalUse(true);
@@ -292,7 +292,7 @@ void setup()
 
   //Stop motors, encoders and servos
   brake();
-  
+
   encoderState = 1;
 
   openClaw();
@@ -314,8 +314,8 @@ void setup()
 }
 
 void loop()
-{ 
+{
 
-communication();
- 
+  communication();
+
 }

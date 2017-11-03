@@ -36,8 +36,8 @@ minThresh = 5#50
 maxThresh = 150
 steps = 3
 #Tissue Parameters
-eps = 40
-eps2 = 40
+eps = 50
+eps2 = 50
 #HAAR Cascade Sansitivity
 cascadeSensitivity = 50
 
