@@ -777,79 +777,109 @@ void goToStart()
   // if we didnt touch any limit, lets look horizontaly for the gate. 
   // Or maybe there was something strange to both.
   if (digitalRead(pinLR) == HIGH && digitalRead(pinLL) == HIGH || 
-    digitalRead(pinLR) == LOW && digitalRead(pinLL) == LOW) {
+    digitalRead(pinLR) == LOW && digitalRead(pinLL) == LOW) { // TODO: Add case when we touch both limits; it get to one of the terrine zone.
     logger.log("Sharp detected");
     delay(1000);
 
     turnToObjectiveN(iWest); // Turn to the side of not terrines
-    int backDist = getDistance(pinSLB), frontDist = getDistance(pinSLF);
-    if (backDist < 30 && frontDist < 30) { //We are in the wall in side right or left
-      logger.log("Wall right/left");
-      delay(1000);
 
-      // Backward until back wall or the gate
-      backward(LF, LB, RF, RB);
-      do
-      {
-        backwardP(iWest, LF, LB, RF, RB, false);
-    
-      } while(getDistance(pinSLB) < 35 && getDistance(pinSB) > 15); // TODO: CHANGE to read front to less probability of reading the terrine part
-      brake();
-
-      // See if arrive to the gate
-      if (getDistance(pinSLB) >= 35) {
-        logger.log("Half in gate");
+    bool inGate = false;
+    bool prefForwardInLeftBack = false;
+    do {
+      int backDist = getDistance(pinSLB), frontDist = getDistance(pinSLF);
+      if (backDist < 30 && frontDist < 30 || prefForwardInLeftBack) { //We are in the wall in side right or left
+        logger.log("Wall right/left");
         delay(1000);
 
+        if (!prefForwardInLeftBack) {
+          // Backward until back wall or the gate
+          backward(LF, LB, RF, RB);
+          do
+          {
+            backwardP(iWest, LF, LB, RF, RB, false);
+        
+          } while(getDistance(pinSB) > 31 && getDistance(pinSLF) < 35);
+          brake();
+        }
+
+        // See if we are at the left side lets look for the wall and leave
+        if (getDistance(pinSB) <= 31 || prefForwardInLeftBack) {
+          logger.log("Other direction");
+          delay(1000);
+
+          // forward until fully in the wall
+          //forwardNCm(65 - distToBack, false); Better with the sharp
+          forward(0, 0, 0, 0);
+          do {
+            forwardP(iWest, LF, LB, RF, RB, false);
+          } while (getDistance(pinSLB) > 30);
+          brake();
+          forwardNCm(5, false);
+
+          // Move until the gate completely
+          forward(LF, LB, RF, RB);
+          do {
+            forwardP(iWest, LF, LB, RF, RB, false);
+          } while(getDistance(pinSLB) < 35);
+          brake();
+
+          forwardNCm(5, false);
+
+        } else { // We are in the gate
+          backwardNCm(5, false);
+        }
+
+        inGate = true;
+
+      } else if (backDist > 30 &&  frontDist < 30) {
+        logger.log("Wall betw right");
+        delay(1000);
+    
         // Move until the gate completely
-        backward(LF, LB, RF, RB);
+        backward(0, 0, 0, 0);
         do {
           backwardP(iWest, LF, LB, RF, RB, true);
-        } while(getDistance(pinSLF) < 35);
+        } while (getDistance(pinSB) > 30 && getDistance(pinSLF) < 31); // We ensure that is not the left-terrine zone
         brake();
 
-        backwardNCm(5, false);
-
-      } else { // We are at the left side lets look for the wall and leave
-        logger.log("Other direction");
+        if (getDistance(pinSB) <= 30) { // We were wrong: we are in the left-terrine zone
+          // Again but we now that the gate is in the front
+          inGate = false;
+          prefForwardInLeftBack = true;
+        } else {
+          backwardNCm(5, false);
+          inGate = true;
+        }
+      } else if (backDist < 30 &&  frontDist > 30) {
+        logger.log("Wall betw left");
         delay(1000);
-
+        
         // Move until the gate completely
         forward(LF, LB, RF, RB);
         do {
-          forwardP(iWest, LF, LB, RF, RB, false);
-        } while(getDistance(pinSLB) < 35);
+          forwardP(iWest, LF, LB, RF, RB, true);
+        } while (getDistance(pinSF) > 30 && getDistance(pinSLB) < 31); // We have to ensure that is not in the right-terrine zone
         brake();
 
-        forwardNCm(5, false);
+        if (getDistance(pinSF) <= 30) { // We were wrong: we are in the right-terrine zone
+          // Backward until fully in the wall
+          backward(0, 0, 0, 0);
+          do {
+            backwardP(iWest, LF, LB, RF, RB, false);
+          } while (getDistance(pinSLF) > 30);
+          brake();
+          backwardNCm(5, false);
 
+          // Again but we now that the gate is in the back
+          inGate = false; 
+          prefForwardInLeftBack = false; //We actually dont need to make anything because normally we go first backward
+        } else {
+          forwardNCm(5, false);
+          inGate = true;
+        }
       }
 
-    } else if (backDist > 30 &&  frontDist < 30) {
-      logger.log("Wall betw right");
-      delay(1000);
-  
-      // Move until the gate completely
-      backward(LF, LB, RF, RB);
-      do {
-        backwardP(iWest, LF, LB, RF, RB, true);
-      } while(getDistance(pinSLF) < 35);
-      brake();
-
-      backwardNCm(5, false);
-    } else if (backDist < 30 &&  frontDist > 30) {
-      logger.log("Wall betw left");
-      delay(1000);
-      
-      // Move until the gate completely
-      forward(LF, LB, RF, RB);
-      do {
-        forwardP(iWest, LF, LB, RF, RB, true);
-      } while(getDistance(pinSLB) < 35);
-      brake();
-
-      forwardNCm(5, false);
-    }
+    } while (!inGate);
 
     logger.log("En la gate");
     delay(1000);
