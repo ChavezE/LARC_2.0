@@ -246,8 +246,8 @@ void goGrabTerrines(const int gradosObjetivo)
       forwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true);
       separacion = getDistance(pinSRF); // Sharp Right front
     } else {
-      separacion = forwardWithRightWall(gradosObjetivo, separacionParedCaminoObj, 
-        true, distFront, distBack);
+      separacion = backwardWithLeftWall(gradosObjetivo, separacionParedCaminoObj, 
+        true, distFront, distBack); // THIS DOESNT WORK ANY MORE
     }
 
     if (digitalRead(pinLR) == HIGH) {

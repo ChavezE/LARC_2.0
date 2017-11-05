@@ -829,7 +829,10 @@ void goToStart()
 }
 
 /**
- * Forward para ir derecho con cierta distancia a la pared derecha
+ * Bacward with P correction for being with certain distance with
+ * the left distance.
+ * It checks the compass, the sharp front and back difference and
+ * the distance average betweeen the sharp front and back.
  *
  * @param {const int&} degreesObjetivo
  * @param {const int&} objetivoDistPared
@@ -839,7 +842,7 @@ void goToStart()
  *
  * @return {int} separacion The dist with the wall average with front and back
  */
-int forwardWithRightWall(const int& degreesObjetivo, const int& objetivoDistPared, const bool& slow, 
+int backwardWithLeftWall(const int& degreesObjetivo, const int& objetivoDistPared, const bool& slow, 
   int& distFront, int& distBack) {
   //Base for motors velocity
   int baseLF;
@@ -858,30 +861,30 @@ int forwardWithRightWall(const int& degreesObjetivo, const int& objetivoDistPare
     baseRB = velRB;
   }
 
-  distFront = getDistance(pinSRF);
-  distBack = getDistance(pinSRB);
+  distFront = getDistance(pinSLF);
+  distBack = getDistance(pinSLB);
 
   const int separacion = (distFront + distBack) / 2;
   const int diffSeparacion = separacion - objetivoDistPared;
   const int diffSharps = distFront - distBack; // (-) voltear a la der
   const int diffCompass = getAngleDifferenceD(degreesObjetivo, getCompass()); // (-) conviene voltear a la derecha
 
-  int velLF = formulaForwardWithRightWall(baseLF, diffSeparacion, diffSharps, -diffCompass);//formula(baseLF, -separacion, -separacionOrientado, -diffCompass);
-  int velLB = formulaForwardWithRightWall(baseLB, diffSeparacion, diffSharps, -diffCompass);//formula(baseLB, -separacion, -separacionOrientado, -diffCompass);
-  int velRF = formulaForwardWithRightWall(baseRF, -diffSeparacion, -diffSharps, diffCompass);//formula(baseRF, separacion, separacionOrientado, diffCompass);
-  int velRB = formulaForwardWithRightWall(baseRB, -diffSeparacion, -diffSharps, diffCompass);//formula(baseRB, separacion, separacionOrientado, diffCompass);
+  int velLF = formulaBackwardWithLeftWall(baseLF, -diffSeparacion, diffSharps, diffCompass);
+  int velLB = formulaBackwardWithLeftWall(baseLB, -diffSeparacion, diffSharps, diffCompass);
+  int velRF = formulaBackwardWithLeftWall(baseRF, diffSeparacion, -diffSharps, -diffCompass);
+  int velRB = formulaBackwardWithLeftWall(baseRB, diffSeparacion, -diffSharps, -diffCompass);
 
-  forward(velLF, velLB, velRF, velRB);
+  backward(velLF, velLB, velRF, velRB); // TODO: Use better setVelocity
 
   return separacion;
 }
 
 /**
  * Formula with the P taking the base, distance from the wall, difference from sharps
- * and diff from compass. Used in the forwardWithRightWall.
+ * and diff from compass. Used in the backwardWithLeftWall.
  *
  */
-int formulaForwardWithRightWall(int base, int separacion, int diffBetweenSharps, int diffCompass) {
+int formulaBackwardWithLeftWall(int base, int separacion, int diffBetweenSharps, int diffCompass) {
   if (diffBetweenSharps > 45) diffBetweenSharps = 45;
   else if (diffBetweenSharps < -45) diffBetweenSharps = -45;
 //  return base + separacion * 8 + diffBetweenSharps * 2 + diffCompass * 6;
