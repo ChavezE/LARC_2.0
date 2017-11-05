@@ -237,6 +237,7 @@ void goGrabTerrines(const int gradosObjetivo)
   openClaw();
   platIn();
   int mientr1 = 0, mientr2 = 0, mientr3 = 0, mientr4 = 0;
+  int distFront, distBack;
   unsigned long timeMaxLimit = millis() + 20000UL; // TODO: Implementar TIME LIMIT
   do {
 
@@ -245,7 +246,8 @@ void goGrabTerrines(const int gradosObjetivo)
       forwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true);
       separacion = getDistance(pinSRF); // Sharp Right front
     } else {
-      separacion = forwardWithRightWall(gradosObjetivo, separacionParedCaminoObj, true);
+      separacion = forwardWithRightWall(gradosObjetivo, separacionParedCaminoObj, 
+        true, distFront, distBack);
     }
 
     if (digitalRead(pinLR) == HIGH) {

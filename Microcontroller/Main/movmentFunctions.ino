@@ -828,34 +828,48 @@ void goToStart()
   turnToObjectiveN(iSouth);
 }
 
-// Forward para ir derecho con cierta distancia a la pared derecha
-int forwardWithRightWall(const int &degreesObjetivo, const int &objetivoDistPared, const bool &slow) {
+/**
+ * Forward para ir derecho con cierta distancia a la pared derecha
+ *
+ * @param {const int&} degreesObjetivo
+ * @param {const int&} objetivoDistPared
+ * @param {const bool&} slow
+ * @param {int&} distFront The individual dist to the wall by the sharp front
+ * @param {int&} distBack The dist sharp back
+ *
+ * @return {int} separacion The dist with the wall average with front and back
+ */
+int forwardWithRightWall(const int& degreesObjetivo, const int& objetivoDistPared, const bool& slow, 
+  int& distFront, int& distBack) {
   //Base for motors velocity
-  const int baseLF = !slow ? velLF : velSlowLF;
-  const int baseLB = !slow ? velLB : velSlowLB;
-  const int baseRF = !slow ? velRF : velSlowRF;
-  const int baseRB = !slow ? velRB : velSlowRB;
+  int baseLF;
+  int baseLB;
+  int baseRF;
+  int baseRB;
+  if (slow) {
+    baseLF = velSlowLF;
+    baseLB = velSlowLB;
+    baseRF = velSlowRF;
+    baseRB = velSlowRB;
+  } else {
+    baseLF = velLF;
+    baseLB = velLB;
+    baseRF = velRF;
+    baseRB = velRB;
+  }
 
-  const int front = getDistance(pinSRF);
-  const int back = getDistance(pinSRB);
+  distFront = getDistance(pinSRF);
+  distBack = getDistance(pinSRB);
 
-  const int separacion = (front + back) / 2;
+  const int separacion = (distFront + distBack) / 2;
   const int diffSeparacion = separacion - objetivoDistPared;
-  const int diffSharps = front - back; // (-) voltear a la der
+  const int diffSharps = distFront - distBack; // (-) voltear a la der
   const int diffCompass = getAngleDifferenceD(degreesObjetivo, getCompass()); // (-) conviene voltear a la derecha
 
   int velLF = formulaForwardWithRightWall(baseLF, diffSeparacion, diffSharps, -diffCompass);//formula(baseLF, -separacion, -separacionOrientado, -diffCompass);
   int velLB = formulaForwardWithRightWall(baseLB, diffSeparacion, diffSharps, -diffCompass);//formula(baseLB, -separacion, -separacionOrientado, -diffCompass);
   int velRF = formulaForwardWithRightWall(baseRF, -diffSeparacion, -diffSharps, diffCompass);//formula(baseRF, separacion, separacionOrientado, diffCompass);
   int velRB = formulaForwardWithRightWall(baseRB, -diffSeparacion, -diffSharps, diffCompass);//formula(baseRB, separacion, separacionOrientado, diffCompass);
-  if (velLF > 255) velLF = 255;
-  else if (velLF < 0) velLF = 0;
-  if (velLB > 255) velLB = 255;
-  else if (velLB < 0) velLB = 0;
-  if (velRF > 255) velRF = 255;
-  else if (velRF < 0) velRF = 0;
-  if (velRB > 255) velRB = 255;
-  else if (velRB < 0) velRB = 0;
 
   forward(velLF, velLB, velRF, velRB);
 
