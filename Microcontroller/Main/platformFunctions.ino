@@ -8,7 +8,7 @@ void platIn()
   while (digitalRead(pinLI) == normalState)
   {
     //Start moving the plattaform
-    sPlattaform.write(97);
+    sPlattaform.write(98);
   }
 
   platformStop();
@@ -22,7 +22,7 @@ void platInMid()
   // //writeLCD("PLAT IN MID", 0, 0);
   
   //Start moving the plattaform
-  sPlattaform.write(97);
+  sPlattaform.write(98);
   
   delay(2500);
   
@@ -35,7 +35,7 @@ void platOut()
   while (digitalRead(pinLO) == normalState)
   {
     //Start moving the plattaform
-    sPlattaform.write(83);
+    platformStartToOut();
   }
   
   platformStop();

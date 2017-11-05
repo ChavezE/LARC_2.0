@@ -104,11 +104,13 @@ void goGrabTerrineBasic(const int northAngle) {
   SerialLog serialLogger;
   //serialLogger.init();
   LCDLogger lcdLogger;
-//  lcdLogger.init();
+  lcdLogger.init();
 
-  AbstractLoggable *loggerArray[2]{&serialLogger, &lcdLogger};
-  Logger logger("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 0);
-
+  AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
+  Logger logger("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 1);
+  
+  logger.log("Grab Terrines");
+  delay(1000);
 
   const int gradosObjetivo = northAngle - 90 < 0 ? 
     northAngle - 90 + 360 : northAngle - 90;
@@ -116,7 +118,7 @@ void goGrabTerrineBasic(const int northAngle) {
   clawToStartPoint(false);
 
   turnToObjectiveN(gradosObjetivo);
-  backwardNCm(75, false);
+  backwardNCm(40, false);//75
 
   int mientr1, mientr2, mientr3, mientr4;
   bool grabbed = false;
@@ -132,32 +134,32 @@ void goGrabTerrineBasic(const int northAngle) {
       backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true);
     }
     brake(); // TODO: Check if we need to implement a harder brake with seconds to the other direction
-    logger.log("Salimos de find a blank");
+    logger.log("Out find blank");
     delay(1000);
 
     do {
-      logger.log("Inside while");
+      logger.log("Look not blank");
       // Backward until we dont find a "blank space" that is a terrine
       backward(velSlowLF, velSlowLB, velSlowRF, velSlowRB);
       while (getDistance(pinSLB) > 35 && digitalRead(pinLLB) == HIGH && digitalRead(pinLRB) == HIGH) { // MIENTRAS la distancia es 10 por pista de pruebas
         backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true); // TODO: Check if it is neccesary to quit only if n times
       }    
       brake();
-      logger.log("Encontramos un NO blank space");
+      logger.log("Found not blank");
       delay(1000);
 
       // If we get to the wall, lets return and restart
       if (digitalRead(pinLLB) == LOW || digitalRead(pinLRB) == LOW) {
         logger.log("Limits tocando");
-        forwardNCm(65, true);
+        forwardNCm(45, true); //65
         break;
       }
 
-      backwardNCm(6, true); // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
+      backwardNCm(8, true); // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
       // TODO: Also implement checking the limits in this backwardNCm
       
       if (tryToGrabTerrine()) {
-        logger.log("No tocamos limit sacando plataforma");
+        logger.log("No limit");
         delay(2000);
         // TODO: Look for the terrine with the claw in one side and change it to grab it
         closeClaw();
@@ -167,7 +169,7 @@ void goGrabTerrineBasic(const int northAngle) {
           clawToStartPoint(true);
           grabbed = true;
         } else {
-          logger.log("No agarramos terrine");
+          logger.log("No grabbed");
           delay(2000);
         }
       } else {
