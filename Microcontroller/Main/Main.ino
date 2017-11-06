@@ -310,9 +310,9 @@ void setup()
   iWest = iSouth + 90;
 
   //Display the finish of the setup
-  writeLCD("      The Mitasão", 0, 0);
+  writeLCD("      El Mitosao", 0, 0);
   delay(1000);
-  writeLCD("START The Mitasão", 0, 0);
+  writeLCD("START El Mitosao", 0, 0);
 }
 
 void loop()
