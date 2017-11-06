@@ -14,7 +14,7 @@ import thread
 import sys
 sys.path.insert(0, '../lib/')
 import Larc_vision_2017 as rb
-#import communication as com
+import communication as com
 
 '''
 VARIABLES GLOBALES
@@ -320,6 +320,10 @@ def triangleToGetInCow():
                 cv2.imshow("second try",mainFrame)
                 cv2.waitKey(0)
                 alignWithCow()
+
+                L,R,Top = rb.calcCowLimits(maxLenTissue)
+                distanceFrwrd = rb.getDistanceFromTop(Top)
+                com.forwardNCm(int(distanceFrwrd))
                 return True #success
         cv2.imshow("second try",mainFrame)
         cv2.waitKey(0)
@@ -381,6 +385,9 @@ if __name__ == "__main__":
     walkingDetecting()
     com.getInCow()
     #cv2.waitKey(0)
+    com.milk()
+    com.goToStart()
+    
     while True:
         print "code"
         pass
