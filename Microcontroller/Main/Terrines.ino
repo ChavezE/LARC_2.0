@@ -118,7 +118,16 @@ void goGrabTerrineBasic(const int northAngle) {
   clawToStartPoint(false);
 
   turnToObjectiveN(gradosObjetivo);
-  backwardNCm(40, false);//75
+  backwardNCm(40, false);
+
+  encoderState = 1;
+  int untilSteps = (encoder30Cm / 30) * 30; // 70
+  steps = 0;
+  int distFront, distBack;
+  while (steps < untilSteps) {
+    backwardWithLeftWall(gradosObjetivo, 17, false, distFront,
+      distBack); // TODO: See if this part can be merge with the other part of look at the blank space
+  }
 
   int mientr1, mientr2, mientr3, mientr4;
   bool grabbed = false;
