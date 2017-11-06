@@ -53,7 +53,7 @@ const byte pinSRF = A8;
 //const byte pinSRC;
 
 //Sharp Right Back
-const byte pinSRB = A10; 
+const byte pinSRB = A10;
 
 //Sharp Left Front
 const byte pinSLF = A12;
@@ -67,6 +67,8 @@ const byte pinSLB = A9;
 //Sharp Claw
 const byte pinSC = A11;
 
+const byte pinSFunel = A7;
+
 //pins Sharps
 byte pinSharp[9] = {A3, A4, A1, A2, A0, A5, A6};
 
@@ -75,7 +77,7 @@ const bool normalState = 1;
 
 const byte pinLI = 48;
 
-const byte pinLO = 42;
+const byte pinLO = 36;
 
 const byte pinLR = 40;
 
@@ -213,7 +215,7 @@ void clawToStartPoint(bool safeAndSlow = false);
 int getDistance(byte sharp, byte cantReads = 7);
 
 //Communication with milker
-const byte iMilkerA = 36;
+const byte iMilkerA = 0;
 const byte iMilkerB = 17;
 
 //Milker up/down
@@ -237,7 +239,7 @@ void setup()
   if (!bno.begin(Adafruit_BNO055::OPERATION_MODE_NDOF))
   {
     Serial.println("NO BNO, while(1)");
-    writeLCD("NO BNO", 0, 0); 
+    writeLCD("NO BNO", 0, 0);
     while(1);
   }
   bno.setExtCrystalUse(true);
@@ -292,7 +294,7 @@ void setup()
 
   //Stop motors, encoders and servos
   brake();
-  
+
   encoderState = 1;
 
   openClaw();
@@ -308,14 +310,14 @@ void setup()
   iWest = iSouth + 90;
 
   //Display the finish of the setup
-  writeLCD("      FENIX 2.0", 0, 0);
+  writeLCD("      The Mitasão", 0, 0);
   delay(1000);
-  writeLCD("START FENIX 2.0", 0, 0);
+  writeLCD("START The Mitasão", 0, 0);
 }
 
 void loop()
-{ 
+{
 
-communication();
- 
+  communication();
+
 }
