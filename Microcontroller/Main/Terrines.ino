@@ -195,7 +195,15 @@ void goGrabTerrineBasic(const int northAngle) {
     } while(!grabbed);
    
   } while (!grabbed);
+
+  parkingFrontRight(false);
   
+}
+
+void parkingFrontRight(const bool& bSlow) {
+  turnNDegrees(20);
+  forwardNCm(20, bSlow);
+  turnNDegrees(-20);
 }
 
 
