@@ -828,46 +828,63 @@ void goToStart()
   turnToObjectiveN(iSouth);
 }
 
-// Forward para ir derecho con cierta distancia a la pared derecha
-int forwardWithRightWall(const int &degreesObjetivo, const int &objetivoDistPared, const bool &slow) {
+/**
+ * Bacward with P correction for being with certain distance with
+ * the left distance.
+ * It checks the compass, the sharp front and back difference and
+ * the distance average betweeen the sharp front and back.
+ *
+ * @param {const int&} degreesObjetivo
+ * @param {const int&} objetivoDistPared
+ * @param {const bool&} slow
+ * @param {int&} distFront The individual dist to the wall by the sharp front
+ * @param {int&} distBack The dist sharp back
+ *
+ * @return {int} separacion The dist with the wall average with front and back
+ */
+int backwardWithLeftWall(const int& degreesObjetivo, const int& objetivoDistPared, const bool& slow, 
+  int& distFront, int& distBack) {
   //Base for motors velocity
-  const int baseLF = !slow ? velLF : velSlowLF;
-  const int baseLB = !slow ? velLB : velSlowLB;
-  const int baseRF = !slow ? velRF : velSlowRF;
-  const int baseRB = !slow ? velRB : velSlowRB;
+  int baseLF;
+  int baseLB;
+  int baseRF;
+  int baseRB;
+  if (slow) {
+    baseLF = velSlowLF;
+    baseLB = velSlowLB;
+    baseRF = velSlowRF;
+    baseRB = velSlowRB;
+  } else {
+    baseLF = velLF;
+    baseLB = velLB;
+    baseRF = velRF;
+    baseRB = velRB;
+  }
 
-  const int front = getDistance(pinSRF);
-  const int back = getDistance(pinSRB);
+  distFront = getDistance(pinSLF);
+  distBack = getDistance(pinSLB);
 
-  const int separacion = (front + back) / 2;
+  const int separacion = (distFront + distBack) / 2;
   const int diffSeparacion = separacion - objetivoDistPared;
-  const int diffSharps = front - back; // (-) voltear a la der
+  const int diffSharps = distFront - distBack; // (-) voltear a la der
   const int diffCompass = getAngleDifferenceD(degreesObjetivo, getCompass()); // (-) conviene voltear a la derecha
 
-  int velLF = formulaForwardWithRightWall(baseLF, diffSeparacion, diffSharps, -diffCompass);//formula(baseLF, -separacion, -separacionOrientado, -diffCompass);
-  int velLB = formulaForwardWithRightWall(baseLB, diffSeparacion, diffSharps, -diffCompass);//formula(baseLB, -separacion, -separacionOrientado, -diffCompass);
-  int velRF = formulaForwardWithRightWall(baseRF, -diffSeparacion, -diffSharps, diffCompass);//formula(baseRF, separacion, separacionOrientado, diffCompass);
-  int velRB = formulaForwardWithRightWall(baseRB, -diffSeparacion, -diffSharps, diffCompass);//formula(baseRB, separacion, separacionOrientado, diffCompass);
-  if (velLF > 255) velLF = 255;
-  else if (velLF < 0) velLF = 0;
-  if (velLB > 255) velLB = 255;
-  else if (velLB < 0) velLB = 0;
-  if (velRF > 255) velRF = 255;
-  else if (velRF < 0) velRF = 0;
-  if (velRB > 255) velRB = 255;
-  else if (velRB < 0) velRB = 0;
+  int velLF = formulaBackwardWithLeftWall(baseLF, -diffSeparacion, diffSharps, diffCompass);
+  int velLB = formulaBackwardWithLeftWall(baseLB, -diffSeparacion, diffSharps, diffCompass);
+  int velRF = formulaBackwardWithLeftWall(baseRF, diffSeparacion, -diffSharps, -diffCompass);
+  int velRB = formulaBackwardWithLeftWall(baseRB, diffSeparacion, -diffSharps, -diffCompass);
 
-  forward(velLF, velLB, velRF, velRB);
+  backward(velLF, velLB, velRF, velRB); // TODO: Use better setVelocity
 
   return separacion;
 }
 
 /**
  * Formula with the P taking the base, distance from the wall, difference from sharps
- * and diff from compass. Used in the forwardWithRightWall.
+ * and diff from compass. Used in the backwardWithLeftWall.
  *
  */
-int formulaForwardWithRightWall(int base, int separacion, int diffBetweenSharps, int diffCompass) {
+int formulaBackwardWithLeftWall(int base, int separacion, int diffBetweenSharps, int diffCompass) {
   if (diffBetweenSharps > 45) diffBetweenSharps = 45;
   else if (diffBetweenSharps < -45) diffBetweenSharps = -45;
 //  return base + separacion * 8 + diffBetweenSharps * 2 + diffCompass * 6;
