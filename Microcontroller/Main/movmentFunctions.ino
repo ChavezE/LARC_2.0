@@ -904,12 +904,12 @@ int forwardWithLeftWall(const int &degreesObjetivo, const int &objetivoDistPared
 
   const int separacion = (distFront + distBack) / 2;
   const int diffSeparacion = separacion - objetivoDistPared;
-  const int diffSharps = front - back; // (-) voltear a la der
+  const int diffSharps = distFront - distBack; // (-) voltear a la der
   const int diffCompass = getAngleDifferenceD(degreesObjetivo, getCompass()); // (-) conviene voltear a la derecha
 
   int velLF = formulaForwardWithLeftWall(baseLF, -diffSeparacion, -diffSharps, -diffCompass);
   int velLB = formulaForwardWithLeftWall(baseLB, -diffSeparacion, -diffSharps, -diffCompass);
-  int velRF = formulaForwardWithLefttWall(baseRF, diffSeparacion, diffSharps, diffCompass);
+  int velRF = formulaForwardWithLeftWall(baseRF, diffSeparacion, diffSharps, diffCompass);
   int velRB = formulaForwardWithLeftWall(baseRB, diffSeparacion, diffSharps, diffCompass);
 
   forward(velLF, velLB, velRF, velRB);
