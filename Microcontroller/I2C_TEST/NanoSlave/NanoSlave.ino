@@ -44,7 +44,7 @@ void receiveEvent(int n){
 		    	// MILK THE SHIT
 		    	digitalWrite(13,1);
 		    	milkTheFucker();
-	      		break;
+	      	break;
 
 		    case 'S':
 		    	digitalWrite(13, 0);
