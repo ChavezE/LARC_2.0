@@ -22,22 +22,28 @@ byte pinLServoAux = 4;
 byte pinServo = 9;
 byte pinServoAux = 10;
 
-void setup() {
-  Serial.begin(9600);
+char instruction = 'z';
+
+void setup(){
+	Serial.begin(9600);
+
+  Wire.begin(SLAVE_ID);
+	Wire.onReceive(receiveEvent);
 
   //Attach servos
   sMilker.attach(pinServo);
   sMilker2.attach(pinServoAux);
 
   //Stop servos
-  sMilker.write(90);
-  sMilker2.write(90);
+  stop();
 
   //Limit switches
   pinMode(pinLU, INPUT);
   pinMode(pinLD, INPUT);
   pinMode(pinLServo, INPUT);
   pinMode(pinLServoAux, INPUT);
+  pinMode(13, 1);
+  digitalWrite(13, 0);
 }
 
 void getServoReady()
@@ -133,7 +139,7 @@ void milk()
   sMilker.write(70);
   //Times the glove has been milked
   int iCounter = 0;
-  while (iCounter < 8)
+  while (iCounter < 3)
   {
     //If the milker is pressing the glove
     if (digitalRead(pinLD) == 0)
@@ -170,22 +176,53 @@ void milker()
   milk();
 }
 
-void tryLimits()
+void stop()
 {
-  Serial.print("pinLU: ");
-  Serial.print(digitalRead(pinLU));
-  Serial.print("    ");
-  Serial.print("pinLD: ");
-  Serial.print(digitalRead(pinLD));
-  Serial.print("    ");
-  Serial.print("pinLServo: ");
-  Serial.print(digitalRead(pinLServo));
-  Serial.print("    ");
-  Serial.print("pinLServoAux: ");
-  Serial.println(digitalRead(pinLServoAux));
+  sMilker.write(90);
+  sMilker2.write(90);
 }
 
-void loop() {
-  milker();
-  delay(1000);
+// I2C EVENT HANDLER
+void receiveEvent(int n){
+	while(Wire.available()){
+		instruction = Wire.read();
+	}
+}
+
+void loop(){
+	switch (instruction) {
+			case 'M':
+				milk();
+				instruction = 'z';
+				break;
+
+			case 'S':
+				stop();
+				instruction = 'z';
+				break;
+
+			case 'O':
+				getReady();
+				openMilker();
+				instruction = 'z';
+				break;
+
+			case 'C':
+				closeMilker();
+				instruction = 'z';
+				break;
+
+			case 'L':
+				digitalWrite(13,1);
+				delay(1000);
+				digitalWrite(13,0);
+				delay(1000);
+				instruction = 'z';
+				break;
+
+			case 'K':
+				digitalWrite(13,0);
+				instruction = 'z';
+				break;
+	}
 }
