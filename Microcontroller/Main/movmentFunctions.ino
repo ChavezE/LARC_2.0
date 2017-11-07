@@ -610,13 +610,12 @@ void backwardUntilNoRight()
  * Note: It leaves you exactly where the sharp back 
  * stops reading.
  *
+ * @param {const int&} iStayAngle
+ *
  * It works now.
  */
-void backwardUntilNoLeft()
+void backwardUntilNoLeft(const int& iStayAngle)
 {
-  //Angle to stay in
-  int iStayAngle = getCompass();
-
   //Start at default velocity
   int LF = velLF;
   int LB = velLB;
@@ -626,7 +625,7 @@ void backwardUntilNoLeft()
   // Back until the sharp Left Back stops reading
   backward(0, 0, 0, 0);
   while (getDistance(pinSLB) <= 30) {
-    backwardP(iStayAngle, LF, LB, RF, RB, false);
+    backwardP(iStayAngle, LF, LB, RF, RB, false); // TODO: Add missing delays for sharps
   }
   brake();
 
