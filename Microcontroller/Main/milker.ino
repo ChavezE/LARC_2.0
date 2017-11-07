@@ -40,7 +40,7 @@ void moveMilkerDown()
 void moveMilkerUp()
 {
   milkerUp();
-  delay(15000);
+  delay(23000);
   milkerStop();
 }
 
