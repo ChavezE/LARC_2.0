@@ -96,7 +96,7 @@ void communication() {
 
       case 'l':
         iAm = getCompass();
-        goGrabTerrines(iAm);
+        goGrabTerrineBasic(iAm);
         Serial.write('1');
         break;
 
@@ -145,6 +145,16 @@ void communication() {
 
       case 's':
         turnLeft(velLF, velLB, velRF, velRB);
+        Serial.write('1');
+        break;
+
+      case 't':
+        goToStart();
+        Serial.write('1');
+        break;
+
+      case 'u':
+        milk();
         Serial.write('1');
         break;
     }

@@ -1,30 +1,35 @@
-#include <Estadisticas.h>
-
-//Get the distance of the sharp given in the parameters
-int getDistance(byte sharp)
+/**
+ * Get the distance of the sharp given in the parameters.
+ * It uses the mediana. Max reads is 7.
+ * 
+ * @param sharp {byte} pinSharp
+ * @param cantReads {cantReads=7}
+ * 
+ * @return {int} the mediana distance 
+ */
+int getDistance(byte sharp, byte cantReads)
 {
-  const int numLength = 7;
-  int num[numLength];
+  int reads[7];
   
-  for (int j = 0; j < numLength; j++)
+  for (int j = 0; j < cantReads; j++)
   {
     //Raw data
     float volts = analogRead(sharp) * 0.0048828125;
     //If the raw data gives zero is really far
     if (volts == 0)
     {
-      num[j] = 30000;
+      reads[j] = 30000;
     }
     //The distance is acceptable save the formula
     else
     {
-      num[j] = round(13.0 / volts);
+      reads[j] = round(13.0 / volts);
     }
     delay(26);
 
   }
 
-  return Estadisticas<int>::createNewMediana(num, numLength).getMediana();
+  return Estadisticas<int>::createNewMediana(reads, cantReads).getMediana();
   
 }
 

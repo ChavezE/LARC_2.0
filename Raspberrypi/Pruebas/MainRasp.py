@@ -11,17 +11,14 @@ from copy import deepcopy
 import thread
 
 # Roborregos libs
-import sys
-sys.path.insert(0, '../lib/')
+sys.path.insert(0,'../lib')
+
 import Larc_vision_2017 as rb
 import communication as com
 
 '''
 VARIABLES GLOBALES
 '''
-
-#For debugging
-debugger = False
 
 #Terrines Position; c = unknown, r = right, l = left
 terrinesZone = "c"
@@ -70,10 +67,10 @@ def waitToBegin():
 
 
 # Global variable for camera
-cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture(0)
 # let camara calibrate light
-for i in range(10):
-        cap.read()
+# for i in range(10):
+#         cap.read()
 
 '''
     METODOS
@@ -245,9 +242,8 @@ def paralelism():
     top = rb.getTissueTopLevel(maxLenTissue)
     A,B,theta = rb.ajusteDeCurvas(top)
     rb.drawSlope(mainFrame,A,B)
-    if debugger:
-        cv2.imshow("slope",mainFrame)
-        cv2.waitKey(0)
+    cv2.imshow("slope",mainFrame)
+    cv2.waitKey(0)
     degrees = int(abs(theta))
 
     if theta < -8:
@@ -276,8 +272,7 @@ def triangleToGetInCow():
     adyacent = rb.getDistanceFromTop(Top)
     print "ADYACENT"
     print adyacent
-    if debugger:
-        cv2.waitKey(0)
+    cv2.waitKey(0)
     print "PARALLEL"
     degs, turnedLeft = paralelism()
     print degs
@@ -312,30 +307,22 @@ def triangleToGetInCow():
         time.sleep(1)
 
         takePicture()
-        if debugger:
-            cv2.imshow("second try",mainFrame)
-            cv2.waitKey(0)
+        cv2.imshow("second try",mainFrame)
+        cv2.waitKey(0)
         found, filtered = rb.detectCow(clearedMainFrame)
         #first validation, haar cascade
         if found:
             # second validation, tissue algorithm
-            if debugger:
-                cv2.imshow("second try",filtered)
-                cv2.waitKey(0)
+            cv2.imshow("second try",filtered)
+            cv2.waitKey(0)
             foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
             if foundCow:
-                if debugger:
-                    cv2.imshow("second try",mainFrame)
-                    cv2.waitKey(0)
+                cv2.imshow("second try",mainFrame)
+                cv2.waitKey(0)
                 alignWithCow()
-
-                L,R,Top = rb.calcCowLimits(maxLenTissue)
-                distanceFrwrd = rb.getDistanceFromTop(Top)
-                com.forwardNCm(int(distanceFrwrd))
                 return True #success
-        if debugger:
-            cv2.imshow("second try",mainFrame)
-            cv2.waitKey(0)
+        cv2.imshow("second try",mainFrame)
+        cv2.waitKey(0)
         #If found nothing, lets return
         com.forwardNCm(30)
 
@@ -391,12 +378,9 @@ if __name__ == "__main__":
     # STARTING EXPLORTION HERE #
     #com.turnWest()
     #turnRight(90)
-    walkingDetecting()
-    com.getInCow()
+    #walkingDetecting()
+    #com.getInCow()
     #cv2.waitKey(0)
-    com.milk()
-    com.goToStart()
-    
     while True:
         print "code"
         pass

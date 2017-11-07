@@ -7,10 +7,17 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
   int iAux = iWant - iAm;
 
   //Reset vel to default
-  leftFront = bSlow == false ? velLF : velSlowLF;
-  leftBack = bSlow == false ? velLB : velSlowLB;
-  rightFront = bSlow == false ? velRF : velSlowRF;
-  rightBack = bSlow == false ? velRB : velSlowRB;
+  if (bSlow) {
+    leftFront = velSlowLF;
+    leftBack = velSlowLB;
+    rightFront = velSlowRF;
+    rightBack = velSlowRB;
+  } else {
+    leftFront = velLF;
+    leftBack = velLB;
+    rightFront = velRF;
+    rightBack = velRB;
+  }
 
   //Debug info
   // Serial.print("iAm: ");
@@ -29,37 +36,33 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
     // Serial.print("Normal");
     if (iWant > iAm)
     {
-      //Turn right
-      leftFront += abs(iAux) / constPCorrectN;
-      leftBack += abs(iAux) / constPCorrectN;
+      const int toAdd = abs(iAux) * constPCorrect; // TODO: Change the operation (for the sign) instead of using the abs()
 
-      rightFront -= abs(iAux) / constPCorrectN;
-      rightBack -= abs(iAux) / constPCorrectN;
+      //Turn right
+      leftFront += toAdd;
+      leftBack += toAdd;
+
+      rightFront -= toAdd;
+      rightBack -= toAdd;
 
       // Serial.print("\t");
       // Serial.print("Mayor: ");
-      // Serial.print(abs(iAux) / constPCorrectN);
-
-      //Not needed
-      // rightFront -= abs(iAux) / constPCorrectN;
-      // rightBack -= abs(iAux) / constPCorrectN;
+      // Serial.print(toAdd);
     }
     else if (iWant < iAm)
     {
-      //Turn left
-      rightFront += abs(iAux) / constPCorrectN;
-      rightBack += abs(iAux) / constPCorrectN;
+      const int toAdd = abs(iAux) * constPCorrect;
 
-      leftFront -= abs(iAux) / constPCorrectN;
-      leftBack -= abs(iAux) / constPCorrectN;
+      //Turn left
+      rightFront += toAdd;
+      rightBack += toAdd;
+
+      leftFront -= toAdd;
+      leftBack -= toAdd;
 
       // Serial.print("\t");
       // Serial.print("Menor: ");
-      // Serial.print(abs(iAux) / constPCorrectN);
-
-      //Not needed
-      // leftFront -= abs(iAux) / constPCorrectN;
-      // leftBack -= abs(iAux) / constPCorrectN;
+      // Serial.print(toAdd);
     }
   }
   else if (iAux > 180 || iAux < -180)
@@ -70,47 +73,41 @@ void forwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& ri
     {
       //Ther shouldn't be any operation inside abs
       int iA = iAux - 360;
+      const int toAdd = abs(iA) * constPCorrect;
 
       // Serial.print("\t");
       // Serial.print("iA: ");
       // Serial.print(iA);
       // Serial.print("\t");
       // Serial.print("Mayor: ");
-      // Serial.print(abs(iA) / constPCorrectN);
+      // Serial.print(toAdd);
 
       //Turn left
-      rightFront += abs(iA) / constPCorrectN;
-      rightBack += abs(iA) / constPCorrectN;
+      rightFront += toAdd;
+      rightBack += toAdd;
 
-      leftFront -= abs(iA) / constPCorrectN;
-      leftBack -= abs(iA) / constPCorrectN;
-      
-      //Not needed
-      // leftFront -= abs(iA) / constPCorrectN;
-      // leftBack -= abs(iA) / constPCorrectN;
+      leftFront -= toAdd;
+      leftBack -= toAdd;
     }
     else if (iAux < 0)
     {
       //Ther shouldn't be any operation inside abs
       int iA = iAux + 360;
+      const int toAdd = abs(iA) * constPCorrect;
 
       // Serial.print("\t");
       // Serial.print("iA: ");
       // Serial.print(iA);
       // Serial.print("\t");
       // Serial.print("Menor: ");
-      // Serial.print(abs(iA) / constPCorrectN);
+      // Serial.print(toAdd);
 
       //Turn right
-      leftFront += abs(iA) / constPCorrectN;
-      leftBack += abs(iA) / constPCorrectN;
+      leftFront += toAdd;
+      leftBack += toAdd;
 
-      rightFront -= abs(iAux) / constPCorrectN;
-      rightBack -= abs(iAux) / constPCorrectN;
-      
-      //Not needed
-      // rightFront -= abs(iA) / constPCorrectN;
-      // rightBack -= abs(iA) / constPCorrectN;
+      rightFront -= toAdd;
+      rightBack -= toAdd;
     }
   }
   // Serial.println();
@@ -131,31 +128,42 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
   int iAux = iWant - iAm;
 
   //Reset vel to default
-  leftFront = bSlow == false ? velLF : velSlowLF;
-  leftBack = bSlow == false ? velLB : velSlowLB;
-  rightFront = bSlow == false ? velRF : velSlowRF;
-  rightBack = bSlow == false ? velRB : velSlowRB;
+  if (bSlow) {
+    leftFront = velSlowLF;
+    leftBack = velSlowLB;
+    rightFront = velSlowRF;
+    rightBack = velSlowRB;
+  } else {
+    leftFront = velLF;
+    leftBack = velLB;
+    rightFront = velRF;
+    rightBack = velRB;
+  }
 
   //Change speed if needed
   if (iAux > -180 && iAux < 180)
   {
     if (iWant > iAm)
     {
+      const int toAdd = abs(iAux) * constPCorrect;
+
       //Turn right
-      rightFront += abs(iAux) / constPCorrectN;
-      rightBack += abs(iAux) / constPCorrectN;
-      //Not needed
-      // leftFront -= abs(iAux) / constPCorrect;
-      // leftBack -= abs(iAux) / constPCorrect;
+      rightFront += toAdd;
+      rightBack += toAdd;
+
+      leftFront -= toAdd;
+      leftBack -= toAdd;
     }
     else if (iWant < iAm)
     {
+      const int toAdd = abs(iAux) * constPCorrect;
+
       //Turn left
-      leftFront += abs(iAux) / constPCorrectN;
-      leftBack += abs(iAux) / constPCorrectN;
-      //Not needed
-      // rightFront -= abs(iAux) / constPCorrect;
-      // rightBack -= abs(iAux) / constPCorrect;
+      leftFront += toAdd;
+      leftBack += toAdd;
+      
+      rightFront -= toAdd;
+      rightBack -= toAdd;
     }
   }
   else if (iAux > 180 || iAux < -180)
@@ -164,23 +172,27 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
     {
       //Ther shouldn't be any operation inside abs
       int iA = iAux - 360;
+      const int toAdd = abs(iA) * constPCorrect;
+
       //Turn left
-      leftFront += abs(iA) / constPCorrectN;
-      leftBack += abs(iA) / constPCorrectN;
-      //Not needed
-      // rightFront -= abs(iA) / constPCorrect;
-      // rightBack -= abs(iA) / constPCorrect;
+      leftFront += toAdd;
+      leftBack += toAdd;
+      
+      rightFront -= toAdd;
+      rightBack -= toAdd;
     }
     else if (iAux < 0)
     {
       //Ther shouldn't be any operation inside abs
       int iA = iAux + 360;
+      const int toAdd = abs(iA) * constPCorrect;
+
       //Turn right
-      rightFront += abs(iA) / constPCorrectN;
-      rightBack += abs(iA) / constPCorrectN;
-      //Not needed
-      // leftFront -= abs(iA) / constPCorrect;
-      // leftBack -= abs(iA) / constPCorrect;
+      rightFront += toAdd;
+      rightBack += toAdd;
+      
+      leftFront -= toAdd;
+      leftBack -= toAdd;
     }
   }
   setVelocity(leftFront, leftBack, rightFront, rightBack);

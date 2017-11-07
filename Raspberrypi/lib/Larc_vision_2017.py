@@ -29,25 +29,28 @@ B = float(dstFile.readline().strip("\n"))
 
 print "A", A
 print "B", B
-maxSquareArea = 3000
-minSquareArea = 100
+maxSquareArea = 9000
+minSquareArea = 500
 #Thresh range for cow squares  #si no detecta suficientes cuadros
 minThresh = 5#50
-maxThresh = 255
+maxThresh = 150
 steps = 3
 #Tissue Parameters
-eps = 40
-eps2 = 40
+eps = 50
+eps2 = 50
 #HAAR Cascade Sansitivity
-cascadeSensitivity = 100
+cascadeSensitivity = 50
 
 #----HAAR Cascade---
 #importing the trained cascade of cow
-cowCascade = cv2.CascadeClassifier('../Cascades/COWTUMMY.xml')
+cowCascade = cv2.CascadeClassifier('../Cascades/COWTUMMY2.0.xml')
 #using a black frame to filter
 blackFrame = np.zeros((480,640), np.uint8)
 whiteFrame = np.ones((480,640), np.uint8)
 whiteFrame[:] = 255
+
+#For debugging
+debugger = False
 
 # Simple class to manage individual squares in the image
 # ATRIBUTES:
@@ -123,8 +126,9 @@ class cowSquare:
 def clearImage(imgOriginal):
 
    imGray = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2GRAY)
-   imGray = cv2.GaussianBlur(imGray, (3,3), 2)
-   imGray = cv2.equalizeHist(imGray)
+   # imGray = cv2.GaussianBlur(imGray, (3,3), 2) #HAAR showed better result without these two
+   # imGray = cv2.equalizeHist(imGray)
+   
    # imGray = cv2.fastNlMeansDenoisingColored(imgOriginal,None,10,10,7,21)
 
    return imGray
@@ -349,7 +353,7 @@ def makeTissue(tActSqr,tAllSqrs,tissue,eps,lvl):
 def isThereACow(mainFrame, equalizedFrame):
    maxLenT = [] # maximumLenghtTissue
    allSquares = [] # Store in each iteration of the binarization the squares found in the image
-   minNumSquares = 4
+   minNumSquares = 3
    # iterate to get max squares from the image
    # best way so far to counter ligh strokes
 
@@ -382,7 +386,7 @@ def isThereACow(mainFrame, equalizedFrame):
       del cp2
 
    print "donde with bin values"
-   if len(allSquares) > minNumSquares:
+   if len(allSquares) >= minNumSquares:
       tempAllSquares = deepcopy(allSquares)
       maxLenT = doTissue(tempAllSquares)
       for sqr in maxLenT:
@@ -400,7 +404,7 @@ def isThereACow(mainFrame, equalizedFrame):
 def detectCow(img):
    blackTemp = whiteFrame.copy()#whiteFrame.copy()#blackFrame.copy()
 
-   cows = cowCascade.detectMultiScale(img, 1.3, cascadeSensitivity)
+   cows = cowCascade.detectMultiScale(img, 1.2, cascadeSensitivity)
 
    xc,yc,hc,wc = 0,0,0,0
    individualCow = []
@@ -425,14 +429,15 @@ def detectCow(img):
      #This condition is also calibratable, by determining
      #a relationship between h/w
       #if relation < 0.77 and relation > 0.74 and area > 11000 and w > 120: #FOR COW3.XML
-      if relation < 1.2 and relation > 0.98 and area > 11000 and w > 120: #FOR COWTUMMY.XML
+      #if relation < 1.2 and relation > 0.98 and area > 11000 and w > 120: #FOR COWTUMMY.XML
+      if relation < 0.77 and relation > 0.55 and area > 11000 and w > 120: #FOR COWTUMMY2.0.XML
          #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
 
          #Expanding the detected area
          xc = x - int(.5 * ampliation)
          yc = y - int(.5 * ampliation)
          hc = h + int((1 * ampliation))
-         wc = w + int((2 * ampliation)) #1.5
+         wc = w + int((3 * ampliation)) #1.5
          
          cowDetected = True
 
@@ -445,7 +450,8 @@ def detectCow(img):
    blackTemp[yc:yc+hc,xc:xc+wc] = individualCow
    print blackTemp.shape
 
-   cv2.imshow("with black", blackTemp)
+   if debugger:
+      cv2.imshow("with black", blackTemp)
    return cowDetected, blackTemp
 
 
@@ -480,8 +486,12 @@ def ajusteDeCurvas(cSquares):
       sXi2 = sum(Xi2)
 
       # Now its time to compute A and B
-      A = float((n*sXiYi)-(sXi*sYi))/((n*sXi2)-(pow(sXi,2)))
-      B = float(((sXi2*sYi)-(sXiYi*sXi))/((n*sXi2)-(pow(sXi,2))))
+      if (n*sXi2) == pow(sXi,2):
+         A = 0
+         B = 0
+      else:
+         A = float((n*sXiYi)-(sXi*sYi))/((n*sXi2)-(pow(sXi,2)))
+         B = float(((sXi2*sYi)-(sXiYi*sXi))/((n*sXi2)-(pow(sXi,2))))
       theta = float(math.atan(A))
       theta = float(theta*180/math.pi)
 
@@ -627,8 +637,47 @@ def getTissueTopLevel(tissue):
          levelTissue = []
          levelTissue.append(tissue[x])
 
+   filtered,_,_ = filterTopLevel(levelTissue)
 
-   return levelTissue
+   return levelTissue #filtered #levelTissue
+
+
+def filterTopLevel(tLevel):
+   filteredLevel = []
+   '''
+   ytLevel = []
+
+   for sqr in tLevel:
+      ytLevel.append(sqr.getY())
+
+   npYtLevel = np.array(ytLevel)                  #aproach to filter y distance throught stdev
+
+   mean = np.mean(npYtLevel)
+   std = np.std(npYtLevel)
+
+   for sqr in tLevel:
+      if sqr.getY() < (mean+std) and sqr.getY() > (mean-std):
+         filteredLevel.append(sqr)
+
+   '''
+
+   #filter for area with stdev
+   areas = []
+   for sqr in tLevel:
+      areas.append(sqr.getArea())
+
+   npAreas = np.array(areas)
+   mean = np.mean(npAreas)
+   std = np.std(npAreas)
+   std = std * 1.5
+
+   for sqr in tLevel:
+      if sqr.getArea() < (mean+std) and sqr.getArea() > (mean-std):
+         filteredLevel.append(sqr)
+
+
+
+   return filteredLevel,mean, std   
 #############################################
 ##-----------ALLINGMENT AND LIMITS-----------##
 #############################################
@@ -652,8 +701,9 @@ def getTankCenter(frame):
    cnts, contourAreas = zip(*sorted(zip(contours, contourAreas),key=lambda b:b[1], reverse=True))
 
    cv2.drawContours(frame,cnts,0,(0,255,0),1)
-   cv2.imshow('p',frame)
-   cv2.waitKey(0)
+   if debugger:
+      cv2.imshow('p',frame)
+      cv2.waitKey(0)
    cv2.destroyAllWindows()
 
    # biggest area must be the tank!

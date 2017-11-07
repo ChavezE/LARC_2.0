@@ -1,7 +1,8 @@
 import serial
 import time
 import cv2
-import pygame, sys
+import sys
+# import pygame
 #import pygame.locals()
 
 try:
@@ -12,13 +13,13 @@ except serial.SerialException:
         while(True):
                 pass;
 
-pygame.init()
-BLACK = (0,0,0)
-WIDTH = 600
-HEIGHT = 400
-windowSurface = pygame.display.set_mode((WIDTH, HEIGHT), 0 ,32)
-
-windowSurface.fill(BLACK)
+# pygame.init()
+# BLACK = (0,0,0)
+# WIDTH = 600
+# HEIGHT = 400
+# windowSurface = pygame.display.set_mode((WIDTH, HEIGHT), 0 ,32)
+#
+# windowSurface.fill(BLACK)
 
 def forwardNCm(cm):
         print("forwardNCm")
@@ -382,49 +383,79 @@ def left():
             print("False")
             return False
 
-#Control the robot with the keyboard
-def controlRobot():
-    print "Control Robot"
-    control = True
-    while(control):
-        brake()
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
-                forward()
-                cont = True
-                while(cont):
-                    for event in pygame.event.get():
-                        if event.type == pygame.KEYUP and event.key == pygame.K_w:
-                            brake()
-                            cont = False
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_s:
-                backward()
-                cont = True
-                while(cont):
-                    for event in pygame.event.get():
-                        if event.type == pygame.KEYUP and event.key == pygame.K_s:
-                            brake()
-                            cont = False
-                            
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_a:
-                left()
-                cont = True
-                while(cont):
-                    for event in pygame.event.get():
-                        if event.type == pygame.KEYUP and event.key == pygame.K_a:
-                            brake()
-                            cont = False
-                            
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_d:
-                right()
-                cont = True
-                while(cont):
-                    for event in pygame.event.get():
-                        if event.type == pygame.KEYUP and event.key == pygame.K_d:
-                            brake()
-                            cont = False
-                            
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_c:
-                control = False
-            else:
-                brake()
+def goToStart():
+    print("goToStart")
+    #Tell the to go to start
+    arduino.write("t")
+    #Wait for arduino response
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
+
+def milk():
+    print("milk")
+    #Tell the to move Milker Up
+    arduino.write("u")
+    #Wait for arduino response
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
+
+# #Control the robot with the keyboard
+# def controlRobot():
+#     print "Control Robot"
+#     control = True
+#     while(control):
+#         brake()
+#         for event in pygame.event.get():
+#             if event.type == pygame.KEYDOWN and event.key == pygame.K_w:
+#                 forward()
+#                 cont = True
+#                 while(cont):
+#                     for event in pygame.event.get():
+#                         if event.type == pygame.KEYUP and event.key == pygame.K_w:
+#                             brake()
+#                             cont = False
+#             elif event.type == pygame.KEYDOWN and event.key == pygame.K_s:
+#                 backward()
+#                 cont = True
+#                 while(cont):
+#                     for event in pygame.event.get():
+#                         if event.type == pygame.KEYUP and event.key == pygame.K_s:
+#                             brake()
+#                             cont = False
+#
+#             elif event.type == pygame.KEYDOWN and event.key == pygame.K_a:
+#                 left()
+#                 cont = True
+#                 while(cont):
+#                     for event in pygame.event.get():
+#                         if event.type == pygame.KEYUP and event.key == pygame.K_a:
+#                             brake()
+#                             cont = False
+#
+#             elif event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+#                 right()
+#                 cont = True
+#                 while(cont):
+#                     for event in pygame.event.get():
+#                         if event.type == pygame.KEYUP and event.key == pygame.K_d:
+#                             brake()
+#                             cont = False
+#
+#             elif event.type == pygame.KEYDOWN and event.key == pygame.K_c:
+#                 control = False
+#             else:
+#                 brake()
