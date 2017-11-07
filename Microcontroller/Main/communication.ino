@@ -83,7 +83,7 @@ void communication() {
         break;
 
       case 'j':
-        backwardUntilNoLeft();
+        backwardUntilNoLeft(getCompass());
         Serial.write('1');
         break;
 
