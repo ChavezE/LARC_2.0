@@ -86,12 +86,12 @@ void getInCow(bool bSlow)
 
    //If right leg was touched
   if (!bRight) {
-    parkingLeft(bSlow);
+    parkingLeft(bSlow, 10);
     getInCow(bSlow );
   }
    //If left leg was touched
   else if (!bLeft) {
-    parkingRight(bSlow);
+    parkingRight(bSlow, 10);
     getInCow(bSlow);
   }
   //If no leg was touched
@@ -115,7 +115,7 @@ void getInCow(bool bSlow)
         {
           brake();
           backwardNCm(5, bSlow);
-          parkingLeft(bSlow);
+          parkingLeft(bSlow, 10);
           turnNDegrees(iTurn);
           getInCow(bSlow);
           break;
@@ -136,7 +136,7 @@ void getInCow(bool bSlow)
         {
           brake();
           backwardNCm(5, bSlow);
-          parkingRight(bSlow);
+          parkingRight(bSlow, 10);
           turnNDegrees(iTurn * -1);
           getInCow(bSlow);
           break;

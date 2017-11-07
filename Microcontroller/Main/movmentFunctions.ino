@@ -161,7 +161,7 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
       //Turn left
       leftFront += toAdd;
       leftBack += toAdd;
-      
+
       rightFront -= toAdd;
       rightBack -= toAdd;
     }
@@ -177,7 +177,7 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
       //Turn left
       leftFront += toAdd;
       leftBack += toAdd;
-      
+
       rightFront -= toAdd;
       rightBack -= toAdd;
     }
@@ -190,7 +190,7 @@ void backwardP(int iWant, int& leftFront, int& leftBack, int& rightFront, int& r
       //Turn right
       rightFront += toAdd;
       rightBack += toAdd;
-      
+
       leftFront -= toAdd;
       leftBack -= toAdd;
     }
@@ -377,7 +377,7 @@ void backwardUntilWallN(int dist)
       backward(LF, LB, RF, RB);
       backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
       countCorrect = 0;
-    } 
+    }
     else if (actualDist < dist - 2) //To close from wall
     {
       forward(LF, LB, RF, RB);
@@ -406,11 +406,11 @@ void turnToObjectiveN(int iWant)
 //Turn to an exact angle
 void turnToObjectiveN(int iWant, int vLF, int vLB, int vRF, int vRB)
 {
-  vLF = velTurnLF; // TODO: Remove the arguments to use always this 
-  vLB = velTurnLB; 
-  vRF = velTurnRF; 
+  vLF = velTurnLF; // TODO: Remove the arguments to use always this
+  vLB = velTurnLB;
+  vRF = velTurnRF;
   vRB = velTurnRB;
-  
+
   int x = 0;
   do {
     int diff = getAngleDifferenceD(iWant, getCompass());
@@ -426,7 +426,7 @@ void turnToObjectiveN(int iWant, int vLF, int vLB, int vRF, int vRB)
     }
     delay(30);
   } while(true);
-  
+
 }
 
 //Turn n amount of degrees, positive turn right, negative turn left
@@ -459,9 +459,9 @@ void turnNDegrees(int n, int vLF, int vLB, int vRF, int vRB)
   //Get objective angle
   int obj = getCompass() + n;
 
-  vLF = velTurnLF; // TODO: Remove the arguments to use always this 
-  vLB = velTurnLB; 
-  vRF = velTurnRF; 
+  vLF = velTurnLF; // TODO: Remove the arguments to use always this
+  vLB = velTurnLB;
+  vRF = velTurnRF;
   vRB = velTurnRB;
 
   //angle correction
@@ -906,5 +906,19 @@ void parkingLeft(bool bSlow)
 {
   turnNDegrees(20);
   backwardNCm(35, bSlow);
+  turnNDegrees(-20);
+}
+
+void parkingRight(bool bSlow, int iCm)
+{
+  turnNDegrees(-20);
+  backwardNCm(iCm, bSlow);
+  turnNDegrees(20);
+}
+
+void parkingLeft(bool bSlow, int iCm)
+{
+  turnNDegrees(20);
+  backwardNCm(iCm, bSlow);
   turnNDegrees(-20);
 }
