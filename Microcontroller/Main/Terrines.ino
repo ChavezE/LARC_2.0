@@ -3,7 +3,7 @@
  * It has two modes: fast and slowAndSecure.
  * +fast: horizontalClaw, platIn, downClaw
  * +slowAndSecure: clawUp, clawIn, clawHorizontal, clawDown
- * 
+ *
  * NOTE: This method doesnt do anything with close/open claw.
  *
  * @param safeAndSlow {bool=false}
@@ -12,26 +12,26 @@
  void clawToStartPoint(bool safeAndSlow) {
    if (safeAndSlow) {
      upClaw();
- 
+
      platIn();
- 
+
      horizontalClaw();
- 
+
      downClaw();
    } else {
      horizontalClaw();
- 
+
      platIn();
-     
+
      downClaw();
    }
- 
+
  }
- 
+
  /**
   * Move up the claw and check if the distance of the claw is
   * less than certain distance.
-  * 
+  *
   * Note: This leaves the claw up
   *
   * @return {bool} if we have the terrine
@@ -44,25 +44,25 @@
    const int cantReads = 6;
    int sum = 0;
    for (int x = 1; x <= cantReads; x++) {
-    sum += ultrasonicClaw.ping_cm(); // TODO: Create separate ping function with already average 
+    sum += ultrasonicClaw.ping_cm(); // TODO: Create separate ping function with already average
     delay(50);
    }
 
    return sum / cantReads < valorMax && sum / cantReads > 0;
  }
- 
+
  /**
   * Function to move out the claw and try to grab the terrine.
-  * It does NOT close the claw in case the limit was reached 
+  * It does NOT close the claw in case the limit was reached
   * and maybe if we close we could push a terrine.
-  * 
+  *
   * @return {bool} false if limit was touch
   */
  bool tryToGrabTerrine() {
-    const int maxValue = 9;
+    const int maxValue = 8;
 
     openClaw();
-    
+
     // Claw out until feel the terrine or limit
     int suma = 0, cant = 0;
     const int cantToProm = 5;
@@ -74,7 +74,7 @@
 
       if (++cant == cantToProm) {
         if (suma / cantToProm < maxValue && suma / cantToProm > 0) {
-          delay(100); // Delay to get nearer to the terrine
+          delay(1000); // Delay to get nearer to the terrine
           break;
         } else {
           suma = 0;
@@ -84,7 +84,7 @@
 
       delay(50);
     }
-    
+
     platformStop();
 
     return digitalRead(pinLO) == HIGH;
@@ -92,11 +92,11 @@
 
 
 /**
- * Routine Basic form to go and grab terrine. 
- * The robot starts in the center of the field pointing to the north, 
+ * Routine Basic form to go and grab terrine.
+ * The robot starts in the center of the field pointing to the north,
  * it turns left 90 and then it starts backwards.
  *
- * @param northAngle {int} Angle where the north is (the angle where the 
+ * @param northAngle {int} Angle where the north is (the angle where the
  *  robot starts pointing to).
  *
  */
@@ -108,17 +108,17 @@ void goGrabTerrineBasic(const int northAngle) {
 
   AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
   Logger logger("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 1);
-  
+
   logger.log("Grab Terrines");
   delay(1000);
 
-  const int gradosObjetivo = northAngle - 90 < 0 ? 
+  const int gradosObjetivo = northAngle - 90 < 0 ?
     northAngle - 90 + 360 : northAngle - 90;
-  
+
   clawToStartPoint(false);
 
   turnToObjectiveN(gradosObjetivo);
-  backwardNCm(40, false);
+  backwardNCm(50, false);
 
   encoderState = 1;
   int untilSteps = (encoder30Cm / 30) * 30; // 70
@@ -128,6 +128,8 @@ void goGrabTerrineBasic(const int northAngle) {
     backwardWithLeftWall(gradosObjetivo, 17, false, distFront,
       distBack); // TODO: See if this part can be merge with the other part of look at the blank space
   }
+  brake();
+  turnToObjectiveN(gradosObjetivo);
 
   int mientr1, mientr2, mientr3, mientr4;
   bool grabbed = false;
@@ -135,7 +137,7 @@ void goGrabTerrineBasic(const int northAngle) {
     logger.log("En inicio");
     delay(2000);
 
-    
+
     // Backward until we find a "blank space"
     // This make sense in the correct field
     backward(velSlowLF, velSlowLB, velSlowRF, velSlowRB);
@@ -152,7 +154,7 @@ void goGrabTerrineBasic(const int northAngle) {
       backward(velSlowLF, velSlowLB, velSlowRF, velSlowRB);
       while (getDistance(pinSLB) > 35 && digitalRead(pinLLB) == HIGH && digitalRead(pinLRB) == HIGH) { // MIENTRAS la distancia es 10 por pista de pruebas
         backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true); // TODO: Check if it is neccesary to quit only if n times
-      }    
+      }
       brake();
       logger.log("Found not blank");
       delay(1000);
@@ -160,21 +162,22 @@ void goGrabTerrineBasic(const int northAngle) {
       // If we get to the wall, lets return and restart
       if (digitalRead(pinLLB) == LOW || digitalRead(pinLRB) == LOW) {
         logger.log("Limits tocando");
-        forwardNCm(45, true); //65
+        forwardNCm(60, true); //65
         break;
       }
 
-      backwardNCm(8, true); // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
+      turnToObjectiveN(gradosObjetivo);
+      backwardNCm(6, true); // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
       // TODO: Also implement checking the limits in this backwardNCm
-      
+
       if (tryToGrabTerrine()) {
         logger.log("No limit");
         delay(2000);
         // TODO: Look for the terrine with the claw in one side and change it to grab it
         closeClaw();
-      
+
         if (checkHaveTerrine()) {
-          logger.log("Lo agarramos");  
+          logger.log("Lo agarramos");
           clawToStartPoint(true);
           grabbed = true;
         } else {
@@ -193,11 +196,11 @@ void goGrabTerrineBasic(const int northAngle) {
       }
 
     } while(!grabbed);
-   
+
   } while (!grabbed);
 
   parkingFrontRight(false);
-  
+
 }
 
 void parkingFrontRight(const bool& bSlow) {
@@ -211,7 +214,7 @@ void parkingFrontRight(const bool& bSlow) {
  * NO PROBADA DESPUES DE CAMBIARLA A DEVELOPMENT. Antes si funcionaba, esperemos que en esta branch tambien.
  * Function to go to the terrines zone and grab a terrine.
  * This is expected to be called when the robot it already fully in the
- * right wall pointing the front part to the terrine zone. 
+ * right wall pointing the front part to the terrine zone.
  * New version with N+D.
  *
  * TODO:
@@ -219,7 +222,7 @@ void parkingFrontRight(const bool& bSlow) {
  * -Implementar brake con un poco de reverse para detenernos en el vaso
  * -Timeout para que ya esta en la zona de vasos
  *
- * -Implementar que hacer si salio mucho un "fallo" al topar contra la 
+ * -Implementar que hacer si salio mucho un "fallo" al topar contra la
  *   pared de enfrente
  *
  * -Utilizar los encoders
@@ -244,7 +247,7 @@ void goGrabTerrines(const int gradosObjetivo)
 
   // Nos acercaremos a la plataforma de vasos derechitos a una cierta dist de la pared.
   // Despues de esta parte, muy probablemete ya estemos en la zona de vasos.
-  // No es seguro ni es un hecho. Solo esta "garantizado" que si ya 
+  // No es seguro ni es un hecho. Solo esta "garantizado" que si ya
   // llegamos, esta parte ya termino. Pero, puede que ya termino y todavia no llegamos.
   const int separacionParedCaminoObj = 10 + separacionParedVasosObj;
 
@@ -258,12 +261,12 @@ void goGrabTerrines(const int gradosObjetivo)
   unsigned long timeMaxLimit = millis() + 20000UL; // TODO: Implementar TIME LIMIT
   do {
 
-    int separacion; 
+    int separacion;
     if (achievedSeparacion) {
       forwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true);
       separacion = getDistance(pinSRF); // Sharp Right front
     } else {
-      separacion = backwardWithLeftWall(gradosObjetivo, separacionParedCaminoObj, 
+      separacion = backwardWithLeftWall(gradosObjetivo, separacionParedCaminoObj,
         true, distFront, distBack); // THIS DOESNT WORK ANY MORE
     }
 
@@ -292,7 +295,7 @@ void goGrabTerrines(const int gradosObjetivo)
 
       backwardNCm(5, true);
       turnToObjectiveN(gradosObjetivo);
-      
+
       // TODO: Modificar la funcion backwardUntilNoRight para que acepte de parametro el degreesObjetive
       // backwardUntilNoRight(); // Nos vamos al centro
       // forwardNCm(35, false); // Vamos a la parte que si tenemos pared a la derecha
@@ -300,11 +303,11 @@ void goGrabTerrines(const int gradosObjetivo)
 
       cantMedidas = 0;
       sumaMedidas = 0;
-      caminoALosVasos = true; 
+      caminoALosVasos = true;
       achievedSeparacion = false;
       timeMaxLimit = millis() + 20000UL;
     } else {
-      
+
       sumaMedidas += separacion;
       if ((++cantMedidas) == 2) {
         int prom = sumaMedidas / cantMedidas; // TODO: Division entera
@@ -368,10 +371,10 @@ void goGrabTerrines(const int gradosObjetivo)
   bool falloLejosVaso = false;
   bool falloChueco = false;
   bool falloParedLimitDer = false;
-  
+
   //If the claw sharp detect something
   bool bTerrine = false;
-  
+
   //Distance detected by sharp on claw
   int clawDistance;
   int frontDistance;
@@ -382,7 +385,7 @@ void goGrabTerrines(const int gradosObjetivo)
     int LB = velSlowLB;
     int RF = velSlowRF;
     int RB = velSlowRB;
-    
+
     openClaw();
     platIn();
 
@@ -410,9 +413,9 @@ void goGrabTerrines(const int gradosObjetivo)
         logger.log("Diferentes limits: LimitLL=" + String(limit1) + ", LimitLR=" + String(limit2));
         // Chocamos contra pared derecha
         brake();
-        
+
         falloParedLimitDer = true;
-        
+
         backwardNCm(5, true);
         turnToObjectiveN(gradosObjetivo);
 
@@ -465,23 +468,23 @@ void goGrabTerrines(const int gradosObjetivo)
 
     platformStartToOut();
     while (clawDistance > 5 && digitalRead(pinLO) == 1) {
-      clawDistance = getDistance(pinSC); 
+      clawDistance = getDistance(pinSC);
     }
 
     platformStop();
 
     if (digitalRead(pinLO) == 1) {
       logger.log("Garra poco mas afuera");
-      
+
       // We move it a little more
       platformStartToOut();
-      
+
       // TODO: Medir velocidad para predecir la cant de tiempo que hay que sumar
       unsigned long timeToStop = millis() + 1100;
       while (digitalRead(pinLO) == 1 && timeToStop > millis());
       platformStop();
     }
-    
+
     if (digitalRead(pinLO) == 0) {
       logger.log("Muy lejos vaso");
 
@@ -496,7 +499,7 @@ void goGrabTerrines(const int gradosObjetivo)
     closeClaw();
     logger.log("Cerrar Garra");
     delay(3000);
-    
+
     platIn();
     logger.log("Revisar agarramos");
 
@@ -520,7 +523,7 @@ void goGrabTerrines(const int gradosObjetivo)
       //Go bak to original position
       //turnNDegrees(-90);
     }
-    
+
   } while (!bTerrine);
 
   logger.log("Grab FINISHED");
@@ -533,36 +536,36 @@ void goGrabTerrines(const int gradosObjetivo)
 
 bool checkHaveTerrine() {
    const int distMin = 25;
- 
+
    upClaw();
- 
+
    return getDistance(pinSC) < distMin;
 }
 
 
 bool tryToGrabTerrine() {
    openClaw();
-   
+
    // Claw out until 5cms to the terrine
    platformStartToOut();
    int clawDistance = getDistance(pinSC);
   while (clawDistance > 5 && digitalRead(pinLO) == HIGH) {
-    clawDistance = getDistance(pinSC); 
+    clawDistance = getDistance(pinSC);
   }
- 
+
   platformStop();
- 
+
   if (digitalRead(pinLO) == HIGH) {
-    
+
     // We move it a little more
     platformStartToOut();
-    
+
     // TODO: Medir velocidad para predecir la cant de tiempo que hay que sumar
     unsigned long timeToStop = millis() + 700;
     while (digitalRead(pinLO) == HIGH && timeToStop > millis());
     platformStop();
   }
-   
+
   return digitalRead(pinLO) == HIGH;
 }
 
