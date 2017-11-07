@@ -49,6 +49,9 @@ blackFrame = np.zeros((480,640), np.uint8)
 whiteFrame = np.ones((480,640), np.uint8)
 whiteFrame[:] = 255
 
+#For debugging
+debugger = False
+
 # Simple class to manage individual squares in the image
 # ATRIBUTES:
 # x = y = w = h = area = level = 0
@@ -447,7 +450,8 @@ def detectCow(img):
    blackTemp[yc:yc+hc,xc:xc+wc] = individualCow
    print blackTemp.shape
 
-   cv2.imshow("with black", blackTemp)
+   if debugger:
+      cv2.imshow("with black", blackTemp)
    return cowDetected, blackTemp
 
 
@@ -697,8 +701,9 @@ def getTankCenter(frame):
    cnts, contourAreas = zip(*sorted(zip(contours, contourAreas),key=lambda b:b[1], reverse=True))
 
    cv2.drawContours(frame,cnts,0,(0,255,0),1)
-   cv2.imshow('p',frame)
-   cv2.waitKey(0)
+   if debugger:
+      cv2.imshow('p',frame)
+      cv2.waitKey(0)
    cv2.destroyAllWindows()
 
    # biggest area must be the tank!
