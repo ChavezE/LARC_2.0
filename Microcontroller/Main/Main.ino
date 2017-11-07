@@ -97,10 +97,6 @@ const byte pinLCD = 44;
 // Limit up garra
 const byte pinLCU = 46;
 
-//Milker
-const byte pinMotA = 15;
-const byte pinMotB = 16;
-
 //-------Servos-------//
 //Close open claw servo
 const byte pinServoC = 19;  //4
@@ -230,10 +226,13 @@ const byte pinMotB = 16;
 const byte pinExtractorA = 6;
 const byte pinExtractorB = 4;
 
+//I2C communication with nano
+int const SLAVE_ID = 10;
+
 void setup()
 {
   Serial.begin(9600);
-
+  Wire.begin();
   //Initialize lcd, turn backlight on and clear the display
   lcd.init();
   lcd.backlight();

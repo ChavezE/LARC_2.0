@@ -1,6 +1,9 @@
 //Servo library
 #include <Servo.h>
+#include <Wire.h>
 
+//I2C communication const
+int const SLAVE_ID = 10;
 //Principal servo of milker
 Servo sMilker;
 //Auxiliar servo of milker
