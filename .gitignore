@@ -7,3 +7,4 @@
 *.pyc
 /Microcontroller/NanoI2C/
 /Microcontroller/MilkerI2C/
+/Microcontroller/I2C_TEST/
