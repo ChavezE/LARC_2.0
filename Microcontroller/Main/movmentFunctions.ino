@@ -645,12 +645,82 @@ void backwardUntilNoLeft()
   brake();
 }
 
+/**
+ * Check if we are crossing the gate.
+ * First, it will only check if detecting something with sharp
+ * left-front, if true it will stop and return to check if again 
+ * sharp detects it. If true, we continue forwarding to look for the
+ * the left-back sharp to find the gate.
+ *
+ * Note: We enter here already forwarding
+ *
+ * @param {Logger} logger Logger to log to
+ *
+ * @return {bool} true if all this is acomplished
+ */
+bool checkCrossingGate(const Logger &logger) {
+  if (getDistance(pinSLF) <= 30) {
+    // Return to check if we detect again the wall
+    brake();
+    logger.log("Wall LF");
+    delay(1000);
+    backwardNCm(8, false);
+
+    int mientr1, mientr2, mientr3, mientr4;
+    encoderState = 1;
+    int untilSteps = (encoder30Cm / 30) * 9;
+    steps = 0;
+    forward(0,0,0,0);
+    do {
+      forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, true);
+    } while (getDistance(pinSLF) > 30 && steps < untilSteps);
+    brake();
+    delay(400);
+
+    // We didnt find anything again
+    if (steps >= untilSteps) {
+      logger.log("Not found wall");
+      delay(1000);
+      backwardNCm(9, false);
+      
+      forward(0,0,0,0);
+      return false;
+    }
+    
+    // We found something, then lets look with sharp left-back
+    // logger.log("Wall LF again");
+    // delay(1000);
+    // forward(0,0,0,0);
+    // while (getDistance(pinSLB) > 30) {
+    //   forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, true);
+    // }
+    // brake();
+
+    forwardNCm(45, false);
+
+    return true;
+  }
+
+  return false;
+
+}
+
 void goToStart()
 {
-  //Go back to try get to the venter of the actual area
-  backwardNCm(60, false);
+  LCDLogger lcdLogger;
+  lcdLogger.init();
+  SerialLog serialLogger;
+  //serialLogger.init();
+
+  AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
+  Logger logger("Mega", "ReturnCow", LevelLogger::INFO, loggerArray, 1);
+  
+
+  //Get out of the cow
+  backwardNCm(30, false);
   //Turn to where the gate is
   turnToObjectiveN(iSouth);
+  forwardNCm(35, false);
 
   //Velocity of movment
   int LF = velLF;
@@ -658,174 +728,198 @@ void goToStart()
   int RF = velRF;
   int RB = velRB;
   //Distances from sharp
-  int distF = getDistance(pinSF);
-  int distRF = getDistance(pinSRF);
-  int distLF = getDistance(pinSLF);
+  int distF;
+  int distRF;
+  int distLF;
 
-  //the leg that touch was the right one
-  bool bRight = digitalRead(pinLR);
-  //The leg that touch was the left one
-  bool bLeft = digitalRead(pinLL);
+  bool letsContinue = true;
+  
+  logger.log("Forward to start");
+
+  // We check if we are near from any side wall
+  int distSideWalls = getDistance(pinSLF);
+  if (distSideWalls < 32) {
+    logger.log("Near left wall");
+    delay(1000);
+    
+    turnToObjectiveN(iWest);
+    forwardNCm(60 - distSideWalls, false);
+  } else {
+    distSideWalls = getDistance(pinSRF);
+    if (distSideWalls < 32) {
+      logger.log("Near left wall");
+      delay(1000);
+    
+      turnToObjectiveN(iEast);
+      forwardNCm(60 - distSideWalls, false);
+    }
+  }
+  turnToObjectiveN(iSouth);
 
   //Start moving
   forward(LF, LB, RF, RB);
-
-  //Keep moving forward until we face a wall, collapse with one or pass one
-  while(!bRight && !bLeft && distF > 25 && distRF > 25 && distLF > 25)
-  {
-    //P Correction
+  //Keep moving forward until we face a wall, or detect a wall at right or left
+  bool crossed;
+  do {
     forwardP(iSouth, LF, LB, RF, RB, false);
-    //Limit swtiches
-    bRight = digitalRead(pinLR);
-    bLeft = digitalRead(pinLL);
-    //Sharp
-    distF = getDistance(pinSF);
-    distRF = getDistance(pinSRF);
-    distLF = getDistance(pinSLF);
-  }
-  //Stop moving
+
+    crossed = checkCrossingGate(logger);
+  } while(!crossed && getDistance(pinSF) > 16 && digitalRead(pinLR) == HIGH && digitalRead(pinLL) == HIGH);
   brake();
-  //Lecture that made the robot stop
-  String sReason = "";
-  if(distLF <= 25)
-  {
-    sReason = "distLF";
-  }
-  else if(distRF <= 25)
-  {
-    sReason = "disrRF";
-  }
-  else if (distF <= 25)
-  {
-    sReason = "distF";
-  }
-  else if(bRight)
-  {
-    sReason = "bRight";
-  }
-  else
-  {
-    sReason = "bLeft";
-  }
-  //Write reason in LCD
-  lcd.clear();
-  writeLCD("Por: " + sReason, 0, 0);
+  logger.log("Out of forward");
+  delay(1000);
 
-  //Get away from the wall
-  backwardNCm(10, false);
-  //Fix the angle
-  turnToObjectiveN(iSouth);
+  if (crossed) {
+    logger.log("End");
+    return;
+  }
 
-  //If we collapse with the wall or get in front of one
-  if(!(distRF <= 25 || distLF <= 25) || bRight || bLeft || distF <= 25)
-  {
-    //Keep looking for the gate
-    bool bContinue = true;
-    while(bContinue)
-    {
-      //Turn West to find the gate
-      turnToObjectiveN(iWest);
-      //Set velocities
-      LF = velLF;
-      LB = velLB;
-      RF = velRF;
-      RB = velRB;
-      //Sharp
-      distLF = getDistance(pinSLF);
-      //Limit read
-      bLeft = digitalRead(pinLL);
-      bRight = digitalRead(pinLR);
-      //Start moving
-      forward(LF, LB, RF, RB);
-      //Keep moving until we collapse with a wall or find a gape in the left side
-      while(distLF <= 30 && !bLeft && !bRight)
-      {
-        //P Correction
-        forwardP(iWest, LF, LB, RF, RB, false);
-        //Limit Switches
-        bRight = digitalRead(pinLR);
-        bLeft = digitalRead(pinLL);
-        //Sharp
-        distLF = getDistance(pinSLF);
-      }
-      brake();
-      //If we find the gate
-      if(distLF > 30)
-      {
-        int distLB = getDistance(pinSLB);
-        //Keep moving until the robot get at the center of the gate
-        while(distLB <= 30)
-        {
-          //P Correction
-          forwardP(iWest, LF, LB, RF, RB, false);
-          //Sharp
-          distLB = getDistance(pinSLB);
-        }
-        //Stop moving
-        brake();
-        //We find the gate
-        bContinue = false;
-      }
-      //If we collapse
-      else
-      {
-        //Get away from the wall we collapse with
-        backwardNCm(7, false);
-        //Turn to the other side
-        turnToObjectiveN(iEast);
-        //Set start velocities
-        LF = velLF;
-        LB = velLB;
-        RF = velRF;
-        RB = velRB;
-        //Sharp distance
-        distRF = getDistance(pinSRF);
-        //Limit read
-        bLeft = digitalRead(pinLL);
-        bRight = digitalRead(pinLR);
-        //Start moving
-        forward(LF, LB, RF, RB);
-        //Keep moving until we collaps with a wall or find a gape at the right
-        while(distRF < 30 && !bLeft && !bRight)
-        {
-          //P Correction
-          forwardP(iEast, LF, LB, RF, RB, false);
-          //Limit Switches
-          bRight = digitalRead(pinLR);
-          bLeft = digitalRead(pinLL);
-          //Sharp
-          distRF = getDistance(pinSRF);
-        }
-        //Stop moving
-        brake();
-        //If we find a gape
-        if(distRF > 30)
-        {
-          //Start moving
-          forward(LF, LB, RF, RB);
-          //Sharp distance
-          int distRB = getDistance(pinSRB);
-          //Keep moving until the robot get at the center of the gate
-          while(distRB <= 30)
+  // if we didnt touch any limit, lets look horizontaly for the gate. 
+  // Or maybe there was something strange to both.
+  if (digitalRead(pinLR) == HIGH && digitalRead(pinLL) == HIGH || 
+    digitalRead(pinLR) == LOW && digitalRead(pinLL) == LOW) { // TODO: Add case when we touch both limits; it get to one of the terrine zone.
+    logger.log("Sharp detected");
+    delay(1000);
+
+    turnToObjectiveN(iWest); // Turn to the side of not terrines
+
+    bool inGate = false;
+    bool prefForwardInLeftBack = false;
+    do {
+      int backDist = getDistance(pinSLB), frontDist = getDistance(pinSLF);
+      if (backDist < 30 && frontDist < 30 || prefForwardInLeftBack) { //We are in the wall in side right or left
+        logger.log("Wall right/left");
+        delay(1000);
+
+        if (!prefForwardInLeftBack) {
+          // Backward until back wall or the gate
+          backward(LF, LB, RF, RB);
+          do
           {
-            //P Correction
-            forwardP(iEast, LF, LB, RF, RB, false);
-            //Sharp
-            distRB = getDistance(pinSRB);
-          }
-          //Stop moving
+            backwardP(iWest, LF, LB, RF, RB, false);
+        
+          } while(getDistance(pinSB) > 31 && getDistance(pinSLF) < 35);
           brake();
-          //We fid the gate
-          bContinue = false;
+        }
+
+        // See if we are at the left side lets look for the wall and leave
+        if (getDistance(pinSB) <= 31 || prefForwardInLeftBack) {
+          logger.log("Other direction");
+          delay(1000);
+
+          // forward until fully in the wall
+          //forwardNCm(65 - distToBack, false); Better with the sharp
+          forward(0, 0, 0, 0);
+          do {
+            forwardP(iWest, LF, LB, RF, RB, false);
+          } while (getDistance(pinSLB) > 30);
+          brake();
+          forwardNCm(5, false);
+
+          // Move until the gate completely
+          forward(LF, LB, RF, RB);
+          do {
+            forwardP(iWest, LF, LB, RF, RB, false);
+          } while(getDistance(pinSLB) < 35);
+          brake();
+
+          forwardNCm(5, false);
+
+        } else { // We are in the gate
+          backwardNCm(5, false);
+        }
+
+        inGate = true;
+
+      } else if (backDist > 30 &&  frontDist < 30) {
+        logger.log("Wall betw right");
+        delay(1000);
+    
+        // Move until the gate completely
+        backward(0, 0, 0, 0);
+        do {
+          backwardP(iWest, LF, LB, RF, RB, true);
+        } while (getDistance(pinSB) > 30 && getDistance(pinSLF) < 31); // We ensure that is not the left-terrine zone
+        brake();
+
+        if (getDistance(pinSB) <= 30) { // We were wrong: we are in the left-terrine zone
+          // Again but we now that the gate is in the front
+          inGate = false;
+          prefForwardInLeftBack = true;
+        } else {
+          backwardNCm(5, false);
+          inGate = true;
+        }
+      } else if (backDist < 30 &&  frontDist > 30) {
+        logger.log("Wall betw left");
+        delay(1000);
+        
+        // Move until the gate completely
+        forward(LF, LB, RF, RB);
+        do {
+          forwardP(iWest, LF, LB, RF, RB, true);
+        } while (getDistance(pinSF) > 30 && getDistance(pinSLB) < 31); // We have to ensure that is not in the right-terrine zone
+        brake();
+
+        if (getDistance(pinSF) <= 30) { // We were wrong: we are in the right-terrine zone
+          // Backward until fully in the wall
+          backward(0, 0, 0, 0);
+          do {
+            backwardP(iWest, LF, LB, RF, RB, false);
+          } while (getDistance(pinSLF) > 30);
+          brake();
+          backwardNCm(5, false);
+
+          // Again but we now that the gate is in the back
+          inGate = false; 
+          prefForwardInLeftBack = false; //We actually dont need to make anything because normally we go first backward
+        } else {
+          forwardNCm(5, false);
+          inGate = true;
         }
       }
-      brake();
-    }
-    brake();
+
+    } while (!inGate);
+
+    logger.log("En la gate");
+    delay(1000);
+    
+    turnToObjectiveN(iSouth);
   }
-  brake();
-  delay(500);
-  turnToObjectiveN(iSouth);
+
+
+  logger.log("Crossing Gate");
+  delay(1000);
+
+  // Cross until we pass both (front and back) of sharps
+  // using parking if necessary (limit with wall).
+  forward(0,0,0,0);
+  do { // TODO: Maybe this can be join into one with the part of the beginning
+    if (digitalRead(pinLL) == LOW) {
+      brake();
+      logger.log("Limit left");
+      delay(1000);
+  
+      turnToObjectiveN(iSouth);
+      parkingRight(false);
+      forward(0,0,0,0);
+    } else if (digitalRead(pinLR) == LOW) {
+      brake();
+      logger.log("Limit right");
+      delay(1000);
+      
+      turnToObjectiveN(iSouth);
+      parkingLeft(false);
+      forward(0,0,0,0);
+    }
+
+    forwardP(iSouth, LF, LB, RF, RB, true);
+
+    crossed = checkCrossingGate(logger); // TODO: Maybe we dont need this two time validation of sharp LF
+
+  } while (!crossed);
+
+  logger.log("END");
 }
 
 /**
