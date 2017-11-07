@@ -5,3 +5,5 @@
 .DS_Store
 *.glue
 *.pyc
+/Microcontroller/NanoI2C/
+/Microcontroller/MilkerI2C/
