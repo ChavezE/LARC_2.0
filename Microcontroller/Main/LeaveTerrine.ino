@@ -25,10 +25,19 @@ void leaveTerrine () {
 
 
     turnToObjectiveN(iWest);
+    forwardNCm(50, false); // Pass the gate
 
-    // Going untill the terrine zone to leave it
-    logger.log("Back N cm");
-    forwardUntilWallN(distFromWall); // TODO: Follow the wall until a blank space
+    // Going until the terrine zone to leave it
+    logger.log("Forw with Left");
+    delay(1000);
+    int distFront, distBack;
+    do {
+        forwardWithLeftWall(iWest, 17, false, distFront, distBack);
+    } while (distFront < 30);
+    brake();
+    logger.log("Forw until Cms");
+    delay(1000);
+    forwardUntilWallN(distFromWall);
 
     // Leave the terrine
     logger.log("Leaving Terrine");

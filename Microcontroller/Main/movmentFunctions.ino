@@ -899,7 +899,7 @@ int forwardWithLeftWall(const int &degreesObjetivo, const int &objetivoDistPared
     baseRB = velRB;
   }
 
-  distFront = getDistance(pinSLF);
+  distFront = getDistance(pinSLF); // TODO: The order of this two depends on if is forward or backward
   distBack = getDistance(pinSLB);
 
   const int separacion = (distFront + distBack) / 2;
