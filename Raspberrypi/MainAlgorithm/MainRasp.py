@@ -14,11 +14,14 @@ import thread
 import sys
 sys.path.insert(0, '../lib/')
 import Larc_vision_2017 as rb
-#import communication as com
+import communication as com
 
 '''
 VARIABLES GLOBALES
 '''
+
+#For debugging
+debugger = False
 
 #Terrines Position; c = unknown, r = right, l = left
 terrinesZone = "c"
@@ -242,8 +245,9 @@ def paralelism():
     top = rb.getTissueTopLevel(maxLenTissue)
     A,B,theta = rb.ajusteDeCurvas(top)
     rb.drawSlope(mainFrame,A,B)
-    cv2.imshow("slope",mainFrame)
-    cv2.waitKey(0)
+    if debugger:
+        cv2.imshow("slope",mainFrame)
+        cv2.waitKey(0)
     degrees = int(abs(theta))
 
     if theta < -8:
@@ -272,7 +276,8 @@ def triangleToGetInCow():
     adyacent = rb.getDistanceFromTop(Top)
     print "ADYACENT"
     print adyacent
-    cv2.waitKey(0)
+    if debugger:
+        cv2.waitKey(0)
     print "PARALLEL"
     degs, turnedLeft = paralelism()
     print degs
@@ -307,22 +312,30 @@ def triangleToGetInCow():
         time.sleep(1)
 
         takePicture()
-        cv2.imshow("second try",mainFrame)
-        cv2.waitKey(0)
+        if debugger:
+            cv2.imshow("second try",mainFrame)
+            cv2.waitKey(0)
         found, filtered = rb.detectCow(clearedMainFrame)
         #first validation, haar cascade
         if found:
             # second validation, tissue algorithm
-            cv2.imshow("second try",filtered)
-            cv2.waitKey(0)
+            if debugger:
+                cv2.imshow("second try",filtered)
+                cv2.waitKey(0)
             foundCow,maxLenTissue,_ = rb.isThereACow(mainFrame,filtered)
             if foundCow:
-                cv2.imshow("second try",mainFrame)
-                cv2.waitKey(0)
+                if debugger:
+                    cv2.imshow("second try",mainFrame)
+                    cv2.waitKey(0)
                 alignWithCow()
+
+                L,R,Top = rb.calcCowLimits(maxLenTissue)
+                distanceFrwrd = rb.getDistanceFromTop(Top)
+                com.forwardNCm(int(distanceFrwrd))
                 return True #success
-        cv2.imshow("second try",mainFrame)
-        cv2.waitKey(0)
+        if debugger:
+            cv2.imshow("second try",mainFrame)
+            cv2.waitKey(0)
         #If found nothing, lets return
         com.forwardNCm(30)
 
@@ -381,6 +394,9 @@ if __name__ == "__main__":
     walkingDetecting()
     com.getInCow()
     #cv2.waitKey(0)
+    com.milk()
+    com.goToStart()
+    
     while True:
         print "code"
         pass

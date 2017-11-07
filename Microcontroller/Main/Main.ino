@@ -226,10 +226,13 @@ const byte pinMotB = 16;
 const byte pinExtractorA = 6;
 const byte pinExtractorB = 4;
 
+//I2C communication with nano
+int const SLAVE_ID = 10;
+
 void setup()
 {
   Serial.begin(9600);
-
+  Wire.begin();
   //Initialize lcd, turn backlight on and clear the display
   lcd.init();
   lcd.backlight();
@@ -261,8 +264,12 @@ void setup()
   pinMode(pinMBLB, OUTPUT);
   pinMode(pinPWMBL, OUTPUT);
 
-  pinMode(pinMotA, OUTPUT);
-  pinMode(pinMotB, OUTPUT);
+  stopMilker();
+
+  sClaw.attach(pinServoC);
+  sPlattaform.attach(pinServoP);
+  sCUD.attach(pinServoCUD);
+  sCT.attach(pinServoR);
 
   //Pin mode limits
   pinMode(pinLI, INPUT);
@@ -285,6 +292,9 @@ void setup()
 
   pinMode(pinExtractorA, OUTPUT);
   pinMode(pinExtractorB, OUTPUT);
+
+  pinMode(pinMotA, OUTPUT);
+  pinMode(pinMotB, OUTPUT);
 
   //Attach servos
   sClaw.attach(pinServoC);
@@ -310,9 +320,9 @@ void setup()
   iWest = iSouth + 90;
 
   //Display the finish of the setup
-  writeLCD("      FENIX 2.0", 0, 0);
+  writeLCD("      El Mitosao", 0, 0);
   delay(1000);
-  writeLCD("START FENIX 2.0", 0, 0);
+  writeLCD("START El Mitosao", 0, 0);
 }
 
 void loop()

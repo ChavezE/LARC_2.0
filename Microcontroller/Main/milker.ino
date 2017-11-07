@@ -40,7 +40,7 @@ void moveMilkerDown()
 void moveMilkerUp()
 {
   milkerUp();
-  delay(15000);
+  delay(23000);
   milkerStop();
 }
 
@@ -50,4 +50,68 @@ void milk()
   delay(1000);
   //Put milker functions here
   moveMilkerDown();
+}
+
+//Move repetitive times the lower part of the milker
+void sendMilkDirective(){
+	char milkInstruction  = 'M';
+	Wire.beginTransmission(SLAVE_ID);
+	Wire.write(milkInstruction);
+	Wire.endTransmission();
+}
+
+//Stop both servos of milker
+void sendStopDirective(){
+	char milkInstruction  = 'S';
+	Wire.beginTransmission(SLAVE_ID);
+	Wire.write(milkInstruction);
+	Wire.endTransmission();
+}
+
+//Open upper part of milker
+void sendOpenDirective(){
+	char milkInstruction  = 'O';
+	Wire.beginTransmission(SLAVE_ID);
+	Wire.write(milkInstruction);
+	Wire.endTransmission();
+}
+
+//Close upper part of milker
+void sendCloseDirective(){
+	char milkInstruction  = 'C';
+	Wire.beginTransmission(SLAVE_ID);
+	Wire.write(milkInstruction);
+	Wire.endTransmission();
+}
+
+void sendTurnOnLedDirective()
+{
+  char milkInstruction  = 'L';
+	Wire.beginTransmission(SLAVE_ID);
+	Wire.write(milkInstruction);
+	Wire.endTransmission();
+}
+
+void sendTurnOffLedDirective()
+{
+  char milkInstruction  = 'K';
+	Wire.beginTransmission(SLAVE_ID);
+	Wire.write(milkInstruction);
+	Wire.endTransmission();
+}
+
+void simpleMilker()
+{
+  lcd.clear();
+  writeLCD("Abrete", 0, 0);
+  sendOpenDirective();
+  delay(6000);
+  lcd.clear();
+  writeLCD("Cierrate", 0, 0);
+  sendCloseDirective();
+  delay(2000);
+  lcd.clear();
+  writeLCD("Dale", 0, 0);
+  sendMilkDirective();
+  delay(15000);
 }

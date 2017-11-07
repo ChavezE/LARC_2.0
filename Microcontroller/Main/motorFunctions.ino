@@ -243,3 +243,21 @@ void turn(int leftFront, int leftBack, int rightFront, int rightBack, int direct
     turnRight(leftFront, leftBack, rightFront, rightBack);
   }
 }
+
+void upMilker()
+{
+  digitalWrite(pinMotA, HIGH);
+  digitalWrite(pinMotB, 0);
+}
+
+void downMilker()
+{
+  digitalWrite(pinMotA, 0);
+  digitalWrite(pinMotB, HIGH);
+}
+
+void stopMilker()
+{
+  digitalWrite(pinMotA, 0);
+  digitalWrite(pinMotB, 0);
+}
