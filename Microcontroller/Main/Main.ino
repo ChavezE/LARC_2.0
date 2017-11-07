@@ -97,6 +97,10 @@ const byte pinLCD = 44;
 // Limit up garra
 const byte pinLCU = 46;
 
+//Milker
+const byte pinMotA = 15;
+const byte pinMotB = 16;
+
 //-------Servos-------//
 //Close open claw servo
 const byte pinServoC = 19;  //4
@@ -261,8 +265,12 @@ void setup()
   pinMode(pinMBLB, OUTPUT);
   pinMode(pinPWMBL, OUTPUT);
 
-  pinMode(pinMotA, OUTPUT);
-  pinMode(pinMotB, OUTPUT);
+  stopMilker();
+
+  sClaw.attach(pinServoC);
+  sPlattaform.attach(pinServoP);
+  sCUD.attach(pinServoCUD);
+  sCT.attach(pinServoR);
 
   //Pin mode limits
   pinMode(pinLI, INPUT);
@@ -285,6 +293,9 @@ void setup()
 
   pinMode(pinExtractorA, OUTPUT);
   pinMode(pinExtractorB, OUTPUT);
+
+  pinMode(pinMotA, OUTPUT);
+  pinMode(pinMotB, OUTPUT);
 
   //Attach servos
   sClaw.attach(pinServoC);

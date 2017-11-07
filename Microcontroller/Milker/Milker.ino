@@ -11,16 +11,20 @@ byte pinLU = 6;
 //Limit switch of down part of milker
 byte pinLD = 7;
 
+//Servo Limits Pins
+byte pinLServo = 5;
+byte pinLServoAux = 4;
+
 //Servo Pins
-byte pinServo = 5;
-byte pinServoAux = 4;
+byte pinServo = 9;
+byte pinServoAux = 10;
 
 void setup() {
   Serial.begin(9600);
 
   //Attach servos
-  sMilker.attach(9);
-  sMilker2.attach(10);
+  sMilker.attach(pinServo);
+  sMilker2.attach(pinServoAux);
 
   //Stop servos
   sMilker.write(90);
@@ -29,20 +33,14 @@ void setup() {
   //Limit switches
   pinMode(pinLU, INPUT);
   pinMode(pinLD, INPUT);
-  pinMode(pinServo, INPUT);
-  pinMode(pinServoAux, INPUT);
+  pinMode(pinLServo, INPUT);
+  pinMode(pinLServoAux, INPUT);
 }
 
-void getReady()
+void getServoReady()
 {
   //Limit switch of principal gear
-  bool bMilker = digitalRead(pinServo);
-  //Limit switch in auxiliar gear
-  bool bMilker2 = digitalRead(pinServoAux);
-
-  //Stop servos
-  sMilker2.write(90);
-  sMilker.write(90);
+  bool bMilker = digitalRead(pinLServo);
 
   //Move principal gear until the limit switch is activated
   if (!bMilker)
@@ -52,11 +50,18 @@ void getReady()
     while (!bMilker)
     {
       //Read limit switch
-      bMilker = digitalRead(pinServo);
+      bMilker = digitalRead(pinLServo);
     }
     //Stop
     sMilker.write(90);
   }
+}
+
+void getServoAuxReady()
+{
+  //Limit switch in auxiliar gear
+  bool bMilker2 = digitalRead(pinLServoAux);
+
   //Move auxiliar gear until the limit switch is activated
   if (!bMilker2)
   {
@@ -65,44 +70,53 @@ void getReady()
     while (!bMilker2)
     {
       //Read limit switch
-      bMilker2 = digitalRead(pinServoAux);
+      bMilker2 = digitalRead(pinLServoAux);
     }
     //Stop
     sMilker2.write(90);
   }
 }
 
+//Move both servos to starting position
+void getReady()
+{
+  //Stop servos
+  sMilker2.write(90);
+  sMilker.write(90);
+
+  getServoReady();
+  getServoAuxReady();
+}
+
+//Open upper part of the milker
 void openMilker()
 {
-  //Timers
-  unsigned long iStartTime;
-  unsigned long iActTime;
   //Separate the magnet
+  sMilker2.write(180);
+  sMilker.write(180);
+  delay(200);
+  //while (digitalRead(pinLServo) == 1 || digitalRead(pinLServoAux) == 1);
+  //Keep moving the servos until it touch the limit switch
+  while (digitalRead(pinLU) == 0);
+  //Wait for the aux servo to get out
+  //delay(80);
+  //Stop out servo
+  sMilker2.write(90);
+  //wait for the principal servo to get out
+  //delay(400);
+  //Stop principal servo
+  sMilker.write(90);
+}
+
+void closeMilker()
+{
   sMilker2.write(140);
   sMilker.write(180);
-  iStartTime = millis();
-  //Keep moving the servos until it touch the limit switch
-  while (digitalRead(pinLU) == 0)
-  {
-    //Check time of action
-    iActTime = millis();
-    //If the limit wasn't touched after 0.8 sec start over
-    if (iActTime - iStartTime >= 800)
-    {
-      sMilker2.write(90);
-      sMilker.write(90);
-      getReady();
-      sMilker2.write(140);
-      sMilker.write(180);
-      iStartTime = millis();
-    }
-  }
-  //Wait for the aux servo to get out
   delay(80);
   //Stop out servo
   sMilker2.write(90);
   //wait for the principal servo to get out
-  delay(100);
+  delay(400);
   //Stop principal servo
   sMilker.write(90);
 }
@@ -116,7 +130,7 @@ void milk()
   sMilker.write(70);
   //Times the glove has been milked
   int iCounter = 0;
-  while (iCounter < 3)
+  while (iCounter < 8)
   {
     //If the milker is pressing the glove
     if (digitalRead(pinLD) == 0)
@@ -146,7 +160,10 @@ void milker()
   getReady();
   //Open upper part of milker
   openMilker();
-  //Milk the glove
+  //Time to get the glove inside the milker
+  delay(4000);
+  closeMilker();
+
   milk();
 }
 
@@ -158,15 +175,14 @@ void tryLimits()
   Serial.print("pinLD: ");
   Serial.print(digitalRead(pinLD));
   Serial.print("    ");
-  Serial.print("pinServo: ");
-  Serial.print(digitalRead(pinServo));
+  Serial.print("pinLServo: ");
+  Serial.print(digitalRead(pinLServo));
   Serial.print("    ");
-  Serial.print("pinServoAux: ");
-  Serial.println(digitalRead(pinServoAux));
+  Serial.print("pinLServoAux: ");
+  Serial.println(digitalRead(pinLServoAux));
 }
 
 void loop() {
-  //tryLimits();
   milker();
   delay(1000);
 }
