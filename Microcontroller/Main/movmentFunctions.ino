@@ -603,10 +603,17 @@ void backwardUntilNoRight()
   brake();
 }
 
+/**
+ * Method that backwards until there is no left Wall.
+ * Backwards until we pass both left-sharps.
+ * 
+ * Note: It leaves you exactly where the sharp back 
+ * stops reading.
+ *
+ * It works now.
+ */
 void backwardUntilNoLeft()
 {
-  encoderState = 1;
-
   //Angle to stay in
   int iStayAngle = getCompass();
 
@@ -616,33 +623,20 @@ void backwardUntilNoLeft()
   int RF = velRF;
   int RB = velRB;
 
-  //Distance by left back sharp
-  int distBack = getDistance(pinSLB);
-
-  //Distance by left front sharp
-  int distFront = getDistance(pinSLF);
-
-  //Check if the the robot should go slower
-  bool bSlow = distBack > 30 ? true : false;
-
-  if (distFront < 30)
-  {
-    //Start moving
-    backward(LF, LB, RF, RB);
-
-    //While not at ceratin distance from wall
-    while (distFront < 30)
-    {
-      backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
-
-      distBack = getDistance(pinSLB);
-      bSlow = distBack > 30 ? true : false;
-
-      distFront = getDistance(pinSLF);
-    }
+  // Back until the sharp Left Back stops reading
+  backward(0, 0, 0, 0);
+  while (getDistance(pinSLB) <= 30) {
+    backwardP(iStayAngle, LF, LB, RF, RB, false);
   }
-
   brake();
+
+  // Back slowly until the sharp front reading
+  backward(0, 0, 0, 0);
+  while (getDistance(pinSLF) <= 30) {
+    backwardP(iStayAngle, LF, LB, RF, RB, true);
+  }
+  brake();
+
 }
 
 void goToStart()
