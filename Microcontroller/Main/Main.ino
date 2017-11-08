@@ -105,7 +105,7 @@ const byte pinServoC = 19;  //4
 const byte pinServoP = 7;
 
 //Up down claw/plat servo
-const byte pinServoCUD = 8;
+const byte pinServoCUD = 4;
 
 //Rotate claw servo
 const byte pinServoR = 0; //5
@@ -223,8 +223,8 @@ const byte pinMotA = 15;
 const byte pinMotB = 16;
 
 //Pins of extractor
-const byte pinExtractorA = 6;
-const byte pinExtractorB = 4;
+const byte pinExtractorA = 8;
+const byte pinExtractorB = 6;
 
 //I2C communication with nano
 int const SLAVE_ID = 10;

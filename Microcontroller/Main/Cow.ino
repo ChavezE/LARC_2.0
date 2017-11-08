@@ -1,3 +1,8 @@
+//Limit touched in getInCow, 0 for none, 1 for right and 2 for left
+byte limitTouched = 0;
+//firstSahrp to detect the leg of the cow, 1 for right and 2 for left
+byte firstLeg = 1;
+
 void getInCow(bool bSlow)
 {
   //Clear LCD and write that we are getting under the cow
@@ -86,13 +91,15 @@ void getInCow(bool bSlow)
 
    //If right leg was touched
   if (!bRight) {
-    parkingLeft(bSlow, 10);
+    parkingLeft(bSlow, 20);
     getInCow(bSlow );
+    limitTouched = 1;
   }
    //If left leg was touched
   else if (!bLeft) {
-    parkingRight(bSlow, 10);
+    parkingRight(bSlow, 20);
     getInCow(bSlow);
+    limitTouched = 2;
   }
   //If no leg was touched
   else {
@@ -103,6 +110,7 @@ void getInCow(bool bSlow)
     int iStepsWatchDog = (encoder30Cm / 30) * 20;
     if(distRF < distanceToWall)
     {
+      firstLeg = 1;
       backwardNCm(5, bSlow);
       distLF = getDistance(pinSLF);
       steps = 0;
@@ -115,7 +123,7 @@ void getInCow(bool bSlow)
         {
           brake();
           backwardNCm(5, bSlow);
-          parkingLeft(bSlow, 10);
+          parkingLeft(bSlow, 20);
           turnNDegrees(iTurn);
           getInCow(bSlow);
           break;
@@ -124,6 +132,7 @@ void getInCow(bool bSlow)
       }
     }
     else{
+      firstLeg = 2;
       backwardNCm(5, bSlow);
       distRF = getDistance(pinSRF);
       steps = 0;
@@ -136,7 +145,7 @@ void getInCow(bool bSlow)
         {
           brake();
           backwardNCm(5, bSlow);
-          parkingRight(bSlow, 10);
+          parkingRight(bSlow, 20);
           turnNDegrees(iTurn * -1);
           getInCow(bSlow);
           break;
@@ -147,4 +156,107 @@ void getInCow(bool bSlow)
   }
   brake();
   //forwardNCm(5, false);
+}
+
+void lookRight(int& iDistanceFunel)
+{
+  for(int iI = 0; iI < 5; iI++)
+  {
+    turnNDegrees(3);
+    iDistanceFunel = getDistance(pinSFunel);
+    if(iDistanceFunel < 17)
+    {
+      break;
+    }
+  }
+}
+
+void lookLeft(int& iDistanceFunel)
+{
+  for(int iI = 0; iI < 5; iI++)
+  {
+    turnNDegrees(-3);
+    iDistanceFunel = getDistance(pinSFunel);
+    if(iDistanceFunel < 17)
+    {
+      break;
+    }
+  }
+}
+void centerWithGlove()
+{
+  int iTry = 0;
+  int iDistanceFunel = getDistance(pinSFunel);
+  int iAm = getCompass();
+  bool bContinue = true;
+  while(bContinue)
+  {
+    if(limitTouched == 1)
+    {
+      if(!(iDistanceFunel < 17))
+      {
+        lookLeft(iDistanceFunel);
+        turnToObjectiveN(iAm);
+        lookRight(iDistanceFunel);
+      }
+    }
+    else if(limitTouched == 2){
+      if(!(iDistanceFunel < 17))
+      {
+        lookRight(iDistanceFunel);
+        turnToObjectiveN(iAm);
+        lookLeft(iDistanceFunel);
+      }
+    }
+    else{
+      if(firstLeg == 1)
+      {
+        if(!(iDistanceFunel < 17))
+        {
+          lookLeft(iDistanceFunel);
+          turnToObjectiveN(iAm);
+          lookRight(iDistanceFunel);
+        }
+      }
+      else{
+        if(!(iDistanceFunel < 17))
+        {
+          lookRight(iDistanceFunel);
+          turnToObjectiveN(iAm);
+          lookLeft(iDistanceFunel);
+        }
+      }
+    }
+    if(iDistanceFunel < 17)
+    {
+      forwardNCm(5, true);
+      iDistanceFunel = getDistance(pinSFunel);
+      if(iDistanceFunel < 10)
+      {
+        lcd.clear();
+        writeLCD("Ordena", 0, 0);
+        //simpleMilker();
+        bContinue = false;
+      }
+      else{
+        iTry++;
+      }
+    }
+    else
+    {
+      iTry++;
+    }
+    if(iTry >= 3)
+    {
+      lcd.clear();
+      writeLCD("Ordena", 0, 0);
+      //simpleMilker();
+      bContinue = false;
+    }
+    else
+    {
+        //goToStart
+        turnToObjectiveN(iAm);
+    }
+  }
 }
