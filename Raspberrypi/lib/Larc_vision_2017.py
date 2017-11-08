@@ -40,17 +40,22 @@ eps = 50
 eps2 = 50
 #HAAR Cascade Sansitivity
 cascadeSensitivity = 50
+tankCascadeSensitivity = 10
 
 #----HAAR Cascade---
 #importing the trained cascade of cow
 cowCascade = cv2.CascadeClassifier('../Cascades/COWTUMMY2.0.xml')
+
+#FOR THE TANK
+tankCascade = cv2.CascadeClassifier('../Cascades/TANK2.xml')
+
 #using a black frame to filter
 blackFrame = np.zeros((480,640), np.uint8)
 whiteFrame = np.ones((480,640), np.uint8)
 whiteFrame[:] = 255
 
 #For debugging
-debugger = False
+debugger = True
 
 # Simple class to manage individual squares in the image
 # ATRIBUTES:
@@ -454,7 +459,44 @@ def detectCow(img):
       cv2.imshow("with black", blackTemp)
    return cowDetected, blackTemp
 
+def detectTank(img):
+   white = whiteFrame.copy()#whiteFrame.copy()#blackFrame.copy()
 
+   tanks = tankCascade.detectMultiScale(img, 1.35, tankCascadeSensitivity)
+
+   xc,yc,hc,wc = 0,0,0,0
+   individualTank = []
+
+   tankDetected = False
+
+   if tanks is ():
+      print "Nada detectado"
+      return tankDetected, img,0,0,0
+
+   for (x,y,w,h) in tanks:
+
+    
+      area = (float(w)*h)
+     
+      if y > 240 : 
+         #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
+
+
+        xc = x 
+        yc = y 
+        hc = h 
+        wc = w 
+           
+        tankDetected = True
+
+   individualTank = img[yc:yc+hc,xc:xc+wc]
+   print individualTank.shape
+   white[yc:yc+hc,xc:xc+wc] = individualTank
+   print white.shape
+
+   if debugger:
+      cv2.imshow("white", white)
+   return tankDetected, white,xc,xc+wc,yc 
 
 # cSquares is a multidimensional list: [[x1,y1],[x2,y2],...,[xN,yN]]
 # These lists and variables are used to calculate A and B
