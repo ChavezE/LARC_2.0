@@ -974,6 +974,57 @@ int backwardWithLeftWall(const int& degreesObjetivo, const int& objetivoDistPare
 }
 
 /**
+ * Forward with P correction for being with certain distance with
+ * the left distance.
+ * It checks the compass, the sharp front and back difference and
+ * the distance average betweeen the sharp front and back.
+ *
+ * @param {const int&} degreesObjetivo
+ * @param {const int&} objetivoDistPared
+ * @param {const bool&} slow
+ * @param {int&} distFront The individual dist to the wall by the sharp front
+ * @param {int&} distBack The dist sharp back
+ *
+ * @return {int} separacion The dist with the wall average with front and back
+ */
+ int forwardWithLeftWall(const int& degreesObjetivo, const int& objetivoDistPared, const bool& slow, 
+  int& distFront, int& distBack) {
+  //Base for motors velocity
+  int baseLF;
+  int baseLB;
+  int baseRF;
+  int baseRB;
+  if (slow) {
+    baseLF = velSlowLF;
+    baseLB = velSlowLB;
+    baseRF = velSlowRF;
+    baseRB = velSlowRB;
+  } else {
+    baseLF = velLF;
+    baseLB = velLB;
+    baseRF = velRF;
+    baseRB = velRB;
+  }
+
+  distFront = getDistance(pinSLF);
+  distBack = getDistance(pinSLB);
+
+  const int separacion = (distFront + distBack) / 2;
+  const int diffSeparacion = separacion - objetivoDistPared;
+  const int diffSharps = distFront - distBack; // (-) voltear a la der
+  const int diffCompass = getAngleDifferenceD(degreesObjetivo, getCompass()); // (-) conviene voltear a la derecha
+
+  int velLF = formulaFollowWithWall(baseLF, -diffSeparacion, -diffSharps, -diffCompass);
+  int velLB = formulaFollowWithWall(baseLB, -diffSeparacion, -diffSharps, -diffCompass);
+  int velRF = formulaFollowWithWall(baseRF, diffSeparacion, diffSharps, diffCompass);
+  int velRB = formulaFollowWithWall(baseRB, diffSeparacion, diffSharps, diffCompass);
+
+  forward(velLF, velLB, velRF, velRB); // TODO: Use better setVelocity
+
+  return separacion;
+}
+
+/**
  * Formula with the P taking the base, distance from the wall, difference from sharps
  * and diff from compass. Used in any backward/forwardWithLeft/RightWall.
  *
