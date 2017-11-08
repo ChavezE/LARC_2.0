@@ -62,6 +62,7 @@
     const int maxValue = 8;
 
     openClaw();
+    downClaw();
 
     // Claw out until feel the terrine or limit
     int suma = 0, cant = 0;
@@ -101,14 +102,34 @@
   bool result;
 
   do {
+    // Right Side
     result = goGrabTerrineBasicSideRight(iWest);
     if (result) {
       parkingFrontRight(false);
       return;
     }
+    lcd.clear();
+    writeLCD("FAIL", 0, 0);
 
-    forwardNCm(135, true); //50 + 75
+    // Return to the gate
+    forwardNCm(60, true);
+    lcd.clear();
+    writeLCD("Out terrine", 0, 0);
+    delay(1000);
 
+    int distFront, distBack;
+    forward(0, 0, 0, 0);
+    do {
+      forwardWithLeftWall(iWest, 17, false, distFront, distBack);
+    } while (distFront < 32);
+    brake();
+    lcd.clear();
+    writeLCD("Out correction", 0, 0);
+    delay(1000);
+
+    forwardNCm(35, false);
+
+    // Left Side
     result = goGrabTerrineBasicSideLeft(iWest);
     if (result) {
       backwardUntilWallN(10);
@@ -116,7 +137,22 @@
       return;
     }
 
-    backwardNCm(135, true); //50 + 75
+    // Return to the gate
+    backwardNCm(60, true);
+    lcd.clear();
+    writeLCD("Out terrine", 0, 0);
+    delay(1000);
+    
+    backward(0, 0, 0, 0);
+    do {
+      backwardWithLeftWall(iWest, 17, false, distFront, distBack);
+    } while (distBack < 32);
+    brake();
+    lcd.clear();
+    writeLCD("Out correction", 0, 0);
+    delay(1000);
+
+    backwardNCm(35, false);
 
 
   } while (true);
@@ -141,9 +177,9 @@ bool goGrabTerrineBasicSideRight(const int gradosObjetivo) {
   lcdLogger.init();
 
   AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
-  Logger logger("Mega", "GrabTerrines", LevelLogger::INFO, loggerArray, 1);
+  Logger logger("Mega", "GTerrineRight", LevelLogger::INFO, loggerArray, 1);
 
-  logger.log("Grab Terrines");
+  logger.log("GTerrines Right");
   delay(1000);
 
 
@@ -250,7 +286,7 @@ bool goGrabTerrineBasicSideRight(const int gradosObjetivo) {
 }
 
 /**
- * This routine is to grab the terrine in the left side.
+ * This routine is to grab the terrine in the LEFT side.
  * It starts pointing to the west and in the gate.
  *
  * @param gradosObjetivo {int} Angle where the west is.
@@ -351,8 +387,7 @@ bool goGrabTerrineBasicSideLeft(const int gradosObjetivo) {
       if (!grabbed) {
         clawToStartPoint(false);
         closeClaw();
-        forwardNCm(10, true);
-        // TODO: Here we can return a little to look again in the part we forwarding to arrive to terrine with the claw
+        forwardNCm(11, true); // TODO: Even that we move in total like 3cm, it should look at limits
       }
 
     } while(!grabbed);
