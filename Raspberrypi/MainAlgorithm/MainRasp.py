@@ -192,7 +192,7 @@ def checkingTurningL():
 def walkingDetecting():
     global terrinesZone
 
-    stepping = 40#20
+    stepping = 30#20
     corner = "EAST"
     foundCow = False
     while foundCow == False:
@@ -283,6 +283,16 @@ def triangleToGetInCow():
     print degs
     print "TRIANGLE"
     ninetyDegs = 90 + 7#degs || 15
+    ####################################################################################
+    ####################################################################################
+    ##########################THIS IS VERY IMPORTANT####################################
+    ####################################################################################
+    # SINCE THE TRIANGLE DOES NOT WORK AS EXPECTED, WE WILL TRY TO JUST ALLIGN WITH,
+    # THE COW, IN ORDER TO DO THAT, THE VALUE OF DEGS WILL BE PUT CONSTANT
+
+    degs = 3   #   <-----  THIS IS WHAT I AM TALKING ABOUT
+
+
     if degs > 10:
         print "ACTION"
         hypotenuse = (1/math.cos(math.radians(degs))) * adyacent
@@ -331,7 +341,7 @@ def triangleToGetInCow():
 
                 L,R,Top = rb.calcCowLimits(maxLenTissue)
                 distanceFrwrd = rb.getDistanceFromTop(Top)
-                com.forwardNCm(int(distanceFrwrd))
+                com.forwardNCm(int(distanceFrwrd) - 10)
                 return True #success
         if debugger:
             cv2.imshow("second try",mainFrame)
@@ -354,7 +364,7 @@ def triangleToGetInCow():
         return False
 
     #IF THE COW IS IN FRONT, LETS JUST MOVE FORWARD ITS DISTANCE
-    com.forwardNCm(int(adyacent))
+    com.forwardNCm(int(adyacent) - 10)
     return True #success
 
 
