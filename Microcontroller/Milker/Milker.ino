@@ -102,7 +102,7 @@ void openMilker()
 {
   //Separate the magnet
   sMilker2.write(180);
-  sMilker.write(180);
+  sMilker.write(160);
   delay(200);
   //while (digitalRead(pinLServo) == 1 || digitalRead(pinLServoAux) == 1);
   //Keep moving the servos until it touch the limit switch
