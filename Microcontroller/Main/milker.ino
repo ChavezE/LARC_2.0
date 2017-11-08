@@ -47,7 +47,7 @@ void moveMilkerUp()
 void milk()
 {
   moveMilkerUp();
-  delay(1000);
+  delay(4500);
   //Put milker functions here
   moveMilkerDown();
 }
@@ -114,4 +114,6 @@ void simpleMilker()
   writeLCD("Dale", 0, 0);
   sendMilkDirective();
   delay(15000);
+  sendOpenDirective();
+  delay(6000);
 }
