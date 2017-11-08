@@ -41,6 +41,7 @@ void sharpCalibration()
   int sharpRB = round(13 * pow((analogRead(pinSRB) * 0.0048828125), -1));
   int sharpLB = round(13 * pow((analogRead(pinSLB) * 0.0048828125), -1));
   int sharpSC = ultrasonicClaw.ping_cm();
+  int sharpFunel = round(13 * pow((analogRead(pinSFunel) * 0.0048828125), -1));
 
   Serial.print("F: ");
   Serial.print(sharpF);
@@ -67,7 +68,11 @@ void sharpCalibration()
   Serial.print("\t");
   Serial.print("\t");
   Serial.print("Claw: ");
-  Serial.println(sharpSC);
+  Serial.print(sharpSC);
+  Serial.print("\t");
+  Serial.print("\t");
+  Serial.print("Claw: ");
+  Serial.println(sharpFunel);
 }
 
 void limitsCalibration()
@@ -230,4 +235,3 @@ void tryRobot()
   //analogWrite(pinMotA, 0);
   //analogWrite(pinMotB, 100);
 }
-
