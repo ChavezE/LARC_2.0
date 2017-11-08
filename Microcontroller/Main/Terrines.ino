@@ -162,13 +162,26 @@ void goGrabTerrineBasic(const int northAngle) {
       // If we get to the wall, lets return and restart
       if (digitalRead(pinLLB) == LOW || digitalRead(pinLRB) == LOW) {
         logger.log("Limits tocando");
-        forwardNCm(60, true); //65
+        forwardNCm(65, true);
         break;
       }
 
       turnToObjectiveN(gradosObjetivo);
-      backwardNCm(6, true); // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
-      // TODO: Also implement checking the limits in this backwardNCm
+      // Lets move until the terrine, looking at the limits
+      encoderState = 1;
+      int untilSteps2 = (encoder30Cm / 30) * 6; // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
+      steps = 0;
+      while (steps < untilSteps2 && digitalRead(pinLLB) == LOW || digitalRead(pinLRB) == LOW) {
+        backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true); 
+      }
+      brake();
+
+      if (digitalRead(pinLLB) == HIGH || digitalRead(pinLRB) == HIGH) {
+        logger.log("Limits tocando");
+        forwardNCm(65, true);
+        break;
+      }
+      
 
       if (tryToGrabTerrine()) {
         logger.log("No limit");
