@@ -21,7 +21,7 @@ VARIABLES GLOBALES
 '''
 
 #For debugging
-debugger = False
+debugger = True
 
 #Terrines Position; c = unknown, r = right, l = left
 terrinesZone = "c"
