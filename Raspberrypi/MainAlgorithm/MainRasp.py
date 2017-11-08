@@ -120,6 +120,24 @@ def turnLeft(degrees):
 
 # Checks if the cascade detects a cow, updates maxLenTissue and returns boolean wheather found or not
 # Robot must be facing EAST
+
+def searchTank():
+    for x in range(0,4) :
+        turnWest()
+        for x in range(0,180,45) :
+            turnLeft(45)
+            takePicture()
+            found, filtered,left,right,top = rb.detectTank(clearedMainFrame)
+            #first validation, haar cascade
+            if found:
+                alignWithTank(left,right)
+                return
+            else:
+                print "Searching Tank"
+        com.forwardNCm(15)
+    print "HAAR DID NOT FOUND TANK"
+
+
 def checkingTurningR():
     global maxLenTissue
 
@@ -227,10 +245,10 @@ def alignWithCow():
     elif(pixelDif > 2 ):
         turnLeft(degree)
 
-def alignWithTank(tankCenter):
+def alignWithTank(left,right):
     centerFrame = rb.getXCenterFrame(mainFrame)
-
-    pixelDif = centerFrame - tankCenter
+    
+    pixelDif = centerFrame - ((right - left)/2)
     degree = abs(pixelDif)/12
     #Constant obtained throught calibration
 
