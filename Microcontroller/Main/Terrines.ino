@@ -93,14 +93,13 @@
 
 /**
  * Routine Basic form to go and grab terrine.
- * The robot starts in the center of the field pointing to the north,
- * it turns left 90 and then it starts backwards.
+ * The robot starts in the center of the field pointing to the WEST
+ * and then it starts backwards.
  *
- * @param northAngle {int} Angle where the north is (the angle where the
- *  robot starts pointing to).
+ * @param gradosObjetivo {int} Angle where the west is
  *
  */
-void goGrabTerrineBasic(const int northAngle) {
+void goGrabTerrineBasic(const int gradosObjetivo) {
   SerialLog serialLogger;
   //serialLogger.init();
   LCDLogger lcdLogger;
@@ -112,16 +111,13 @@ void goGrabTerrineBasic(const int northAngle) {
   logger.log("Grab Terrines");
   delay(1000);
 
-  const int gradosObjetivo = northAngle - 90 < 0 ?
-    northAngle - 90 + 360 : northAngle - 90;
 
   clawToStartPoint(false);
 
-  turnToObjectiveN(gradosObjetivo);
   backwardNCm(50, false);
 
   encoderState = 1;
-  int untilSteps = (encoder30Cm / 30) * 30; // 70
+  int untilSteps = (encoder30Cm / 30) * 25; // 70
   steps = 0;
   int distFront, distBack;
   while (steps < untilSteps) {
@@ -169,7 +165,7 @@ void goGrabTerrineBasic(const int northAngle) {
       turnToObjectiveN(gradosObjetivo);
       // Lets move until the terrine, looking at the limits
       encoderState = 1;
-      int untilSteps2 = (encoder30Cm / 30) * 6; // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
+      int untilSteps2 = (encoder30Cm / 30) * 8; // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
       steps = 0;
       while (steps < untilSteps2 && digitalRead(pinLLB) == HIGH && digitalRead(pinLRB) == HIGH) {
         backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true); 
