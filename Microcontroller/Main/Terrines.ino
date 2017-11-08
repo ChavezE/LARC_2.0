@@ -98,9 +98,9 @@
  * @param {const int} iNorth The north angle.
  *
  */
- void goGrabTerrineBasic(const int iNorth) {
+ void goGrabTerrineBasic(const int iNorth) { // TODO: Remove argument
   bool result;
-
+  // TODO: Use a declared-here logger that will be send as argument
   do {
     // Right Side
     result = goGrabTerrineBasicSideRight(iWest);
