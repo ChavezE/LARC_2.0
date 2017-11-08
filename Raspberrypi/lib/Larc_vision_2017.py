@@ -30,7 +30,7 @@ B = float(dstFile.readline().strip("\n"))
 print "A", A
 print "B", B
 maxSquareArea = 9000
-minSquareArea = 500
+minSquareArea = 300
 #Thresh range for cow squares  #si no detecta suficientes cuadros
 minThresh = 5#50
 maxThresh = 150
