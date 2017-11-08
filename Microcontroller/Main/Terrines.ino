@@ -171,12 +171,12 @@ void goGrabTerrineBasic(const int northAngle) {
       encoderState = 1;
       int untilSteps2 = (encoder30Cm / 30) * 6; // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
       steps = 0;
-      while (steps < untilSteps2 && digitalRead(pinLLB) == LOW || digitalRead(pinLRB) == LOW) {
+      while (steps < untilSteps2 && digitalRead(pinLLB) == HIGH && digitalRead(pinLRB) == HIGH) {
         backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true); 
       }
       brake();
 
-      if (digitalRead(pinLLB) == HIGH || digitalRead(pinLRB) == HIGH) {
+      if (digitalRead(pinLLB) == LOW || digitalRead(pinLRB) == LOW) {
         logger.log("Limits tocando");
         forwardNCm(65, true);
         break;
@@ -215,6 +215,124 @@ void goGrabTerrineBasic(const int northAngle) {
   parkingFrontRight(false);
 
 }
+
+/**
+ * This routine is to grab the terrine in the left side.
+ * It starts pointing to the west and in the gate.
+ *
+ * @param northAngle {int} Angle where the north is (the angle where the
+ *  robot starts pointing to).
+ *
+ * @return {bool} true if grabbed
+ * TODO: If we detect something one time, that is the side.
+ *
+ */
+bool goGrabTerrineBasicLeftSide(const int northAngle) {
+  SerialLog serialLogger;
+  //serialLogger.init();
+  LCDLogger lcdLogger;
+  lcdLogger.init();
+
+  AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
+  Logger logger("Mega", "GTerrineLeft", LevelLogger::INFO, loggerArray, 1);
+
+  logger.log("GTerrines Left");
+  delay(1000);
+
+  const int gradosObjetivo = northAngle;//northAngle - 90 < 0 ?
+    //northAngle - 90 + 360 : northAngle - 90;
+
+  clawToStartPoint(false);
+
+  //turnToObjectiveN(gradosObjetivo);
+  forwardNCm(50, false); // Pass the gate
+
+  // Pass all the first wall with wall-correction
+  encoderState = 1;
+  int untilSteps = (encoder30Cm / 30) * 25; // 70
+  steps = 0;
+  int distFront, distBack;
+  while (steps < untilSteps) {
+    forwardWithLeftWall(gradosObjetivo, 17, false, distFront,
+      distBack); // TODO: See if this part can be merge with the other part of look at the blank space
+  }
+  brake();
+  turnToObjectiveN(gradosObjetivo);
+
+  int mientr1, mientr2, mientr3, mientr4;
+  bool grabbed = false;
+  do {
+    logger.log("En inicio");
+    delay(2000);
+
+
+    // Forward until we find a "blank space"
+    // This make sense in the correct field
+    forward(velSlowLF, velSlowLB, velSlowRF, velSlowRB);
+    while (getDistance(pinSLB) < 30) {
+      forwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true);
+    }
+    brake(); // TODO: Check if we need to implement a harder brake with seconds to the other direction
+    logger.log("Out find blank");
+    delay(1000);
+
+    do {
+      logger.log("Look not blank");
+      // Forward until we dont find a "blank space" that is a terrine
+      forward(velSlowLF, velSlowLB, velSlowRF, velSlowRB);
+      while (getDistance(pinSLB) > 35 && digitalRead(pinLL) == HIGH && digitalRead(pinLR) == HIGH) { // MIENTRAS la distancia es 10 por pista de pruebas
+        forwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true); // TODO: Check if it is neccesary to quit only if n times
+      }
+      brake();
+      logger.log("Found not blank");
+      delay(1000);
+
+      // If we get to the wall, lets return and restart
+      if (digitalRead(pinLL) == LOW || digitalRead(pinLR) == LOW) {
+        logger.log("Limits tocando1");
+        backwardNCm(65, true);
+        break;
+      }
+      turnToObjectiveN(gradosObjetivo);
+
+      // Lets move until the terrine, NOT looking at the limits
+      backwardNCm(8, true);
+      
+
+      if (tryToGrabTerrine()) {
+        logger.log("No limit");
+        delay(2000);
+        // TODO: Look for the terrine with the claw in one side and change it to grab it
+        closeClaw();
+
+        if (checkHaveTerrine()) {
+          logger.log("Lo agarramos");
+          clawToStartPoint(true);
+          grabbed = true;
+        } else {
+          logger.log("No grabbed");
+          delay(2000);
+        }
+      } else {
+        logger.log("Tocamos limit");
+        delay(2000);
+      }
+
+      if (!grabbed) {
+        clawToStartPoint(false);
+        closeClaw();
+        forwardNCm(10, true);
+        // TODO: Here we can return a little to look again in the part we forwarding to arrive to terrine with the claw
+      }
+
+    } while(!grabbed);
+
+  } while (!grabbed);
+
+  return true;
+
+}
+
 
 void parkingFrontRight(const bool& bSlow) {
   turnNDegrees(20);
