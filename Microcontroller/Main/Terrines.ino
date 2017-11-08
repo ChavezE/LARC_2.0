@@ -90,16 +90,51 @@
     return digitalRead(pinLO) == HIGH;
  }
 
+/**
+ * Main entrance for goGrabTerrine.
+ * It starts going to the right, if it fails, it tries in the right.
+ *
+ * @param {const int} iNorth The north angle.
+ *
+ */
+ void goGrabTerrineBasic(const int iNorth) {
+  bool result;
+
+  do {
+    result = goGrabTerrineBasicSideRight(iWest);
+    if (result) {
+      parkingFrontRight(false);
+      return;
+    }
+
+    forwardNCm(135, true); //50 + 75
+
+    result = goGrabTerrineBasicSideLeft(iWest);
+    if (result) {
+      backwardUntilWallN(10);
+      parkingFrontRight(false);
+      return;
+    }
+
+    backwardNCm(135, true); //50 + 75
+
+
+  } while (true);
+  
+}
+
 
 /**
- * Routine Basic form to go and grab terrine.
+ * Routine Basic form to go to RIGHT and grab terrine.
  * The robot starts in the center of the field pointing to the WEST
  * and then it starts backwards.
  *
  * @param gradosObjetivo {int} Angle where the west is
  *
+ * @return {bool} true if grabbed
+ * TODO: If we detect something one time, that is the side.
  */
-void goGrabTerrineBasic(const int gradosObjetivo) {
+bool goGrabTerrineBasicSideRight(const int gradosObjetivo) {
   SerialLog serialLogger;
   //serialLogger.init();
   LCDLogger lcdLogger;
@@ -158,8 +193,9 @@ void goGrabTerrineBasic(const int gradosObjetivo) {
       // If we get to the wall, lets return and restart
       if (digitalRead(pinLLB) == LOW || digitalRead(pinLRB) == LOW) {
         logger.log("Limits tocando");
-        forwardNCm(65, true);
-        break;
+        // forwardNCm(65, true);
+        // break;
+        return false;
       }
 
       turnToObjectiveN(gradosObjetivo);
@@ -174,8 +210,9 @@ void goGrabTerrineBasic(const int gradosObjetivo) {
 
       if (digitalRead(pinLLB) == LOW || digitalRead(pinLRB) == LOW) {
         logger.log("Limits tocando");
-        forwardNCm(65, true);
-        break;
+        // forwardNCm(65, true);
+        // break;
+        return false;
       }
       
 
@@ -208,7 +245,7 @@ void goGrabTerrineBasic(const int gradosObjetivo) {
 
   } while (!grabbed);
 
-  parkingFrontRight(false);
+  return true;
 
 }
 
@@ -216,14 +253,13 @@ void goGrabTerrineBasic(const int gradosObjetivo) {
  * This routine is to grab the terrine in the left side.
  * It starts pointing to the west and in the gate.
  *
- * @param northAngle {int} Angle where the north is (the angle where the
- *  robot starts pointing to).
+ * @param gradosObjetivo {int} Angle where the west is.
  *
  * @return {bool} true if grabbed
  * TODO: If we detect something one time, that is the side.
  *
  */
-bool goGrabTerrineBasicLeftSide(const int northAngle) {
+bool goGrabTerrineBasicSideLeft(const int gradosObjetivo) {
   SerialLog serialLogger;
   //serialLogger.init();
   LCDLogger lcdLogger;
@@ -235,12 +271,9 @@ bool goGrabTerrineBasicLeftSide(const int northAngle) {
   logger.log("GTerrines Left");
   delay(1000);
 
-  const int gradosObjetivo = northAngle;//northAngle - 90 < 0 ?
-    //northAngle - 90 + 360 : northAngle - 90;
 
   clawToStartPoint(false);
 
-  //turnToObjectiveN(gradosObjetivo);
   forwardNCm(50, false); // Pass the gate
 
   // Pass all the first wall with wall-correction
@@ -286,8 +319,9 @@ bool goGrabTerrineBasicLeftSide(const int northAngle) {
       // If we get to the wall, lets return and restart
       if (digitalRead(pinLL) == LOW || digitalRead(pinLR) == LOW) {
         logger.log("Limits tocando1");
-        backwardNCm(65, true);
-        break;
+        //backwardNCm(65, true);
+        //break;
+        return false;
       }
       turnToObjectiveN(gradosObjetivo);
 
