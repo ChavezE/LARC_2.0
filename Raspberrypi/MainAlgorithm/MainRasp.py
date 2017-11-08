@@ -123,13 +123,16 @@ def turnLeft(degrees):
 
 def searchTank():
     for x in range(0,4) :
-        turnWest()
+        com.turnWest()
         for x in range(0,180,45) :
             turnLeft(45)
             takePicture()
             found, filtered,left,right,top = rb.detectTank(clearedMainFrame)
             #first validation, haar cascade
             if found:
+                if debugger:
+                    cv2.imshow("tank.haar",filtered)
+                    cv2.waitKey(0)
                 alignWithTank(left,right)
                 return
             else:
@@ -249,7 +252,7 @@ def alignWithTank(left,right):
     centerFrame = rb.getXCenterFrame(mainFrame)
     
     pixelDif = centerFrame - ((right - left)/2)
-    degree = abs(pixelDif)/12
+    degree = int((abs(pixelDif)/12)/2)
     #Constant obtained throught calibration
 
     if (pixelDif < -2 ):
@@ -419,11 +422,13 @@ if __name__ == "__main__":
     # STARTING EXPLORTION HERE #
     #com.turnWest()
     #turnRight(90)
-    walkingDetecting()
-    com.getInCow()
+    #walkingDetecting()
+    #com.getInCow()
     #cv2.waitKey(0)
-    com.milk()
-    com.goToStart()
+    #com.milk()
+    #com.goToStart()
+
+    searchTank()
     
     while True:
         print "code"
