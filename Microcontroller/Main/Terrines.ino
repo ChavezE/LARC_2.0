@@ -37,18 +37,19 @@
   * @return {bool} if we have the terrine
   */
  bool checkHaveTerrine() {
-   const int valorMax = 9;
+   const int valorMax = 8; //6
 
    upClaw();
 
    const int cantReads = 6;
    int sum = 0;
    for (int x = 1; x <= cantReads; x++) {
-    sum += ultrasonicClaw.ping_cm(); // TODO: Create separate ping function with already average
+    int mientr = ultrasonicClaw.ping_cm();
+    sum += mientr; // TODO: Create separate ping function with already average
     delay(50);
    }
 
-   return sum / cantReads < valorMax && sum / cantReads > 0;
+   return sum / cantReads < valorMax;
  }
 
  /**
@@ -74,7 +75,7 @@
       suma += mientr;
 
       if (++cant == cantToProm) {
-        if (suma / cantToProm < maxValue && suma / cantToProm > 0) {
+        if (suma / cantToProm < maxValue && suma / cantToProm > 0) { // TODO: Maybe use a better way to check: validate the quantity of correct tries out of the totals or a simple "mediana"
           delay(1000); // Delay to get nearer to the terrine
           break;
         } else {
@@ -99,6 +100,17 @@
  *
  */
  void goGrabTerrineBasic(const int iNorth) { // TODO: Remove argument
+  // Check if is the first time because we start far
+  statis bool firstTime = true;
+
+  if (firstTime) {
+    forwardNCm(20, false);
+
+    firstTime = false;
+  }
+
+  turnToObjectiveN(iWest); // Its also in case we cross from tank
+
   bool result;
   // TODO: Use a declared-here logger that will be send as argument
   do {
