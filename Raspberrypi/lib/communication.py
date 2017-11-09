@@ -413,10 +413,17 @@ def milk():
             print("False")
             return False
 
+ 
 def goToRestar():
     print("goToRestar")
     #Tell the to move Milker Up
     arduino.write("v")
+
+def goToTank():
+    print("goToTank")
+    #Tell the to move Milker Up
+    arduino.write("w")
+
     #Wait for arduino response
     while(arduino.inWaiting() <= 0):
             pass;

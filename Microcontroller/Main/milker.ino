@@ -32,8 +32,17 @@ void stopExtract()
 
 void moveMilkerDown()
 {
+  unsigned long iInit = millis();
+  unsigned long iActual = millis();
   milkerDown();
-  while(digitalRead(pinLMD) == normalState);
+  while(digitalRead(pinLMD) == normalState)
+  {
+    iActual = millis();
+    if((iActual - iInit) >= 3000)
+    {
+      break;
+    }
+  }
   milkerStop();
 }
 
@@ -107,6 +116,8 @@ void simpleMilker()
   writeLCD("Abrete", 0, 0);
   sendOpenDirective();
   delay(6000);
+  forwardNCm(10, false);
+  //backwardNCm(10, false);
   lcd.clear();
   writeLCD("Cierrate", 0, 0);
   sendCloseDirective();
@@ -116,5 +127,7 @@ void simpleMilker()
   sendMilkDirective();
   delay(15000);
   sendOpenDirective();
+  delay(6000);
+  backwardNCm(15, false);
   delay(6000);
 }

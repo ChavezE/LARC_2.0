@@ -169,28 +169,53 @@ def turnLeft(degrees):
 # Robot must be facing EAST
 
 def searchTank():
-    for x in range(0,4):
-        com.turnWest()
-        for x in range(0,180,45) :
-            turnLeft(45)
-            time.sleep(2)
-            takePicture()
-            found, filtered,left,right,top = rb.detectTank(clearedMainFrame)
-            #first validation, haar cascade
-            if found:
-                foundTank = rb.isThereATank(filtered)
-                if foundTank:
-                    if debugger:
-                        cv2.imshow("tank.haar",filtered)
-                        cv2.waitKey(0)
-                    alignWithTank(left,right)
-                    com.forwardNCm(70)
-                    return
-                else:
-                    print "Searching Tank"
-        com.turnSouth()
-        com.forwardNCm(15)
-    print "HAAR DID NOT FOUND TANK"
+    while(1):
+        for x in range(0,4):
+            com.turnWest()
+            for x in range(0,180,45) :
+                turnLeft(45)
+                time.sleep(2) 
+                takePicture()
+                found, filtered,left,right,top = rb.detectTank(clearedMainFrame)
+                #first validation, haar cascade
+                if found:
+                    foundTank = rb.isThereATank(filtered)
+                    if foundTank:
+                        if debugger:
+                            cv2.imshow("tank.haar",filtered)
+                            cv2.waitKey(0)
+                        alignWithTank(left,right)
+                        com.goToTank()
+                        return
+                    else:
+                        print "Searching Tank"
+            com.turnSouth()
+            com.forwardNCm(15)
+        print "HAAR DID NOT FOUND TANK"
+        
+        backwardNCm(15)
+        for x in range(0,3):
+            com.turnWest()
+            for x in range(0,180,45) :
+                turnLeft(45)
+                time.sleep(2) 
+                takePicture()
+                found, filtered,left,right,top = rb.detectTank(clearedMainFrame)
+                #first validation, haar cascade
+                if found:
+                    foundTank = rb.isThereATank(filtered)
+                    if foundTank:
+                        if debugger:
+                            cv2.imshow("tank.haar",filtered)
+                            cv2.waitKey(0)
+                        alignWithTank(left,right)
+                        com.goToTank()
+                        return
+                    else:
+                        print "Searching Tank"
+            com.turnSouth()
+            com.backwardNCm(15)
+        print "HAAR DID NOT FOUND TANK"
 
 
 def checkingTurningR():
@@ -303,8 +328,8 @@ def alignWithCow():
 def alignWithTank(left,right):
     centerFrame = rb.getXCenterFrame(mainFrame)
     
-    pixelDif = centerFrame - ((right - left)/2)
-    degree = int((abs(pixelDif)/12)/2)
+    pixelDif = centerFrame - ((right + left)/2)
+    degree = int((abs(pixelDif)/12))
     #Constant obtained throught calibration
 
     if (pixelDif < -2 ):
@@ -414,7 +439,7 @@ def triangleToGetInCow():
 
                 L,R,Top = rb.calcCowLimits(maxLenTissue)
                 distanceFrwrd = rb.getDistanceFromTop(Top)
-                com.forwardNCm(int(distanceFrwrd) - 10)
+                com.forwardNCm(int(distanceFrwrd) - 15)
                 return True #success
         if debugger:
             cv2.imshow("second try",mainFrame)
@@ -437,7 +462,7 @@ def triangleToGetInCow():
         return False
 
     #IF THE COW IS IN FRONT, LETS JUST MOVE FORWARD ITS DISTANCE
-    com.forwardNCm(int(adyacent) - 10)
+    com.forwardNCm(int(adyacent) - 15)
     return True #success
 
 
@@ -469,18 +494,30 @@ if __name__ == "__main__":
     waitToBegin()
     # Robot always STARTS facing NORTH, check field in 'information' folder #
 
-    goAndGrabTerrine()
+    #goAndGrabTerrine()
 
     # STARTING EXPLORTION HERE #
     #com.turnWest()
     #turnRight(90)
+    #walkingDetecting()
+    #com.getInCow()
+    #cv2.waitKey(0)
+    #com.milk()
+    #com.goToStart()
+
+    #searchTank()
+
+
+
+    #NO MORE TESTING!! THIS IS COMPETITION
+    goAndGrabTerrine()
     walkingDetecting()
     com.getInCow()
-    #cv2.waitKey(0)
     com.milk()
     com.goToStart()
-
     searchTank()
+
+    
     
     while True:
         print "code"

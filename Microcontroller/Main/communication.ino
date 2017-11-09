@@ -157,6 +157,16 @@ void communication() {
         milk();
         Serial.write('1');
         break;
+
+      case 'v':
+        goToStartRestar(false);
+        Serial.write('1');
+        break;
+
+      case 'w':
+        goToTank();
+        Serial.write('1');
+        break;
     }
     ////writeLCD("C", 15, 0);
   }

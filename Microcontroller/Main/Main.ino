@@ -313,7 +313,7 @@ void setup()
   //Get angle for north, south, west and east
   //Angles if the robot start looking to the left
   iWest = getCompass();
-  iNorth = iNorth + 90;
+  iNorth = iWest + 90;
   if(iNorth > 360)
   {
     iNorth -= 360;

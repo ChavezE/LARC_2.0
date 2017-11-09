@@ -65,7 +65,7 @@ void closeClaw()
   //Display function in LCD
   ////lcd.clear();
   // //writeLCD("CLOSE CLAW", 0, 0);
-  sClaw.write(45);
+  sClaw.write(46);
   delay(1400);
 }
 
