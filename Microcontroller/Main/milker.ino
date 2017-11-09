@@ -32,8 +32,17 @@ void stopExtract()
 
 void moveMilkerDown()
 {
+  unsigned long iInit = millis();
+  unsigned long iActual = millis();
   milkerDown();
-  while(digitalRead(pinLMD) == normalState);
+  while(digitalRead(pinLMD) == normalState)
+  {
+    iActual = millis();
+    if((iActual - iInit) >= 3000)
+    {
+      break;
+    }
+  }
   milkerStop();
 }
 
