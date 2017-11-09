@@ -244,6 +244,92 @@ void forwardNCm(int cm, bool slow)
   brake();
 }
 
+void forwardNSteps(int iSteps, bool bSlow)
+{
+  //lcd.clear();
+  //writeLCD("ForwardNCm", 0, 0);
+  //writeLCD(String(cm), 0, 1);
+  encoderState = 1;
+  //Restart encoder counts
+  steps = 0;
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  int LF;
+  int LB;
+  int RF;
+  int RB;
+  //Start at default velocity
+  if (bSlow == false)
+  {
+    LF = velLF;
+    LB = velLB;
+    RF = velRF;
+    RB = velRB;
+  }
+  else
+  {
+    LF = velSlowLF;
+    LB = velSlowLB;
+    RF = velSlowRF;
+    RB = velSlowRB;
+  }
+
+  //Start moving
+  forward(LF, LB, RF, RB);
+
+  //Move with p correction until the encoder read the cm
+  while (steps < iSteps)
+  {
+    forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+  }
+  //Stop
+  brake();
+}
+
+void backwardNSteps(int iSteps, bool bSlow)
+{
+  //lcd.clear();
+  //writeLCD("ForwardNCm", 0, 0);
+  //writeLCD(String(cm), 0, 1);
+  encoderState = 1;
+  //Restart encoder counts
+  steps = 0;
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  int LF;
+  int LB;
+  int RF;
+  int RB;
+  //Start at default velocity
+  if (bSlow == false)
+  {
+    LF = velLF;
+    LB = velLB;
+    RF = velRF;
+    RB = velRB;
+  }
+  else
+  {
+    LF = velSlowLF;
+    LB = velSlowLB;
+    RF = velSlowRF;
+    RB = velSlowRB;
+  }
+
+  //Start moving
+  backward(LF, LB, RF, RB);
+
+  //Move with p correction until the encoder read the cm
+  while (steps < iSteps)
+  {
+    backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+  }
+  //Stop
+  brake();
+}
+
 //Go backward the cm given in the parameter, Nestor style
 void backwardNCm(int cm, bool slow)
 {
@@ -1304,4 +1390,71 @@ void goToTank()
   delay(2000);
   platIn();
   downClaw();
+}
+
+void goToStartFromTank()
+{
+  LCDLogger lcdLogger;
+  lcdLogger.init();
+  SerialLog serialLogger;
+  //serialLogger.init();
+
+  AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
+  Logger logger("Mega", "ReturnBasic", LevelLogger::INFO, loggerArray, 1);
+  logger.log("ReturnBasic");
+  delay(2000);
+
+
+  //Get away from tank
+  backwardNCm(40, false);
+  //Turn to where the gate is
+  turnToObjectiveN(iNorth);
+  forwardNCm(40, false);
+
+  // Arrive to left wall
+  turnToObjectiveN(iWest);
+  int mientr1, mientr2, mientr3, mientr4;
+  forward(0,0,0,0);
+  do {
+    forwardP(iWest, mientr1, mientr2, mientr3, mientr4, false);
+  } while (digitalRead(pinLL) == normalState && digitalRead(pinLR) == normalState);
+  brake();
+
+  // Encoders until center
+  //TODO: cambiar las cuentas de encoder que debn de ser para llegar al cento en la grava desde la pared WEST
+  backwardNSteps(20500, false);
+
+  // Front until pass the gate
+  turnToObjectiveN(iNorth);
+
+  bool crossed;
+  forward(0,0,0,0);
+  do {
+    logger.log("forwarding");
+    if (digitalRead(pinLL) == LOW) {
+      brake();
+      logger.log("Limit left");
+      delay(1000);
+
+      turnToObjectiveN(iNorth);
+      parkingRight(false, 35);
+      forward(0,0,0,0);
+    } else if (digitalRead(pinLR) == LOW) {
+      brake();
+      logger.log("Limit right");
+      delay(1000);
+
+      turnToObjectiveN(iNorth);
+      parkingLeft(false, 35);
+      forward(0,0,0,0);
+    }
+
+    forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, false);
+
+    crossed = checkCrossingGate(logger);
+
+  } while (!crossed);
+  brake();
+  logger.log("END");
+  delay(2000);
 }
