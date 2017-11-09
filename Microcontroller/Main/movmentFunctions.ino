@@ -1391,3 +1391,70 @@ void goToTank()
   platIn();
   downClaw();
 }
+
+void goToStartFromTank()
+{
+  LCDLogger lcdLogger;
+  lcdLogger.init();
+  SerialLog serialLogger;
+  //serialLogger.init();
+
+  AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
+  Logger logger("Mega", "ReturnBasic", LevelLogger::INFO, loggerArray, 1);
+  logger.log("ReturnBasic");
+  delay(2000);
+
+
+  //Get away from tank
+  backwardNCm(40, false);
+  //Turn to where the gate is
+  turnToObjectiveN(iNorth);
+  forwardNCm(40, false);
+
+  // Arrive to left wall
+  turnToObjectiveN(iWest);
+  int mientr1, mientr2, mientr3, mientr4;
+  forward(0,0,0,0);
+  do {
+    forwardP(iWest, mientr1, mientr2, mientr3, mientr4, false);
+  } while (digitalRead(pinLL) == normalState && digitalRead(pinLR) == normalState);
+  brake();
+
+  // Encoders until center
+  //TODO: cambiar las cuentas de encoder que debn de ser para llegar al cento en la grava desde la pared WEST
+  backwardNSteps(20500, false);
+
+  // Front until pass the gate
+  turnToObjectiveN(iNorth);
+
+  bool crossed;
+  forward(0,0,0,0);
+  do {
+    logger.log("forwarding");
+    if (digitalRead(pinLL) == LOW) {
+      brake();
+      logger.log("Limit left");
+      delay(1000);
+
+      turnToObjectiveN(iNorth);
+      parkingRight(false, 35);
+      forward(0,0,0,0);
+    } else if (digitalRead(pinLR) == LOW) {
+      brake();
+      logger.log("Limit right");
+      delay(1000);
+
+      turnToObjectiveN(iNorth);
+      parkingLeft(false, 35);
+      forward(0,0,0,0);
+    }
+
+    forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, false);
+
+    crossed = checkCrossingGate(logger);
+
+  } while (!crossed);
+  brake();
+  logger.log("END");
+  delay(2000);
+}
