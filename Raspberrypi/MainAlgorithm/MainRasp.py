@@ -122,7 +122,7 @@ def turnLeft(degrees):
 # Robot must be facing EAST
 
 def searchTank():
-    for x in range(0,4) :
+    for x in range(0,4):
         com.turnWest()
         for x in range(0,180,45) :
             turnLeft(45)
@@ -131,14 +131,16 @@ def searchTank():
             found, filtered,left,right,top = rb.detectTank(clearedMainFrame)
             #first validation, haar cascade
             if found:
-                if debugger:
-                    cv2.imshow("tank.haar",filtered)
-                    cv2.waitKey(0)
-                alignWithTank(left,right)
-                com.forwardNCm(70)
-                return
-            else:
-                print "Searching Tank"
+                foundTank = rb.isThereATank(filtered)
+                if foundTank:
+                    if debugger:
+                        cv2.imshow("tank.haar",filtered)
+                        cv2.waitKey(0)
+                    alignWithTank(left,right)
+                    com.forwardNCm(70)
+                    return
+                else:
+                    print "Searching Tank"
         com.turnSouth()
         com.forwardNCm(15)
     print "HAAR DID NOT FOUND TANK"

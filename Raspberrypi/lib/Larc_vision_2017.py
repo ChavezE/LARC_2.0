@@ -55,7 +55,7 @@ whiteFrame = np.ones((480,640), np.uint8)
 whiteFrame[:] = 255
 
 #For debugging
-debugger = False
+debugger = True
 
 # Simple class to manage individual squares in the image
 # ATRIBUTES:
@@ -478,7 +478,7 @@ def detectTank(img):
     
       area = (float(w)*h)
      
-      if y > 240 : 
+      if y > 120 : 
          #cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
 
 
@@ -497,6 +497,33 @@ def detectTank(img):
    if debugger:
       cv2.imshow("white", white)
    return tankDetected, white,xc,xc+wc,yc 
+
+
+
+def isThereATank(filtered):
+
+   thresh = doThresHold(filtered,127,3,2)
+
+
+   contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+   # cv2.drawContours(img,contours,-1,(0,255,0),3)
+   sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
+
+   cnt = sorted_contours[0]
+   area = cv2.contourArea(cnt)
+   rect = cv2.minAreaRect(cnt)
+   w = int(rect[1][0])
+   h = int(rect[1][1])
+   rect_area = w * h
+
+   if(rect_area > 0): # sometimes this value is found
+      extent = float(area / rect_area)
+      if (extent >= 0.75):
+        x,y,w,h = cv2.boundingRect(cnt)
+        # cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
+           return True
+  return False
+
 
 # cSquares is a multidimensional list: [[x1,y1],[x2,y2],...,[xN,yN]]
 # These lists and variables are used to calculate A and B
