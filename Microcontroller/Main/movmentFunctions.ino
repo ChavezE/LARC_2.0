@@ -1322,67 +1322,7 @@ int formulaFollowWithWall(int base, int separacion, int diffBetweenSharps, int d
 //  return base + separacion * 12 + diffBetweenSharps * 2 + diffCompass * 7;
 }
 
-/** 
- * Forward with P correction with certain distance to the left wall
- *
- * @param {const int&} degreesObjetivo
- * @param {const int&} objetivoDistPared
- * @param {const bool&} slow
- * @param {const bool&} slow
- * @param {int&} distFront The individual dist to the wall by the sharp front
- * @param {int&} distBack The dist sharp back
- *
- * @return {int} separacion The dist with the wall average with front and back
- */
-int forwardWithLeftWall(const int &degreesObjetivo, const int &objetivoDistPared, const bool &slow,
-  int& distFront, int& distBack) {
-  //Base for motors velocity
-  int baseLF;
-  int baseLB;
-  int baseRF;
-  int baseRB;
-  if (slow) {
-    baseLF = velSlowLF;
-    baseLB = velSlowLB;
-    baseRF = velSlowRF;
-    baseRB = velSlowRB;
-  } else {
-    baseLF = velLF;
-    baseLB = velLB;
-    baseRF = velRF;
-    baseRB = velRB;
-  }
 
-  distFront = getDistance(pinSLF); // TODO: The order of this two depends on if is forward or backward
-  distBack = getDistance(pinSLB);
-
-  const int separacion = (distFront + distBack) / 2;
-  const int diffSeparacion = separacion - objetivoDistPared;
-  const int diffSharps = distFront - distBack; // (-) voltear a la der
-  const int diffCompass = getAngleDifferenceD(degreesObjetivo, getCompass()); // (-) conviene voltear a la derecha
-
-  int velLF = formulaForwardWithLeftWall(baseLF, -diffSeparacion, -diffSharps, -diffCompass);
-  int velLB = formulaForwardWithLeftWall(baseLB, -diffSeparacion, -diffSharps, -diffCompass);
-  int velRF = formulaForwardWithLeftWall(baseRF, diffSeparacion, diffSharps, diffCompass);
-  int velRB = formulaForwardWithLeftWall(baseRB, diffSeparacion, diffSharps, diffCompass);
-
-  forward(velLF, velLB, velRF, velRB);
-
-  return separacion;
-}
-
-/**
- * Formula with the P taking the base, distance from the wall, difference from sharps
- * and diff from compass. Used in the forwardWithLeftWall.
- *
- */
-int formulaForwardWithLeftWall(int base, int separacion, int diffBetweenSharps, int diffCompass) {
-  if (diffBetweenSharps > 45) diffBetweenSharps = 45;
-  else if (diffBetweenSharps < -45) diffBetweenSharps = -45;
-//  return base + separacion * 8 + diffBetweenSharps * 2 + diffCompass * 6;
-  return base + separacion * 15 + diffBetweenSharps * 4 + diffCompass * 7; // * 2
-//  return base + separacion * 12 + diffBetweenSharps * 2 + diffCompass * 7;
-}
 
 /**
  * Get the difference between the wanted angles and the actual angles.

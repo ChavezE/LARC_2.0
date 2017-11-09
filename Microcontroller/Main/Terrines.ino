@@ -101,7 +101,7 @@
  */
  void goGrabTerrineBasic(const int iNorth) { // TODO: Remove argument
   // Check if is the first time because we start far
-  statis bool firstTime = true;
+  static bool firstTime = true;
 
   if (firstTime) {
     forwardNCm(20, false);

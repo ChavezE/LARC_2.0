@@ -19,9 +19,9 @@ void leaveTerrine () {
   
     // Distance that is next from the front wall to leave 
     //  the terrine.
-    static int distFromWall = 5;
+    static int distFromWall = 6;
     // Distance that will be add for the next terrine
-    const int distAddEachTime = 5;
+    const int distAddEachTime = 6;
 
 
     turnToObjectiveN(iWest);
@@ -51,6 +51,7 @@ void leaveTerrine () {
     logger.log("Returning");
     delay(1000);
     clawToStartPoint();
+    backwardNCm(60, false);
     backwardUntilNoLeft(iWest);
     backwardNCm(5, false);
     
