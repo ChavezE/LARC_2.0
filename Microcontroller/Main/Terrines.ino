@@ -104,7 +104,7 @@
   static bool firstTime = true;
 
   if (firstTime) {
-    forwardNCm(20, false);
+    backwardNCm(20, false);
 
     firstTime = false;
   }

@@ -21,11 +21,12 @@ void leaveTerrine () {
     //  the terrine.
     static int distFromWall = 6;
     // Distance that will be add for the next terrine
-    const int distAddEachTime = 6;
+    const int distAddEachTime = 7;
 
 
     turnToObjectiveN(iWest);
-    forwardNCm(50, false); // Pass the gate
+    // Pass the gate
+    forwardNCm(50, false); // TODO: Maybe is better to pass until pass the sharpLeftBack
 
     // Going until the terrine zone to leave it
     logger.log("Forw with Left");
@@ -35,6 +36,8 @@ void leaveTerrine () {
         forwardWithLeftWall(iWest, 17, false, distFront, distBack);
     } while (distFront < 30);
     brake();
+
+    turnToObjectiveN(iWest); // TODO: It is good idea to check, after turn, the sharpLeftBack if it is very far to return and get closer
     logger.log("Forw until Cms");
     delay(1000);
     forwardUntilWallN(distFromWall);
@@ -55,7 +58,6 @@ void leaveTerrine () {
     backwardUntilNoLeft(iWest);
     backwardNCm(5, false);
     
-    turnToObjectiveN(iNorth);
 
     distFromWall += distAddEachTime;
 
