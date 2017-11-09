@@ -101,12 +101,21 @@ void getReady()
 void openMilker()
 {
   //Separate the magnet
+	unsigned long initTime = millis();
+	unsigned long actTime = millis();
   sMilker2.write(180);
   sMilker.write(160);
   delay(200);
   //while (digitalRead(pinLServo) == 1 || digitalRead(pinLServoAux) == 1);
   //Keep moving the servos until it touch the limit switch
-  while (digitalRead(pinLU) == 0);
+  while (digitalRead(pinLU) == 0)
+	{
+		actTime = millis();
+		if(actTime - initTime >= 1500)
+		{
+			break;
+		}
+	}
   //Wait for the aux servo to get out
   //delay(80);
   //Stop out servo

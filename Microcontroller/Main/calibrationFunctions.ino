@@ -235,3 +235,44 @@ void tryRobot()
   //analogWrite(pinMotA, 0);
   //analogWrite(pinMotB, 100);
 }
+
+void calibrateTryToGrab() {
+  SerialLog serialLogger;
+  //serialLogger.init();
+  LCDLogger lcdLogger;
+  lcdLogger.init();
+
+  AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
+  Logger logger("Mega", "CalibTryGrab", LevelLogger::INFO, loggerArray, 1);
+
+  clawToStartPoint(false);    
+  while (true) {
+      logger.log("CalibTryGrab");
+      delay(2000);
+
+
+      if (tryToGrabTerrine()) {
+          logger.log("No limit");
+          delay(2000);
+          // TODO: Look for the terrine with the claw in one side and change it to grab it
+          closeClaw();
+
+          if (checkHaveTerrine()) {
+              logger.log("Lo agarramos");
+              clawToStartPoint(true);
+              delay(2000);
+          } else {
+              logger.log("No grabbed");
+              delay(2000);
+              clawToStartPoint(false);
+              delay(2000);
+          }
+      } else {
+          logger.log("Tocamos limit");
+          clawToStartPoint(false);
+          delay(2000);
+      }
+
+  }
+
+}
