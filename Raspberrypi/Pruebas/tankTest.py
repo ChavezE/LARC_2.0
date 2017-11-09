@@ -72,15 +72,16 @@ cap = cv2.VideoCapture(0)
 #    return tankDetected, white
 
 def doThresHold(filteredImage,tVal,k,i):
-   _, thres1 = cv2.threshold(filteredImage,tVal,255,cv2.THRESH_BINARY)
-   thres1 = cv2.erode(thres1,np.ones((k,k),np.uint8), iterations=i)
+   _, thres1 = cv2.threshold(filteredImage,tVal,255,cv2.THRESH_BINARY_INV)
+   thres1 = cv2.dilate(thres1,np.ones((k,k),np.uint8), iterations=i)
 
    return thres1
 
 def isThereATank(img):
+
+
   # squares = []
-  # thresh = doThresHold(img,50,1,3)
-  # cv2.imshow("thresh",thresh)
+
 
   # contours = rb.findContours(filtered)
 
@@ -89,9 +90,32 @@ def isThereATank(img):
   # print len(squares)
   gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   found,filtered,left,right,top = rb.detectTank(gray)
+  thresh = doThresHold(filtered,127,3,2)
+  cv2.imshow("thresh",thresh)
+
+  canny_edges = cv2.Canny(thresh, 10, 60)
+
+
   if found:
+    contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+    cv2.drawContours(img,contours,-1,(0,255,0),3)
+    sorted_contours = sorted(contours, key=cv2.contourArea, reverse=True)
     rb.drawLimits(img, left, right, top)
-  cv2.imshow("img", img)
+
+    cnt = sorted_contours[0]
+    area = cv2.contourArea(cnt)
+    rect = cv2.minAreaRect(cnt)
+    w = int(rect[1][0])
+    h = int(rect[1][1])
+    rect_area = w * h
+
+    if(rect_area > 0): # sometimes this value is found
+      extent = float(area / rect_area)
+      if (extent >= 0.75):
+        x,y,w,h = cv2.boundingRect(cnt)
+        cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
+        return True
+  return False
 
 
 
@@ -106,11 +130,23 @@ while 1:
     
     
     
-    isThereATank(img)
+    print isThereATank(img)
     # rb.drawCowSquares(img,0,100,0,sqrs)
     k = cv2.waitKey(0) & 0xff
     if k == 13:
       break
+
+# for x in range(100, 125):
+#   img = cv2.imread("C:/Users/VIAO2/Desktop/Codigo/Larc/images/" + str(x) + ".jpg")
+#   print isThereATank(img)
+#   cv2.imshow("img", img)
+#   k = cv2.waitKey(0) & 0xff
+#   if k == 13:
+#     break
+
+
+
+
 
 # import numpy as np
 # import cv2

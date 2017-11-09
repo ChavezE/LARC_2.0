@@ -21,7 +21,7 @@ VARIABLES GLOBALES
 '''
 
 #For debugging
-debugger = True
+debugger = False
 
 #Terrines Position; c = unknown, r = right, l = left
 terrinesZone = "c"
@@ -122,21 +122,26 @@ def turnLeft(degrees):
 # Robot must be facing EAST
 
 def searchTank():
-    for x in range(0,4) :
+    for x in range(0,4):
         com.turnWest()
         for x in range(0,180,45) :
             turnLeft(45)
+            time.sleep(2)
             takePicture()
             found, filtered,left,right,top = rb.detectTank(clearedMainFrame)
             #first validation, haar cascade
             if found:
-                if debugger:
-                    cv2.imshow("tank.haar",filtered)
-                    cv2.waitKey(0)
-                alignWithTank(left,right)
-                return
-            else:
-                print "Searching Tank"
+                foundTank = rb.isThereATank(filtered)
+                if foundTank:
+                    if debugger:
+                        cv2.imshow("tank.haar",filtered)
+                        cv2.waitKey(0)
+                    alignWithTank(left,right)
+                    com.forwardNCm(70)
+                    return
+                else:
+                    print "Searching Tank"
+        com.turnSouth()
         com.forwardNCm(15)
     print "HAAR DID NOT FOUND TANK"
 
@@ -417,16 +422,16 @@ if __name__ == "__main__":
     waitToBegin()
     # Robot always STARTS facing NORTH, check field in 'information' folder #
 
-    #goAndGrabTerrine()
+    goAndGrabTerrine()
 
     # STARTING EXPLORTION HERE #
     #com.turnWest()
     #turnRight(90)
-    #walkingDetecting()
-    #com.getInCow()
+    walkingDetecting()
+    com.getInCow()
     #cv2.waitKey(0)
-    #com.milk()
-    #com.goToStart()
+    com.milk()
+    com.goToStart()
 
     searchTank()
     
