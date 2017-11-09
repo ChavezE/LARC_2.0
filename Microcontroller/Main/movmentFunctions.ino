@@ -244,6 +244,92 @@ void forwardNCm(int cm, bool slow)
   brake();
 }
 
+void forwardNSteps(int iSteps, bool bSlow)
+{
+  //lcd.clear();
+  //writeLCD("ForwardNCm", 0, 0);
+  //writeLCD(String(cm), 0, 1);
+  encoderState = 1;
+  //Restart encoder counts
+  steps = 0;
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  int LF;
+  int LB;
+  int RF;
+  int RB;
+  //Start at default velocity
+  if (bSlow == false)
+  {
+    LF = velLF;
+    LB = velLB;
+    RF = velRF;
+    RB = velRB;
+  }
+  else
+  {
+    LF = velSlowLF;
+    LB = velSlowLB;
+    RF = velSlowRF;
+    RB = velSlowRB;
+  }
+
+  //Start moving
+  forward(LF, LB, RF, RB);
+
+  //Move with p correction until the encoder read the cm
+  while (steps < iSteps)
+  {
+    forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+  }
+  //Stop
+  brake();
+}
+
+void backwardNSteps(int iSteps, bool bSlow)
+{
+  //lcd.clear();
+  //writeLCD("ForwardNCm", 0, 0);
+  //writeLCD(String(cm), 0, 1);
+  encoderState = 1;
+  //Restart encoder counts
+  steps = 0;
+  //Angle to stay in
+  int iStayAngle = getCompass();
+
+  int LF;
+  int LB;
+  int RF;
+  int RB;
+  //Start at default velocity
+  if (bSlow == false)
+  {
+    LF = velLF;
+    LB = velLB;
+    RF = velRF;
+    RB = velRB;
+  }
+  else
+  {
+    LF = velSlowLF;
+    LB = velSlowLB;
+    RF = velSlowRF;
+    RB = velSlowRB;
+  }
+
+  //Start moving
+  backward(LF, LB, RF, RB);
+
+  //Move with p correction until the encoder read the cm
+  while (steps < iSteps)
+  {
+    backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+  }
+  //Stop
+  brake();
+}
+
 //Go backward the cm given in the parameter, Nestor style
 void backwardNCm(int cm, bool slow)
 {
