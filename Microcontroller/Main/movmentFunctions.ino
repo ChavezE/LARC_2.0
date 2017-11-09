@@ -1290,3 +1290,14 @@ void parkingLeft(bool bSlow, int iCm)
   backwardNCm(iCm, bSlow);
   turnNDegrees(-20);
 }
+
+void goToTank()
+{
+  forwardUntilWallN(0);
+  turnNDegrees(90);
+  upClaw();
+  platOut();
+  delay(2000);
+  platIn();
+  downClaw();
+}
