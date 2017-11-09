@@ -56,12 +56,13 @@ void getInCow(bool bSlow)
     distRF = getDistance(pinSRF);
     distLF = getDistance(pinSLF);
   }
-  lcd.clear();
+  brake();
   //the leg that touch was the right one
   bRight = digitalRead(pinLR);
   //The leg that touch was the left one
   bLeft = digitalRead(pinLL);
   brake();
+  lcd.clear();
 
   //Get away form the leg
   if (bRight == !normalState || bLeft == !normalState)
