@@ -413,6 +413,21 @@ def milk():
             print("False")
             return False
 
+def goToTank():
+    print("goToTank")
+    #Tell the to move Milker Up
+    arduino.write("w")
+    #Wait for arduino response
+    while(arduino.inWaiting() <= 0):
+            pass;
+    #Completed
+    if(arduino.read() == "1"):
+            print("True")
+            return True
+    else:
+            print("False")
+            return False
+
 # #Control the robot with the keyboard
 # def controlRobot():
 #     print "Control Robot"
