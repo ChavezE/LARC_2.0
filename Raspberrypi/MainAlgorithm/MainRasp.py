@@ -3,7 +3,7 @@
 import cv2
 import numpy as np
 import math
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 import sys
 import serial
 import time
@@ -14,11 +14,58 @@ import thread
 import sys
 sys.path.insert(0, '../lib/')
 import Larc_vision_2017 as rb
-import communication as com
+#import communication as com
+
+
+
+
+#################################
+#           RESTART             #
+#################################
+
+def turnLooking4cow():
+    # turn until you find a cow
+    for x in range(0,360,10) :
+        turnLeft(10)
+        takePicture()
+        found, filtered = rb.detectCow(clearedMainFrame)
+        #first validation, haar cascade
+        if found:            
+            print "HAAR FOUND COW"
+            turnLeft(10)
+            turnLeft(70)
+            com.goToRestar()
+        
+
+        else:
+            print "HAAR DIT NOT FIND COW"
+
+
+
+
+# READING TRIAL PARAMETERS
+tFile = open("../calibration/restart.txt", "r+")
+trial = (tFile.readline().strip(" "))
+numberOfTrial = int(trial[len(trial)-1])
+print numberOfTrial
+
+# update trial
+linesToWrite = [" "+str(numberOfTrial + 1)]
+tFile.writelines(linesToWrite)
+tFile.close()
+
+
+if (trial > 0):
+    turnLooking4cow()
+
+
+#################################
+
 
 '''
 VARIABLES GLOBALES
 '''
+
 
 #For debugging
 debugger = False
