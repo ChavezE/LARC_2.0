@@ -1279,7 +1279,25 @@ void parkingLeft(bool bSlow, int iCm)
 
 void goToTank()
 {
-  forwardUntilWallN(0);
+  int iAm = getCompass();
+  //forwardUntilWallN(0);
+  //Velocity of motors
+  int LF = velSlowLF;
+  int LB = velSlowLB;
+  int RF = velSlowRF;
+  int RB = velSlowRB;
+
+  //the leg that touch was the right one
+  bool bRight = digitalRead(pinLR);
+  //The leg that touch was the left one
+  bool bLeft = digitalRead(pinLL);
+  forward(LF, LB, RF, RB);
+  while (digitalRead(pinLR) == normalState && digitalRead(pinLL) == normalState)
+  {
+    //P Correction
+    forwardP(iAm, LF, LB, RF, RB, false);
+  }
+  brake();
   turnNDegrees(90);
   upClaw();
   platOut();

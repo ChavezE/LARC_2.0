@@ -117,7 +117,7 @@ void simpleMilker()
   sendOpenDirective();
   delay(6000);
   forwardNCm(10, false);
-  backwardNCm(10, false);
+  //backwardNCm(10, false);
   lcd.clear();
   writeLCD("Cierrate", 0, 0);
   sendCloseDirective();
@@ -127,6 +127,7 @@ void simpleMilker()
   sendMilkDirective();
   delay(15000);
   sendOpenDirective();
-  backwardNCm(10, false);
+  delay(6000);
+  backwardNCm(15, false);
   delay(6000);
 }

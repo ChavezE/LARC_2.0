@@ -61,15 +61,15 @@
  bool tryToGrabTerrine() {
     const int maxValue = 8;
 
-    openClaw();
     downClaw();
+    openClaw();
 
     // Claw out until feel the terrine or limit
     int suma = 0, cant = 0;
     const int cantToProm = 5;
 
     platformStartToOut();
-    while (digitalRead(pinLO) == HIGH) {
+    do {
       int mientr = ultrasonicClaw.ping_cm();
       suma += mientr;
 
@@ -84,7 +84,7 @@
       }
 
       delay(50);
-    }
+    } while (digitalRead(pinLO) == HIGH);
 
     platformStop();
 
