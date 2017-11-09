@@ -788,13 +788,13 @@ bool checkCrossingGate(const Logger &logger) {
       logger.log("Not found wall");
       delay(1000);
       backwardNCm(14, false);
-      
+
       forward(0,0,0,0);
       return false;
     }
     logger.log("Wall LB again");
     delay(1000);
-    
+
     // We found something, then lets look with sharp left-back
     // forward(0,0,0,0);
     // while (getDistance(pinSLB) > 30) {
@@ -852,7 +852,7 @@ void goToStart() {
       brake();
       logger.log("Limit left");
       delay(1000);
-  
+
       turnToObjectiveN(iSouth);
       parkingRight(false, 35);
       forward(0,0,0,0);
@@ -860,7 +860,7 @@ void goToStart() {
       brake();
       logger.log("Limit right");
       delay(1000);
-      
+
       turnToObjectiveN(iSouth);
       parkingLeft(false, 35);
       forward(0,0,0,0);
@@ -871,10 +871,10 @@ void goToStart() {
     crossed = checkCrossingGate(logger);
 
   } while (!crossed);
-  
+
   logger.log("END");
   delay(2000);
-  
+
 }
 
 void goToStart2()
@@ -888,7 +888,7 @@ void goToStart2()
   Logger logger("Mega", "ReturnCow", LevelLogger::INFO, loggerArray, 1);
   logger.log("ReturnCow");
   delay(2000);
-  
+
 
   //Get out of the cow
   backwardNCm(40, false);
@@ -918,7 +918,7 @@ void goToStart2()
   if (distSideWallsL < 32) {
     logger.log("Near left wall");
     delay(1000);
-    
+
     // turnToObjectiveN(iWest);
     backwardNCm(75 - distSideWallsL, false);
   } else {
@@ -927,7 +927,7 @@ void goToStart2()
     if (distSideWallsR < 32) {
       logger.log("Near right wall");
       delay(1000);
-    
+
       // turnToObjectiveN(iEast);
       forwardNCm(80 - distSideWallsR, false);
     }
@@ -969,7 +969,7 @@ void goToStart2()
       forwardP(iWest, mientr1, mientr2, mientr3, mientr4, false);
     } while (getDistance(pinSF) > 30 && steps < untilStepsAlt);
     brake();
-    
+
     if (getDistance(pinSF) <= 30) {
       backwardNCm(60, false);
     } else {
@@ -984,7 +984,7 @@ void goToStart2()
         backwardP(iWest, mientr1, mientr2, mientr3, mientr4, false);
       } while (getDistance(pinSB) > 30 && steps < untilStepsAlt);
       brake();
-      
+
       if (getDistance(pinSB) <= 30) {
         forwardNCm(60, false);
       } else {
@@ -994,7 +994,7 @@ void goToStart2()
 
   }
 
-  // if we didnt touch any limit, lets look horizontaly for the gate. 
+  // if we didnt touch any limit, lets look horizontaly for the gate.
   // Or maybe there was something strange to both.
   if (digitalRead(pinLR) == HIGH && digitalRead(pinLL) == HIGH ||
     digitalRead(pinLR) == LOW && digitalRead(pinLL) == LOW) { // TODO: Add case when we touch both limits; it get to one of the terrine zone.
@@ -1412,11 +1412,11 @@ void goToStartFromTank()
   forwardNCm(40, false);
 
   // Arrive to left wall
-  turnToObjectiveN(iWest);
+  turnToObjectiveN(iEast);
   int mientr1, mientr2, mientr3, mientr4;
   forward(0,0,0,0);
   do {
-    forwardP(iWest, mientr1, mientr2, mientr3, mientr4, false);
+    forwardP(iEast, mientr1, mientr2, mientr3, mientr4, false);
   } while (digitalRead(pinLL) == normalState && digitalRead(pinLR) == normalState);
   brake();
 
@@ -1449,7 +1449,7 @@ void goToStartFromTank()
       forward(0,0,0,0);
     }
 
-    forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, false);
+    forwardP(iNorth, mientr1, mientr2, mientr3, mientr4, false);
 
     crossed = checkCrossingGate(logger);
 
