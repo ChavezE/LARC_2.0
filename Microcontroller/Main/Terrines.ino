@@ -237,7 +237,7 @@ bool goGrabTerrineBasicSideRight(const int gradosObjetivo) {
       turnToObjectiveN(gradosObjetivo);
       // Lets move until the terrine, looking at the limits
       encoderState = 1;
-      int untilSteps2 = (encoder30Cm / 30) * 8; // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
+      int untilSteps2 = (encoder30Cm / 30) * 7; // TODO: Implement a way to confirm that we arrive 'exactly' in front to the terrine
       steps = 0;
       while (steps < untilSteps2 && digitalRead(pinLLB) == HIGH && digitalRead(pinLRB) == HIGH) {
         backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true); 
@@ -362,7 +362,7 @@ bool goGrabTerrineBasicSideLeft(const int gradosObjetivo) {
       turnToObjectiveN(gradosObjetivo);
 
       // Lets move until the terrine, NOT looking at the limits
-      backwardNCm(8, true);
+      backwardNCm(7, true);
       
 
       if (tryToGrabTerrine()) {

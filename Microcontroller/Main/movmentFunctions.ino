@@ -768,7 +768,7 @@ void goToStart() {
       delay(1000);
   
       turnToObjectiveN(iSouth);
-      parkingRight(false);
+      parkingRight(false, 35);
       forward(0,0,0,0);
     } else if (digitalRead(pinLR) == LOW) {
       brake();
@@ -776,7 +776,7 @@ void goToStart() {
       delay(1000);
       
       turnToObjectiveN(iSouth);
-      parkingLeft(false);
+      parkingLeft(false, 35);
       forward(0,0,0,0);
     }
 
@@ -1034,7 +1034,7 @@ void goToStart2()
       delay(1000);
 
       turnToObjectiveN(iSouth);
-      parkingRight(false);
+      parkingRight(false, 35);
       forward(0,0,0,0);
     } else if (digitalRead(pinLR) == LOW) {
       brake();
@@ -1042,7 +1042,7 @@ void goToStart2()
       delay(1000);
 
       turnToObjectiveN(iSouth);
-      parkingLeft(false);
+      parkingLeft(false, 35);
       forward(0,0,0,0);
     }
 
@@ -1261,20 +1261,6 @@ int getAngleDifferenceD(const int &objetivo, const int &actual) {
   }
 
   return diffCompass; // (-) conviene voltear a la derecha
-}
-
-void parkingRight(bool bSlow)
-{
-  turnNDegrees(-20);
-  backwardNCm(35, bSlow);
-  turnNDegrees(20);
-}
-
-void parkingLeft(bool bSlow)
-{
-  turnNDegrees(20);
-  backwardNCm(35, bSlow);
-  turnNDegrees(-20);
 }
 
 void parkingRight(bool bSlow, int iCm)
