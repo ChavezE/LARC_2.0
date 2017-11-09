@@ -44,7 +44,7 @@ tankCascadeSensitivity = 10
 
 #----HAAR Cascade---
 #importing the trained cascade of cow
-cowCascade = cv2.CascadeClassifier('../Cascades/COWTUMMY2.0.xml')
+cowCascade = cv2.CascadeClassifier('../Cascades/COWCURITIBA.xml')#COWTUMMY2.0
 
 #FOR THE TANK
 tankCascade = cv2.CascadeClassifier('../Cascades/TANK2.xml')
@@ -55,7 +55,7 @@ whiteFrame = np.ones((480,640), np.uint8)
 whiteFrame[:] = 255
 
 #For debugging
-debugger = True
+debugger = False
 
 # Simple class to manage individual squares in the image
 # ATRIBUTES:
@@ -409,7 +409,8 @@ def isThereACow(mainFrame, equalizedFrame):
 def detectCow(img):
    blackTemp = whiteFrame.copy()#whiteFrame.copy()#blackFrame.copy()
 
-   cows = cowCascade.detectMultiScale(img, 1.2, cascadeSensitivity)
+   #cows = cowCascade.detectMultiScale(img, 1.2, cascadeSensitivity)
+   cows = cowCascade.detectMultiScale(img, 1.3, 50)
 
    xc,yc,hc,wc = 0,0,0,0
    individualCow = []
@@ -521,8 +522,8 @@ def isThereATank(filtered):
       if (extent >= 0.75):
         x,y,w,h = cv2.boundingRect(cnt)
         # cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,255),2)
-           return True
-  return False
+        return True
+   return False
 
 
 # cSquares is a multidimensional list: [[x1,y1],[x2,y2],...,[xN,yN]]
