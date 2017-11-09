@@ -55,7 +55,7 @@ whiteFrame = np.ones((480,640), np.uint8)
 whiteFrame[:] = 255
 
 #For debugging
-debugger = True
+debugger = False
 
 # Simple class to manage individual squares in the image
 # ATRIBUTES:
