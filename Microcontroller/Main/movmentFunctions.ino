@@ -318,28 +318,48 @@ void forwardUntilWallN(int dist)
   //While not at ceratin distance from wall
   while (!ready)
   {
-    //To far from wall
-    if (actualDist > dist + 2)
+    if(dist != 0)
     {
-      forward(LF, LB, RF, RB); // TODO: Brake before changing the direction to avoid fast changes that turn badly the robot
-      forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
-      countCorrect = 0;
-    }
-    else if (actualDist < dist - 2) //To close from wall
-    {
-      backward(LF, LB, RF, RB);
-      backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
-      countCorrect = 0;
-    }
-    else //Already at the distance with an error of +- 2 cm.
-    {
-      brake();
-      if (++countCorrect == 5) ready = true;
-    }
+      //To far from wall
+      if (actualDist > dist + 2)
+      {
+        forward(LF, LB, RF, RB); // TODO: Brake before changing the direction to avoid fast changes that turn badly the robot
+        forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+        countCorrect = 0;
+      }
+      else if (actualDist < dist - 2) //To close from wall
+      {
+        backward(LF, LB, RF, RB);
+        backwardP(iStayAngle, LF, LB, RF, RB, bSlow);
+        countCorrect = 0;
+      }
+      else //Already at the distance with an error of +- 2 cm.
+      {
+        brake();
+        if (++countCorrect == 5) ready = true;
+      }
 
-    actualDist = getDistance(pinSF);
-    bSlow = abs(actualDist - dist) >= 15 ? false : true;
-
+      actualDist = getDistance(pinSF);
+      bSlow = abs(actualDist - dist) >= 15 ? false : true;
+    }
+    else{
+        forward(LF, LB, RF, RB);
+        while(digitalRead(pinLL) == normalState && digitalRead(pinLR) == normalState)
+        {
+            forwardP(iStayAngle, LF, LB ,RF, RB, bSlow);
+        }
+        brake();
+        if(digitalRead(pinLL) == normalState)
+        {
+          forward(LF, LB, RF, RB);
+          while(digitalRead(pinLL) == normalState);
+        }
+        else{
+          forward(LF, LB, RF, RB);
+          while(digitalRead(pinLR) == normalState);
+        }
+        brake();
+    }
   }
 
   brake();
@@ -648,7 +668,7 @@ void backwardUntilNoLeft()
 /**
  * Check if we are crossing the gate.
  * First, it will only check if detecting something with sharp
- * left-front, if true it will stop and return to check if again 
+ * left-front, if true it will stop and return to check if again
  * sharp detects it. If true, we continue forwarding to look for the
  * the left-back sharp to find the gate.
  *
@@ -682,11 +702,11 @@ bool checkCrossingGate(const Logger &logger) {
       logger.log("Not found wall");
       delay(1000);
       backwardNCm(9, false);
-      
+
       forward(0,0,0,0);
       return false;
     }
-    
+
     // We found something, then lets look with sharp left-back
     // logger.log("Wall LF again");
     // delay(1000);
@@ -714,7 +734,7 @@ void goToStart()
 
   AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
   Logger logger("Mega", "ReturnCow", LevelLogger::INFO, loggerArray, 1);
-  
+
 
   //Get out of the cow
   backwardNCm(30, false);
@@ -733,7 +753,7 @@ void goToStart()
   int distLF;
 
   bool letsContinue = true;
-  
+
   logger.log("Forward to start");
 
   // We check if we are near from any side wall
@@ -741,7 +761,7 @@ void goToStart()
   if (distSideWalls < 32) {
     logger.log("Near left wall");
     delay(1000);
-    
+
     turnToObjectiveN(iWest);
     forwardNCm(60 - distSideWalls, false);
   } else {
@@ -749,7 +769,7 @@ void goToStart()
     if (distSideWalls < 32) {
       logger.log("Near left wall");
       delay(1000);
-    
+
       turnToObjectiveN(iEast);
       forwardNCm(60 - distSideWalls, false);
     }
@@ -774,9 +794,9 @@ void goToStart()
     return;
   }
 
-  // if we didnt touch any limit, lets look horizontaly for the gate. 
+  // if we didnt touch any limit, lets look horizontaly for the gate.
   // Or maybe there was something strange to both.
-  if (digitalRead(pinLR) == HIGH && digitalRead(pinLL) == HIGH || 
+  if (digitalRead(pinLR) == HIGH && digitalRead(pinLL) == HIGH ||
     digitalRead(pinLR) == LOW && digitalRead(pinLL) == LOW) { // TODO: Add case when we touch both limits; it get to one of the terrine zone.
     logger.log("Sharp detected");
     delay(1000);
@@ -797,7 +817,7 @@ void goToStart()
           do
           {
             backwardP(iWest, LF, LB, RF, RB, false);
-        
+
           } while(getDistance(pinSB) > 31 && getDistance(pinSLF) < 35);
           brake();
         }
@@ -834,7 +854,7 @@ void goToStart()
       } else if (backDist > 30 &&  frontDist < 30) {
         logger.log("Wall betw right");
         delay(1000);
-    
+
         // Move until the gate completely
         backward(0, 0, 0, 0);
         do {
@@ -853,7 +873,7 @@ void goToStart()
       } else if (backDist < 30 &&  frontDist > 30) {
         logger.log("Wall betw left");
         delay(1000);
-        
+
         // Move until the gate completely
         forward(LF, LB, RF, RB);
         do {
@@ -871,7 +891,7 @@ void goToStart()
           backwardNCm(5, false);
 
           // Again but we now that the gate is in the back
-          inGate = false; 
+          inGate = false;
           prefForwardInLeftBack = false; //We actually dont need to make anything because normally we go first backward
         } else {
           forwardNCm(5, false);
@@ -883,7 +903,7 @@ void goToStart()
 
     logger.log("En la gate");
     delay(1000);
-    
+
     turnToObjectiveN(iSouth);
   }
 
@@ -899,7 +919,7 @@ void goToStart()
       brake();
       logger.log("Limit left");
       delay(1000);
-  
+
       turnToObjectiveN(iSouth);
       parkingRight(false);
       forward(0,0,0,0);
@@ -907,7 +927,7 @@ void goToStart()
       brake();
       logger.log("Limit right");
       delay(1000);
-      
+
       turnToObjectiveN(iSouth);
       parkingLeft(false);
       forward(0,0,0,0);
@@ -920,6 +940,79 @@ void goToStart()
   } while (!crossed);
 
   logger.log("END");
+}
+
+void lookingEastUpdateAngles()
+{
+  iEast = getCompass();
+  iSouth = iEast + 90;
+  if(iSouth > 360)
+  {
+    iSouth -= 360;
+  }
+  iWest = iSouth + 90;
+  if(iWest > 360)
+  {
+    iWest -= 360;
+  }
+  iNorth = iWest + 90;
+  if(iNorth > 360)
+  {
+    iNorth -= 360;
+  }
+}
+
+void goToStartRestar(bool bSlow)
+{
+  int iAm = getCompass();
+  //Velocity of motors
+  int LF = velLF;
+  int LB = velLB;
+  int RF = velRF;
+  int RB = velRB;
+
+  //the leg that touch was the right one
+  bool bRight = digitalRead(pinLR);
+  //The leg that touch was the left one
+  bool bLeft = digitalRead(pinLL);
+  int distanceToWall = 20;
+  forward(LF, LB, RF, RB);
+  while (digitalRead(pinLR) == normalState && digitalRead(pinLL) == normalState)
+  {
+    //P Correction
+    forwardP(iAm, LF, LB, RF, RB, bSlow);
+  }
+  brake();
+  LF = velLF;
+  LB = velLB;
+  RF = velRF;
+  RB = velRB;
+  if(digitalRead(pinLR) == normalState)
+  {
+    forward(LF, LB, RF, RB);
+    while(digitalRead(pinLR) == normalState);
+  }
+  else{
+    forward(LF, LB, RF, RB);
+    while(digitalRead(pinLL) == normalState);
+  }
+  brake();
+  lookingEastUpdateAngles();
+  goToStart();
+  int distLF = getDistance(pinSLF);
+  int distRF = getDistance(pinSRF);
+  do{
+    backwardP(iNorth, LF, LB, RF, RB, bSlow);
+    distLF = getDistance(pinSLF);
+  }while(distLF >= 30);
+  brake();
+  forwardNCm(20, false);
+  do{
+    backwardP(iNorth, LF, LB, RF, RB, bSlow);
+    distRF = getDistance(pinSRF);
+  }while(distRF >= 30);
+  brake();
+  turnNDegrees(-90);
 }
 
 /**
@@ -936,7 +1029,7 @@ void goToStart()
  *
  * @return {int} separacion The dist with the wall average with front and back
  */
-int backwardWithLeftWall(const int& degreesObjetivo, const int& objetivoDistPared, const bool& slow, 
+int backwardWithLeftWall(const int& degreesObjetivo, const int& objetivoDistPared, const bool& slow,
   int& distFront, int& distBack) {
   //Base for motors velocity
   int baseLF;
@@ -987,7 +1080,7 @@ int backwardWithLeftWall(const int& degreesObjetivo, const int& objetivoDistPare
  *
  * @return {int} separacion The dist with the wall average with front and back
  */
- int forwardWithLeftWall(const int& degreesObjetivo, const int& objetivoDistPared, const bool& slow, 
+ int forwardWithLeftWall(const int& degreesObjetivo, const int& objetivoDistPared, const bool& slow,
   int& distFront, int& distBack) {
   //Base for motors velocity
   int baseLF;
