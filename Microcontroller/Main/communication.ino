@@ -96,7 +96,7 @@ void communication() {
 
       case 'l':
         iAm = getCompass();
-        goGrabTerrineBasic(iAm);
+        goGrabTerrineMainEntrance();
         Serial.write('1');
         break;
 

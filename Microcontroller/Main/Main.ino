@@ -170,6 +170,9 @@ const int velTurnRB = 165;
 //    Variables    //
 /////////////////////
 
+//-----RESTART----//
+bool inARestart = false; // THIS VARIABLE SHOULD BE CHANGED IN THE FUNCTION restart
+
 //------BNO-------//
 Adafruit_BNO055 bno;
 
@@ -308,7 +311,9 @@ void setup()
   encoderState = 1;
 
   openClaw();
-  clawToStartPoint();
+  // clawToStartPoint();
+  downClaw(); // This two for starting the first time ready to grab terrine
+  platOut(); // THEN, IN THE FUNCTION restarting SHOULD BE A CALL TO clawToStartPoint()
 
   //Get angle for north, south, west and east
   //Angles if the robot start looking to the left
