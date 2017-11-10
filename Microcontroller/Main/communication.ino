@@ -159,6 +159,7 @@ void communication() {
         break;
 
       case 'v':
+        inARestart = true;
         goToStartRestar(false);
         Serial.write('1');
         break;
