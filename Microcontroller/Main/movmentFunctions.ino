@@ -820,7 +820,7 @@ void goToStart() {
   backwardNCm(40, false);
   //Turn to where the gate is
   turnToObjectiveN(iSouth);
-  forwardNCm(40, false);
+  forwardNCm(60, false);
 
   // Arrive to left wall
   turnToObjectiveN(iWest);
