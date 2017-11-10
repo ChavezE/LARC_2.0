@@ -50,7 +50,7 @@
     delay(50);
    }
 
-   return sum / cantReads < valorMax;
+   return sum / cantReads < valorMax; // TODO: Super check if really a zero-read always is correct
  }
 
  /**
@@ -80,7 +80,7 @@
       }
     }
 
-    if (suma / cantToProm < maxValue) { // TODO: Maybe use a better way to check: validate the quantity of correct tries out of the totals or a simple "mediana"
+    if (suma / cantToProm < maxValue && suma / cantToProm > 0) { // TODO: Maybe use a better way to check: validate the quantity of correct tries out of the totals or a simple "mediana"
       writeLCD("Found Before", 0, 0);
       delay(1000);
       return true;
