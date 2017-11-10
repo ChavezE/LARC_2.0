@@ -1154,8 +1154,19 @@ void lookingEastUpdateAngles()
   }
 }
 
+
+//TODO: use functions instead of all the unreadeble code
 void goToStartRestar(bool bSlow)
 {
+  LCDLogger lcdLogger;
+  lcdLogger.init();
+  SerialLog serialLogger;
+  //serialLogger.init();
+
+  AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
+  Logger logger("Mega", "ReturnBasic", LevelLogger::INFO, loggerArray, 1);
+  logger.log("ReturnBasic");
+  delay(2000);
   int iAm = getCompass();
   //Velocity of motors
   int LF = velLF;
@@ -1213,25 +1224,121 @@ void goToStartRestar(bool bSlow)
   writeLCD("NORTE", 0, 0);
   turnToObjectiveN(iNorth);
   delay(1000);
-  goToStart();
-  int distLF = getDistance(pinSLF);
-  int distRF = getDistance(pinSRF);
-  backward(LF, LB, RF, RB);
-  do{
-    backwardP(iNorth, LF, LB, RF, RB, bSlow);
-    distLF = getDistance(pinSLF);
-  }while(distLF >= 30);
-  brake();
-  forwardNCm(20, false);
-  backward(LF, LB, RF, RB);
-  do{
-    backwardP(iNorth, LF, LB, RF, RB, bSlow);
-    distRF = getDistance(pinSRF);
-  }while(distRF >= 30);
-  brake();
-  turnNDegrees(-90);
-  backwardNCm(40, false);
-  turnNDegrees(90);
+
+  // goToStart();
+
+  // Encoders until center
+  backwardNCm(140, false);
+
+  // Front until pass the gate
+  turnToObjectiveN(iSouth);
+  int mientr1, mientr2, mientr3, mientr4;
+  bool crossed;
+  forward(0,0,0,0);
+  do {
+    lcd.clear();
+    writeLCD("forwarding", 0, 0);
+    if (digitalRead(pinLL) == LOW) {
+      brake();
+      lcd.clear();
+      writeLCD("Limit left", 0, 0);
+      delay(1000);
+
+      turnToObjectiveN(iSouth);
+      parkingRight(false, 35);
+      forward(0,0,0,0);
+    } else if (digitalRead(pinLR) == LOW) {
+      brake();
+      lcd.clear();
+      writeLCD("Limit right", 0, 0);
+      delay(1000);
+
+      turnToObjectiveN(iSouth);
+      parkingLeft(false, 35);
+      forward(0,0,0,0);
+    }
+
+    forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, true);
+
+    crossed = checkCrossingGate(logger);
+
+  } while (!crossed);
+
+  crossed = false;
+  // Front until pass the gate
+  turnToObjectiveN(iSouth);
+  backward(0,0,0,0);
+  do {
+    lcd.clear();
+    writeLCD("forwarding", 0, 0);
+    if (digitalRead(pinLL) == LOW) {
+      brake();
+      lcd.clear();
+      writeLCD("Limit left", 0, 0);
+      delay(1000);
+
+      turnToObjectiveN(iSouth);
+      parkingRight(false, 35);
+      forward(0,0,0,0);
+    } else if (digitalRead(pinLR) == LOW) {
+      brake();
+      lcd.clear();
+      writeLCD("Limit right", 0, 0);
+      delay(1000);
+
+      turnToObjectiveN(iSouth);
+      parkingLeft(false, 35);
+      forward(0,0,0,0);
+    }
+
+    forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, true);
+
+    // crossed = checkCrossingGate(logger);
+
+    if (getDistance(pinSLB) <= 30) { // CHANGED TO READ BACK
+      // Return to check if we detect again the wall
+      brake();
+      logger.log("Wall LB");
+      delay(1000);
+      backwardNCm(8, false);
+
+      int mientr1, mientr2, mientr3, mientr4;
+      encoderState = 1;
+      int untilSteps = (encoder30Cm / 30) * 11;
+      steps = 0;
+      forward(0,0,0,0);
+      do {
+        forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, true);
+      } while (getDistance(pinSLB) > 30 && steps < untilSteps);
+      brake();
+      delay(400);
+
+      // We didnt find anything again
+      if (steps >= untilSteps) {
+        logger.log("Not found wall");
+        delay(1000);
+        backwardNCm(14, false);
+
+        forward(0,0,0,0);
+        return false;
+      }
+      logger.log("Wall LB again");
+      delay(1000);
+
+      // We found something, then lets look with sharp left-back
+      // forward(0,0,0,0);
+      // while (getDistance(pinSLB) > 30) {
+      //   forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, true);
+      // }
+      // brake();
+
+      forwardNCm(15, false);
+
+      crossed = true;
+    }
+
+  } while (!crossed);
+
 }
 
 /**
