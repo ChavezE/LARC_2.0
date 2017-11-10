@@ -312,30 +312,30 @@ void setup()
 
   //Get angle for north, south, west and east
   //Angles if the robot start looking to the left
-  iWest = getCompass();
-  iNorth = iWest + 90;
-  if(iNorth > 360)
-  {
-    iNorth -= 360;
-  }
-  iEast = iNorth + 90;
-  if(iEast > 360)
-  {
-    iEast -= 360;
-  }
-  iSouth = iEast + 90;
-  if(iSouth > 360)
-  {
-    iSouth -= 360;
-  }
-  //Angles if the robot start looking at the cows
-  // iNorth = getCompass();
+  // iWest = getCompass();
+  // iNorth = iWest + 90;
+  // if(iNorth > 360)
+  // {
+  //   iNorth -= 360;
+  // }
   // iEast = iNorth + 90;
-  // if (iEast > 360) {
+  // if(iEast > 360)
+  // {
   //   iEast -= 360;
   // }
   // iSouth = iEast + 90;
-  // iWest = iSouth + 90;
+  // if(iSouth > 360)
+  // {
+  //   iSouth -= 360;
+  // }
+  //Angles if the robot start looking at the cows
+  iNorth = getCompass();
+  iEast = iNorth + 90;
+  if (iEast > 360) {
+    iEast -= 360;
+  }
+  iSouth = iEast + 90;
+  iWest = iSouth + 90;
 
   //Display the finish of the setup
   writeLCD("      El Mitosao", 0, 0);

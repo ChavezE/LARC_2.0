@@ -3,7 +3,7 @@
 import cv2
 import numpy as np
 import math
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import sys
 import serial
 import time
@@ -14,142 +14,11 @@ import thread
 import sys
 sys.path.insert(0, '../lib/')
 import Larc_vision_2017 as rb
-#import communication as com
+import communication as com
 
 
 
 
-#################################
-#           RESTART             #
-#################################
-
-def turnLooking4cow():
-    # turn until you find a cow
-    for x in range(0,360,10) :
-        turnLeft(10)
-        takePicture()
-        found, filtered = rb.detectCow(clearedMainFrame)
-        #first validation, haar cascade
-        if found:            
-            print "HAAR FOUND COW"
-            turnLeft(10)
-            turnLeft(70)
-            com.goToRestar()
-        
-
-        else:
-            print "HAAR DIT NOT FIND COW"
-
-
-
-
-# READING TRIAL PARAMETERS
-tFile = open("../calibration/restart.txt", "r+")
-trial = (tFile.readline().strip(" "))
-numberOfTrial = int(trial[len(trial)-1])
-print numberOfTrial
-
-# update trial
-linesToWrite = [" "+str(numberOfTrial + 1)]
-tFile.writelines(linesToWrite)
-tFile.close()
-
-
-if (trial > 0):
-    turnLooking4cow()
-
-
-#################################
-
-
-'''
-VARIABLES GLOBALES
-'''
-
-
-#For debugging
-debugger = False
-
-#Terrines Position; c = unknown, r = right, l = left
-terrinesZone = "c"
- #Position where we find the Cow; 0 = unknown, 1 = right, 2 = center, 3 = left
-cowPos = 0
-#Angle where we find the Cow; 360 = unknown, any other number is the angle
-cowAngle = 360
-#Position where we find the Tank; 0 = unknown, 1 = right, 2 = center, 3 = left
-tankPos = 0
- #Angle where we find the Tank; 360 = unknown, any other number is the angle
-tankAngle = 360
-
-mainFrame = []
-clearedMainFrame = []
-maxLenTissue = []
-
-
-############### BOTONS INTERRUPT SETUP ####################
-
-START_PIN = 20
-END_PIN = 4
-LED_PIN = 21
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(START_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(END_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(LED_PIN, GPIO.OUT)
-
-
-# setting up interrupt on pin 3 to exit the abort the program
-def my_callback(channel):
-    print "exiting the program..."
-    GPIO.cleanup()
-    sys.exit()
-# this line waits for the interrupt and calles the function above
-GPIO.add_event_detect(END_PIN, GPIO.FALLING, callback=my_callback, bouncetime=1000)
-
-# loop in this function until begin button is pressed
-def waitToBegin():
-    print "waiting for input"
-    GPIO.output(LED_PIN,1)
-    GPIO.wait_for_edge(START_PIN, GPIO.FALLING)
-    GPIO.output(LED_PIN,0)
-    print "begining program"
-########################################################
-
-
-# Global variable for camera
-cap = cv2.VideoCapture(0)
-# let camara calibrate light
-for i in range(10):
-        cap.read()
-
-'''
-    METODOS
-'''
-##### Camara ######
-
-# updates mainFrame
-def takePicture(inColor = False):
-    global mainFrame
-    global clearedMainFrame
-    # clear internal buffer
-    for i in range(4):
-        cap.grab()
-    # get new image
-    goodFrm, mainFrame = cap.read()
-
-    print "I took a pic"
-    if goodFrm:
-        #cv2.imshow('main', mainFrame)
-        mainFrame = cv2.resize(mainFrame,(640, 480), interpolation = cv2.INTER_CUBIC)
-        if(not inColor):
-            print "hello"
-            clearedMainFrame = rb.clearImage(mainFrame)
-        cv2.waitKey(30)
-        #cv2.destroyAllWindows()
-
-    else:
-        print ("There is an error with the camera")
-    return goodFrm
 
 
 ##### Rutinas ######
@@ -481,9 +350,185 @@ def getToTank():
 
 
 
-
 def control():
     com.controlRobot()
+
+
+
+
+
+
+
+
+#################################
+
+
+'''
+VARIABLES GLOBALES
+'''
+
+
+#For debugging
+debugger = False
+
+#Terrines Position; c = unknown, r = right, l = left
+terrinesZone = "c"
+ #Position where we find the Cow; 0 = unknown, 1 = right, 2 = center, 3 = left
+cowPos = 0
+#Angle where we find the Cow; 360 = unknown, any other number is the angle
+cowAngle = 360
+#Position where we find the Tank; 0 = unknown, 1 = right, 2 = center, 3 = left
+tankPos = 0
+ #Angle where we find the Tank; 360 = unknown, any other number is the angle
+tankAngle = 360
+
+mainFrame = []
+clearedMainFrame = []
+maxLenTissue = []
+
+
+############### BOTONS INTERRUPT SETUP ####################
+
+START_PIN = 20
+END_PIN = 4
+LED_PIN = 21
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(START_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(END_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(LED_PIN, GPIO.OUT)
+
+
+# setting up interrupt on pin 3 to exit the abort the program
+def my_callback(channel):
+    print "exiting the program..."
+    GPIO.cleanup()
+    sys.exit()
+# this line waits for the interrupt and calles the function above
+GPIO.add_event_detect(END_PIN, GPIO.FALLING, callback=my_callback, bouncetime=1000)
+
+# loop in this function until begin button is pressed
+def waitToBegin():
+    print "waiting for input"
+    GPIO.output(LED_PIN,1)
+    GPIO.wait_for_edge(START_PIN, GPIO.FALLING)
+    GPIO.output(LED_PIN,0)
+    print "begining program"
+########################################################
+
+
+# Global variable for camera
+cap = cv2.VideoCapture(0)
+# let camara calibrate light
+for i in range(10):
+        cap.read()
+
+'''
+    METODOS
+'''
+##### Camara ######
+
+# updates mainFrame
+def takePicture(inColor = False):
+    global mainFrame
+    global clearedMainFrame
+    # clear internal buffer
+    for i in range(4):
+        cap.grab()
+    # get new image
+    goodFrm, mainFrame = cap.read()
+
+    print "I took a pic"
+    if goodFrm:
+        #cv2.imshow('main', mainFrame)
+        mainFrame = cv2.resize(mainFrame,(640, 480), interpolation = cv2.INTER_CUBIC)
+        if(not inColor):
+            print "hello"
+            clearedMainFrame = rb.clearImage(mainFrame)
+        cv2.waitKey(30)
+        #cv2.destroyAllWindows()
+
+    else:
+        print ("There is an error with the camera")
+    return goodFrm
+
+
+
+
+def tLook():
+    i = 0
+    while True:
+        for x in range(0,360,10) :
+            takePicture()
+            found, filtered = rb.detectCow(clearedMainFrame)
+            #first validation, haar cascade
+            if found:            
+                print "HAAR FOUND COW ON RESTART"
+                #turnRight(35)
+                i = x
+                return i
+            else:
+                print "HAAR DIT NOT FIND COW ON RESTART"
+            turnLeft(10)
+#################################
+#           RESTART             #
+#################################
+
+def turnLooking4cow():
+    # turn until you find a cow
+    pseudoOriented = ' '
+
+    i = tLook()/10
+    # check probabilistic orientation configurations
+
+    # NORTH ?
+    if (i >= 0 and i <= 3):
+        print "P(pseudoOriented) -> NORTH"
+        turnRight(93)
+        pass   
+    # EAST ?
+    elif (i > 3 and i <= 8):
+        print "P(pseudoOriented) -> EAST"
+        turnRight(55)
+        pass
+    # SOUTH ?
+    elif (i > 8 and i <= 18):
+        print "P(pseudoOriented) -> SOUTH"
+        turnRight(60)
+        pass
+    # WEST ? 
+    elif (i > 18):
+        print "P(pseudoOriented) -> WEST"
+        turnRight(60)
+        pass
+
+    com.goToRestar()
+
+
+
+# READING TRIAL PARAMETERS
+tFile = open("../calibration/restart.txt", "r+")
+trial = (tFile.readline().strip(" \n"))
+print trial
+try: 
+    numberOfTrial = int(trial[len(trial)-1])
+except ValueError:
+    print "Error en el archivo de restart"
+    while True:
+        pass
+
+
+# update trial
+linesToWrite = [" "+str(numberOfTrial + 1)]
+tFile.writelines(linesToWrite)
+tFile.close()
+
+restarted = False
+if (numberOfTrial > 0):
+    restarted = True
+    print "Restart, looking for a cow"
+    waitToBegin()
+    turnLooking4cow()
 
 '''
     MAIN
@@ -491,7 +536,8 @@ def control():
 
 if __name__ == "__main__":
 
-    waitToBegin()
+    if (not restarted):
+        waitToBegin()
     # Robot always STARTS facing NORTH, check field in 'information' folder #
 
     #goAndGrabTerrine()
