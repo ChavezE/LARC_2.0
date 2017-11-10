@@ -117,15 +117,49 @@
  }
 
 /**
- * Main entrance for goGrabTerrine.
+ * GOGRABTERRINE MAIN ENTRANCE
+ * This should be the function to call from outside (communication).
+ * It choose between the ultraBasic when starting the round and the 
+ * basic when is a restarting in round.
+ *
+ */
+void goGrabTerrineMainEntrance() {
+  if (inARestart) {
+    goGrabTerrineBasic(iNorth);
+  } else {
+    goGrabTerrineUltraBasic();
+  }
+}
+
+/**
+ * Used only in FIRST TIME.
+ * GrabTerrine only to close the claw and ready.
+ * This functions is to be used in the start. It starts with the claw
+ * having inside the terrine. It closes claw, clawToStartPoint and goes
+ * to the zone ready to walkingDetection.
+ *
+ */
+void goGrabTerrineUltraBasic() {
+  closeClaw();
+  clawToStartPoint(true);
+  
+  backwardUntilWallN(10);
+  parkingFrontRight(false);
+}
+
+/**
+ * Used only the NOT FIRST TIMES TRY
+ * Main entrance for goGrabTerrineBasic.
  * It starts going to the right, if it fails, it tries in the right.
  *
  * @param {const int} iNorth The north angle.
  *
+ * TODO: See in which side the terrines are and the next times only go to there
+ *
  */
  void goGrabTerrineBasic(const int iNorth) { // TODO: Remove argument
   // Check if is the first time because we start far
-  static bool firstTime = true;
+  static bool firstTime = false; // THE FIRST TIME WOULD BE ALREADY IN THE GATE... ACTUALLY THIS THING IS NOT NECESSARY ANY MORE
 
   if (firstTime) {
     // We start looking at the north

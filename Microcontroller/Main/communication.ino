@@ -73,7 +73,7 @@ void communication() {
         break;
 
       case 'h':
-        forwardUntilNoLeft();
+        forwardUntilNoLeft(getCompass());
         Serial.write('1');
         break;
 
@@ -96,7 +96,7 @@ void communication() {
 
       case 'l':
         iAm = getCompass();
-        goGrabTerrineBasic(iAm);
+        goGrabTerrineMainEntrance();
         Serial.write('1');
         break;
 
@@ -159,6 +159,7 @@ void communication() {
         break;
 
       case 'v':
+        inARestart = true;
         goToStartRestar(false);
         Serial.write('1');
         break;

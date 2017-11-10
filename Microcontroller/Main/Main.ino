@@ -170,6 +170,14 @@ const int velTurnRB = 165;
 //    Variables    //
 /////////////////////
 
+//-----RESTART----//
+bool inARestart = false; // THIS VARIABLE SHOULD BE CHANGED IN THE FUNCTION restart
+
+//--Terrines init Position---//
+// TODO: Add in goGrabTerrine, because a restart, to set this variable.
+// Note: For now, only leaveTerrine uses this. Nearly, also goGrabTerrine.
+bool terrinesInitInRight = true; // THIS VARIABLE SHOULD BE CHANGED EACH ROUND FOR NOW
+
 //------BNO-------//
 Adafruit_BNO055 bno;
 
@@ -308,7 +316,9 @@ void setup()
   encoderState = 1;
 
   openClaw();
-  clawToStartPoint();
+  // clawToStartPoint();
+  downClaw(); // This two for starting the first time ready to grab terrine
+  platOut(); // THEN, IN THE FUNCTION restarting SHOULD BE A CALL TO clawToStartPoint()
 
   //Get angle for north, south, west and east
   //Angles if the robot start looking to the left

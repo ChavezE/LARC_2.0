@@ -626,46 +626,40 @@ void forwardUntilNoRight()
   brake();
 }
 
-void forwardUntilNoLeft()
+/**
+ * Method that forward until there is no left Wall.
+ * Forward until we pass both left-sharps.
+ * 
+ * Note: It leaves you exactly where the sharp back 
+ * stops reading.
+ *
+ * @param {const int&} iStayAngle
+ *
+ * It works now.
+ */
+void forwardUntilNoLeft(const int& iStayAngle)
 {
-  encoderState = 1;
-
-  //Angle to stay in
-  int iStayAngle = getCompass();
-
   //Start at default velocity
   int LF = velLF;
   int LB = velLB;
   int RF = velRF;
   int RB = velRB;
 
-  //Distance by left back sharp
-  int distBack = getDistance(pinSLB);
 
-  //Distance by left front sharp
-  int distFront = getDistance(pinSLF);
-
-  //Check if the the robot should go slower
-  bool bSlow = distFront > 30 ? true : false;
-
-  if (distBack < 30)
-  {
-    //Start moving
-    forward(LF, LB, RF, RB);
-
-    //While not at ceratin distance from wall
-    while (distBack < 30)
-    {
-      forwardP(iStayAngle, LF, LB, RF, RB, bSlow);
-
-      distFront = getDistance(pinSLF);
-      bSlow = distFront > 30 ? true : false;
-
-      distBack = getDistance(pinSLB);
-      Serial.println(distBack);
-    }
+  // Forward until the sharp Left Front stops reading
+  forward(0, 0, 0, 0);
+  while (getDistance(pinSLF) <= 30) {
+    forwardP(iStayAngle, LF, LB, RF, RB, false); // TODO: Add missing delays for sharps
   }
   brake();
+
+  // Forward slowly until the sharp Back reading
+  forward(0, 0, 0, 0);
+  while (getDistance(pinSLB) <= 30) {
+    forwardP(iStayAngle, LF, LB, RF, RB, true);
+  }
+  brake();
+
 }
 
 void backwardUntilNoRight()
