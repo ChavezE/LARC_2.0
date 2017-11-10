@@ -319,9 +319,9 @@ void setup()
   encoderState = 1;
 
   openClaw();
-  // clawToStartPoint();
-  downClaw(); // This two for starting the first time ready to grab terrine
-  platOut(); // THEN, IN THE FUNCTION restarting SHOULD BE A CALL TO clawToStartPoint()
+  clawToStartPoint();
+  // downClaw(); // This two for starting the first time ready to grab terrine
+  // platOut(); // THEN, IN THE FUNCTION restarting SHOULD BE A CALL TO clawToStartPoint()
 
   //Get angle for north, south, west and east
   //Angles if the robot start looking to the left

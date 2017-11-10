@@ -135,13 +135,14 @@ void goGrabTerrineMainEntrance() {
 
 /**
  * Used only in FIRST TIME.
- * GrabTerrine only to close the claw and ready.
+ * GrabTerrine only to plat out, close the claw and ready.
  * This functions is to be used in the start. It starts with the claw
  * having inside the terrine. It closes claw, clawToStartPoint and goes
  * to the zone ready to walkingDetection.
  *
  */
 void goGrabTerrineUltraBasic() {
+  platOut();
   closeClaw();
   clawToStartPoint(true);
   

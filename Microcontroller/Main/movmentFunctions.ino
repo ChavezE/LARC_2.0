@@ -866,7 +866,7 @@ void goToStartNew() {
 
 
           turnToObjectiveN(iSouth);
-          parkingRight(false, 15);
+          parkingRight(false, 20);
           forward(0,0,0,0);
       } else if (!limitL && limitR) {
           // To ensure that is really only one limit, lets forward a little more
@@ -880,7 +880,7 @@ void goToStartNew() {
           delay(1000);
 
           turnToObjectiveN(iSouth);
-          parkingLeft(false, 15);
+          parkingLeft(false, 20);
           forward(0,0,0,0);
       } else {
           crossed = checkCrossingGate(logger);

@@ -174,6 +174,11 @@ void communication() {
         clawToStartPoint();
         Serial.write('1');
         break;
+
+      case 'y':
+        goToStartFromTank();
+        Serial.write('1');
+        break;
     }
     ////writeLCD("C", 15, 0);
   }
