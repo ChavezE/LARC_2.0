@@ -799,6 +799,194 @@ bool checkCrossingGate(const Logger &logger) {
 }
 
 
+void goToStartNew() {
+  LCDLogger lcdLogger;
+  lcdLogger.init();
+  SerialLog serialLogger;
+  //serialLogger.init();
+
+  AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
+  Logger logger("Mega", "GoStartNew", LevelLogger::INFO, loggerArray, 1);
+  logger.log("GoStartNew");
+  delay(2000);
+
+
+  //Get out of the cow
+  backwardNCm(40, false);
+  //Turn to where the gate is
+  turnToObjectiveN(iSouth);
+  //Forward to avoid reading with the sharps the cow's legs
+  forwardNCm(55, false);
+
+  int mientr1, mientr2, mientr3, mientr4;
+  bool crossed = false;
+
+  // Forward until we got to the gate
+  forward(0,0,0,0);
+  do {
+      logger.log("forwarding");
+      bool limitL = digitalRead(pinLL) == LOW;
+      bool limitR = digitalRead(pinLR) == LOW;
+
+
+      if (limitL && limitR) {
+          // A normal wall, lets go to right and then to the gate
+          brake();
+
+          logger.log("Both limits");
+
+          // Get far from the wall
+          backwardNCm(30, false);
+
+          // Arrive to left wall
+          turnToObjectiveN(iWest);
+          int mientr1, mientr2, mientr3, mientr4;
+          forward(0,0,0,0);
+          do {
+              forwardP(iWest, mientr1, mientr2, mientr3, mientr4, true);
+          } while (digitalRead(pinLL) == HIGH && digitalRead(pinLR) == HIGH);
+          brake();
+          
+          // Encoders until center
+          backwardNCm(140, false);
+
+          // Front until pass the gate
+          turnToObjectiveN(iSouth);
+          forward(0, 0, 0, 0);
+      }else if (limitL && !limitR) {
+          // To ensure that is really only one limit, lets forward a little more
+          // delay(500);
+          // if (digitalRead(pinLL) == LOW && digitalRead(pinLR) == LOW) {
+          //     continue;
+          // }
+
+          brake();
+          logger.log("Limit left");
+          delay(1000);
+
+
+          turnToObjectiveN(iSouth);
+          parkingRight(false, 15);
+          forward(0,0,0,0);
+      } else if (!limitL && limitR) {
+          // To ensure that is really only one limit, lets forward a little more
+          // delay(500);
+          // if (digitalRead(pinLL) == LOW && digitalRead(pinLR) == LOW) {
+          //     continue;
+          // }
+
+          brake();
+          logger.log("Limit right");
+          delay(1000);
+
+          turnToObjectiveN(iSouth);
+          parkingLeft(false, 15);
+          forward(0,0,0,0);
+      } else {
+          crossed = checkCrossingGate(logger);
+      }
+
+      forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, true);
+
+  } while (!crossed);
+
+}
+
+void goToStartNewBasic() {
+  LCDLogger lcdLogger;
+  lcdLogger.init();
+  SerialLog serialLogger;
+  //serialLogger.init();
+
+  AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
+  Logger logger("Mega", "GoStartNewB", LevelLogger::INFO, loggerArray, 1);
+  logger.log("GoStartNewB");
+  delay(2000);
+
+
+  //Get out of the cow
+  backwardNCm(40, false);
+  //Turn to where the gate is
+  turnToObjectiveN(iSouth);
+  //Forward to avoid reading with the sharps the cow's legs
+  forwardNCm(55, false);
+
+  int mientr1, mientr2, mientr3, mientr4;
+  bool crossed = false;
+
+  // Forward until any limits
+  forward(0,0,0,0);
+  do {
+      logger.log("forwarding");
+      bool limitL = digitalRead(pinLL) == LOW;
+      bool limitR = digitalRead(pinLR) == LOW;
+
+
+      if (limitL || limitR) {
+          // A normal wall, lets go to right and then to the gate
+          brake();
+
+          // Get far from the wall
+          backwardNCm(20, false);
+
+          // Arrive to left wall
+          turnToObjectiveN(iWest);
+          forward(0,0,0,0);
+          do {
+              forwardP(iWest, mientr1, mientr2, mientr3, mientr4, true);
+          } while (digitalRead(pinLL) == HIGH && digitalRead(pinLR) == HIGH);
+          brake();
+          
+          // Encoders until center
+          backwardNCm(140, false);
+
+          // Front until pass the gate
+          turnToObjectiveN(iSouth);
+          break;
+      } else {
+        crossed = checkCrossingGate(logger);
+      }
+  } while (!crossed);
+
+
+  crossed = false;
+  // Lets cross 
+  forward(0,0,0,0);
+  do {
+      logger.log("forwarding");
+      bool limitL = digitalRead(pinLL) == LOW;
+      bool limitR = digitalRead(pinLR) == LOW;
+
+
+      if (limitL && !limitR) {
+          brake();
+          logger.log("Limit left");
+          delay(1000);
+
+
+          turnToObjectiveN(iSouth);
+          parkingRight(false, 15);
+          forward(0,0,0,0);
+      } else if (!limitL && limitR) {
+          brake();
+          logger.log("Limit right");
+          delay(1000);
+
+          turnToObjectiveN(iSouth);
+          parkingLeft(false, 15);
+          forward(0,0,0,0);
+      } else {
+
+          forwardP(iSouth, mientr1, mientr2, mientr3, mientr4, true);
+
+          crossed = checkCrossingGate(logger);
+      }
+
+  } while (!crossed);
+  
+}
+
+
 void goToStartUltraBasic() {
   LCDLogger lcdLogger;
   lcdLogger.init();
