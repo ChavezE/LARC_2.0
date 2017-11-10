@@ -798,7 +798,8 @@ bool checkCrossingGate(const Logger &logger) {
 
 }
 
-void goToStart() {
+
+void goToStartUltraBasic() {
   LCDLogger lcdLogger;
   lcdLogger.init();
   SerialLog serialLogger;

@@ -149,7 +149,7 @@ void communication() {
         break;
 
       case 't':
-        goToStart();
+        goToStartNewBasic();
         Serial.write('1');
         break;
 

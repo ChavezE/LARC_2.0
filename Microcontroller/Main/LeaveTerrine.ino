@@ -141,7 +141,7 @@ void leaveTerrineLeft () {
     int distFront, distBack;
     do {
         backwardWithLeftWall(iWest, 17, false, distFront, distBack);
-    } while (distFront < 30);
+    } while (distBack < 30);
     brake();
 
     turnToObjectiveN(iWest); // TODO: It is good idea to check, after turn, the sharpLeftBack if it is very far to return and get closer
