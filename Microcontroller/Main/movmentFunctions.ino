@@ -1181,30 +1181,57 @@ void goToStartRestar(bool bSlow)
   RB = velRB;
   if(digitalRead(pinLR) == normalState)
   {
-    forward(LF, LB, RF, RB);
+    backwardNCm(5, false);
+    forward(0, 0, RF, RB);
     while(digitalRead(pinLR) == normalState);
   }
-  else{
-    forward(LF, LB, RF, RB);
+  if(digitalRead(pinLL) == normalState){
+    backwardNCm(5, false);
+    forward(LF, LB, 0, 0);
     while(digitalRead(pinLL) == normalState);
   }
   brake();
+  delay(200);
+  forward(LF, LB, RF, RB);
+  delay(400);
+  brake();
   lookingEastUpdateAngles();
+
+  // lcd.clear();
+  // writeLCD("ESTE", 0, 0);
+  // turnToObjectiveN(iEast);
+  // delay(1000);
+  // lcd.clear();
+  // writeLCD("SUR", 0, 0);
+  // turnToObjectiveN(iSouth);
+  // delay(1000);
+  // lcd.clear();
+  // writeLCD("OESTE", 0, 0);
+  // turnToObjectiveN(iWest);
+  // delay(1000);
+  lcd.clear();
+  writeLCD("NORTE", 0, 0);
+  turnToObjectiveN(iNorth);
+  delay(1000);
   goToStart();
   int distLF = getDistance(pinSLF);
   int distRF = getDistance(pinSRF);
+  backward(LF, LB, RF, RB);
   do{
     backwardP(iNorth, LF, LB, RF, RB, bSlow);
     distLF = getDistance(pinSLF);
   }while(distLF >= 30);
   brake();
   forwardNCm(20, false);
+  backward(LF, LB, RF, RB);
   do{
     backwardP(iNorth, LF, LB, RF, RB, bSlow);
     distRF = getDistance(pinSRF);
   }while(distRF >= 30);
   brake();
   turnNDegrees(-90);
+  backwardNCm(40, false);
+  turnNDegrees(90);
 }
 
 /**
