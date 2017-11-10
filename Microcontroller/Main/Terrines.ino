@@ -260,12 +260,21 @@ bool goGrabTerrineBasicSideRight(const int gradosObjetivo) {
     // Backward until we find a "blank space"
     // This make sense in the correct field
     backward(velSlowLF, velSlowLB, velSlowRF, velSlowRB);
-    while (getDistance(pinSLB) < 30) {
+    while (getDistance(pinSLB) < 30) { // && digitalRead(pinLLB) == HIGH && digitalRead(pinLRB) == HIGH) {
       backwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true);
     }
     brake(); // TODO: Check if we need to implement a harder brake with seconds to the other direction
     logger.log("Out find blank");
     delay(1000);
+
+    // if (digitalRead(pinLLB) == LOW || digitalRead(pinLRB) == LOW) {
+    //   // There is terrine but it didnt detect the blank
+    //   logger.log("Strange limit!");
+    //   delay(1000);
+
+    //   turnToObjectiveN(gradosObjetivo);
+    //   forwardNCm(30, false);
+    // }
 
     do {
       logger.log("Look not blank");
@@ -386,12 +395,21 @@ bool goGrabTerrineBasicSideLeft(const int gradosObjetivo) {
     // Forward until we find a "blank space"
     // This make sense in the correct field
     forward(velSlowLF, velSlowLB, velSlowRF, velSlowRB);
-    while (getDistance(pinSLB) < 30) {
+    while (getDistance(pinSLB) < 30) { //&& digitalRead(pinLL) == HIGH && digitalRead(pinLR) == HIGH) {
       forwardP(gradosObjetivo, mientr1, mientr2, mientr3, mientr4, true);
     }
     brake(); // TODO: Check if we need to implement a harder brake with seconds to the other direction
     logger.log("Out find blank");
     delay(1000);
+
+    // if (digitalRead(pinLL) == LOW || digitalRead(pinLR) == LOW) {
+    //   // There is terrine but it didnt detect the blank
+    //   logger.log("Strange limit!");
+    //   delay(1000);
+
+    //   turnToObjectiveN(gradosObjetivo);
+    //   backwardNCm(30, false);
+    // }
 
     do {
       logger.log("Look not blank");
