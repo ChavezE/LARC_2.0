@@ -73,7 +73,7 @@ void communication() {
         break;
 
       case 'h':
-        forwardUntilNoLeft();
+        forwardUntilNoLeft(getCompass());
         Serial.write('1');
         break;
 
