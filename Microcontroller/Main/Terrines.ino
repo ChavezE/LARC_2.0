@@ -124,10 +124,12 @@
  *
  */
 void goGrabTerrineMainEntrance() {
-  if (inARestart) {
-    goGrabTerrineBasic(iNorth);
-  } else {
+  if (terrineNextIsUltraBasic) {
+    terrineNextIsUltraBasic = false;
+    
     goGrabTerrineUltraBasic();
+  } else {
+    goGrabTerrineBasic(iNorth);
   }
 }
 

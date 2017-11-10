@@ -176,7 +176,10 @@ bool inARestart = false; // THIS VARIABLE SHOULD BE CHANGED IN THE FUNCTION rest
 //--Terrines init Position---//
 // TODO: Add in goGrabTerrine, because a restart, to set this variable.
 // Note: For now, only leaveTerrine uses this. Nearly, also goGrabTerrine.
-bool terrinesInitInRight = true; // THIS VARIABLE SHOULD BE CHANGED EACH ROUND FOR NOW
+bool terrinesInitInRight = false; // THIS VARIABLE SHOULD BE CHANGED EACH ROUND FOR NOW
+
+//--Terrine next one is ultraBasic--//
+bool terrineNextIsUltraBasic = true;
 
 //------BNO-------//
 Adafruit_BNO055 bno;

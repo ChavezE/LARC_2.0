@@ -160,6 +160,7 @@ void communication() {
 
       case 'v':
         inARestart = true;
+        terrineNextIsUltraBasic = false;
         goToStartRestar(false);
         Serial.write('1');
         break;
