@@ -45,6 +45,7 @@
    int sum = 0;
    for (int x = 1; x <= cantReads; x++) {
     int mientr = ultrasonicClaw.ping_cm();
+    // Serial.println(mientr);
     sum += mientr; // TODO: Create separate ping function with already average
     delay(50);
    }
@@ -71,11 +72,15 @@
 
     // TO AVOID ERROR if we started with the terrine in the claw
     suma = 0;
-    for (int x = 0; x < cantToProm; x++) {
-      suma += ultrasonicClaw.ping_cm();
+    for (int x = 0; x < cantToProm;) {
+      int mientr0 = ultrasonicClaw.ping_cm();
+      if (mientr0 > 0) {
+        suma += mientr0;
+        x++;
+      }
     }
 
-    if (suma / cantToProm < maxValue && suma / cantToProm > 0) { // TODO: Maybe use a better way to check: validate the quantity of correct tries out of the totals or a simple "mediana"
+    if (suma / cantToProm < maxValue) { // TODO: Maybe use a better way to check: validate the quantity of correct tries out of the totals or a simple "mediana"
       writeLCD("Found Before", 0, 0);
       delay(1000);
       return true;
@@ -87,19 +92,23 @@
     platformStartToOut();
     do {
       int mientr = ultrasonicClaw.ping_cm();
-      suma += mientr;
+      // Serial.println(mientr);
+      if (mientr > 0) { 
+        suma += mientr;
 
-      if (++cant == cantToProm) {
-        if (suma / cantToProm < maxValue && suma / cantToProm > 0) { // TODO: Maybe use a better way to check: validate the quantity of correct tries out of the totals or a simple "mediana"
-          delay(1000); // Delay to get nearer to the terrine
-          break;
-        } else {
-          suma = 0;
-          cant = 0;
+        if (++cant == cantToProm) {
+          if (suma / cantToProm < maxValue && suma / cantToProm > 0) { // TODO: Maybe use a better way to check: validate the quantity of correct tries out of the totals or a simple "mediana"
+            delay(1000); // Delay to get nearer to the terrine
+            break;
+          } else {
+            suma = 0;
+            cant = 0;
+          }
         }
+
+        delay(50);
       }
 
-      delay(50);
     } while (digitalRead(pinLO) == HIGH);
 
     platformStop();
@@ -120,6 +129,7 @@
 
   if (firstTime) {
     // We start looking at the north
+    turnToObjectiveN(iNorth);
 
     // Lets get backward until limits
     int mientr1, mientr2, mientr3, mientr4;
