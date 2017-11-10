@@ -1,10 +1,14 @@
 /**
+ * Main entrance for leave the terrine.
+ *
  * Function to leave the terrine in the empty terrine zone.
  * It starts in the gate looking at the north in the 
- * grasp zone. It finishes also in the gate, grasp, north.
+ * grasp zone. It finishes in the grasp point to iWest ready for call
+ * the basic (normal) version of goGrabTerrine.
+ * This check if the terrines are in right or left (terrinesInitInRight).
  *
  */
-void leaveTerrine () {
+void leaveTerrine() {
     SerialLog serialLogger;
     //serialLogger.init();
     LCDLogger lcdLogger;
@@ -15,13 +19,47 @@ void leaveTerrine () {
 
     logger.log("Leave Terrine");
     delay(2000);
+
+    if (terrinesInitInRight) {
+        logger.log("LEFT");
+        delay(1000);
+
+        leaveTerrineLeft();
+    } else {
+        logger.log("RIGHT");
+        delay(1000);
+
+        leaveTerrineRight();
+    }
+
+}
+
+
+/**
+ * Leave terrine that goes to the left to leave it.
+ * 
+ * It starts in the gate in the grasp pointing to the north.
+ * At the end it finishes at the gate in grasp pointing to the
+ * west.
+ */
+void leaveTerrineLeft () {
+    SerialLog serialLogger;
+    //serialLogger.init();
+    LCDLogger lcdLogger;
+    lcdLogger.init();
+  
+    AbstractLoggable *loggerArray[2]{&lcdLogger, &serialLogger};
+    Logger logger("Mega", "LeaveTerrLeft", LevelLogger::INFO, loggerArray, 1);
+
+    logger.log("Leave Terr Left");
+    delay(2000);
     
   
     // Distance that is next from the front wall to leave 
     //  the terrine.
-    static int distFromWall = 6;
+    static int distFromWall = 6; // TODO: Maybe this two variables can be global to the both version of the functions
     // Distance that will be add for the next terrine
-    const int distAddEachTime = 7;
+    const int distAddEachTime = 8;
 
 
     turnToObjectiveN(iWest);
@@ -65,3 +103,13 @@ void leaveTerrine () {
     logger.log("Finish");
     delay(2000);
 }
+
+/**
+ * Leave terrine that goes to the right to leave it.
+ * 
+ * It starts in the gate in the grasp pointing to the north.
+ * At the end it finishes at the gate in grasp pointing to the
+ * west.
+ */
+ void leaveTerrineRight () {
+ }
