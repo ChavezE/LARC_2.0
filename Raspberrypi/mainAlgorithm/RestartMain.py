@@ -579,13 +579,12 @@ def getOrientation():
 # print "...Done"
 
 # restarted = False
-# if (numberOfTrial > 0):
-#     restarted = True
-#     print "Restart, looking for a cow"
-#     com.closeClaw()
-#     waitToBegin()
-#     # turnLooking4cow()
-#     getOrientation()
+
+    print "Restart, looking for a cow"
+    # com.closeClaw()
+    # waitToBegin()
+    # # turnLooking4cow()
+    # getOrientation()
 
 '''
     MAIN
@@ -593,9 +592,9 @@ def getOrientation():
 
 if __name__ == "__main__":
     while True:
-
- 
+        print "Restart, looking for a cow"
         waitToBegin()
+        getOrientation()
         # Robot always STARTS facing NORTH, check field in 'information' folder #
 
         #goAndGrabTerrine()
