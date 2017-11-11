@@ -177,6 +177,7 @@ void communication() {
 
       case 'y':
         goToStartFromTank();
+        leaveTerrine(); // TODO: Create its own communication function
         Serial.write('1');
         break;
     }

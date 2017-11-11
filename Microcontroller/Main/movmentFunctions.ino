@@ -848,6 +848,7 @@ void goToStartNew() {
           brake();
           
           // Encoders until center
+          turnToObjectiveN(iWest);
           backwardNCm(140, false);
 
           // Front until pass the gate
@@ -855,10 +856,11 @@ void goToStartNew() {
           forward(0, 0, 0, 0);
       }else if (limitL && !limitR) {
           // To ensure that is really only one limit, lets forward a little more
-          // delay(500);
-          // if (digitalRead(pinLL) == LOW && digitalRead(pinLR) == LOW) {
-          //     continue;
-          // }
+          // forward(0, 0, mientr3, mientr4);
+          delay(500);
+          if (digitalRead(pinLL) == LOW && digitalRead(pinLR) == LOW) {
+              continue;
+          }
 
           brake();
           logger.log("Limit left");
@@ -870,10 +872,11 @@ void goToStartNew() {
           forward(0,0,0,0);
       } else if (!limitL && limitR) {
           // To ensure that is really only one limit, lets forward a little more
-          // delay(500);
-          // if (digitalRead(pinLL) == LOW && digitalRead(pinLR) == LOW) {
-          //     continue;
-          // }
+          // forward(mientr1, mientr2, 0, 0);
+          delay(500);
+          if (digitalRead(pinLL) == LOW && digitalRead(pinLR) == LOW) {
+              continue;
+          }
 
           brake();
           logger.log("Limit right");
@@ -1767,6 +1770,8 @@ void goToStartFromTank()
 
   } while (!crossed);
   brake();
+  backwardNCm(5, false);
+  
   logger.log("END");
   delay(2000);
 }
