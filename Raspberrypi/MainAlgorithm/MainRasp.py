@@ -43,7 +43,7 @@ def searchTank():
             com.turnWest()
             for x in range(0,180,45) :
                 turnLeft(45)
-                time.sleep(2) 
+                time.sleep(2)
                 takePicture()
                 found, filtered,left,right,top = rb.detectTank(clearedMainFrame)
                 #first validation, haar cascade
@@ -61,13 +61,13 @@ def searchTank():
             com.turnSouth()
             com.forwardNCm(15)
         print "HAAR DID NOT FOUND TANK"
-        
+
         backwardNCm(15)
         for x in range(0,3):
             com.turnWest()
             for x in range(0,180,45) :
                 turnLeft(45)
-                time.sleep(2) 
+                time.sleep(2)
                 takePicture()
                 found, filtered,left,right,top = rb.detectTank(clearedMainFrame)
                 #first validation, haar cascade
@@ -113,7 +113,7 @@ def checkingTurningR():
 
 
                 success = triangleToGetInCow()
-                
+
                 if success:
                         return True
 
@@ -146,7 +146,7 @@ def checkingTurningL():
 
 
                 success = triangleToGetInCow()
-                
+
                 if success:
                         return True
 
@@ -196,7 +196,7 @@ def alignWithCow():
 
 def alignWithTank(left,right):
     centerFrame = rb.getXCenterFrame(mainFrame)
-    
+
     pixelDif = centerFrame - ((right + left)/2)
     degree = int((abs(pixelDif)/12))
     #Constant obtained throught calibration
@@ -220,14 +220,14 @@ def paralelism():
     if theta < -8:
         finalDeg = 90 - (4*degrees)
         if finalDeg < 0:
-                finalDeg = 11 
+                finalDeg = 11
         turnLeft(finalDeg)
         turnedLeft = True
         print finalDeg
     elif theta > 8:
         finalDeg = 90 - (5*degrees)
         if finalDeg < 0:
-                finalDeg = 11 
+                finalDeg = 11
         turnRight(finalDeg)
         turnedLeft = False
         print finalDeg
@@ -271,7 +271,7 @@ def triangleToGetInCow():
         if hypotenuse > 100:
                 hypotenuse = 100
 
-        
+
         com.forwardNCm(int(hypotenuse))#com.forwardNCm(int(hypotenuse/2))
 
 
@@ -281,7 +281,7 @@ def triangleToGetInCow():
         else:
             turnLeft(ninetyDegs)
 
-        #LETS CONFIRM AGAIN IF THERE IS A COW, 
+        #LETS CONFIRM AGAIN IF THERE IS A COW,
         #AND THEN ALLIGN TO IT, ELSE LETS RETURN
 
         com.backwardNCm(30)
@@ -369,7 +369,7 @@ VARIABLES GLOBALES
 
 
 #For debugging
-debugger = False
+debugger = True
 
 #Terrines Position; c = unknown, r = right, l = left
 terrinesZone = "c"
@@ -413,6 +413,7 @@ def waitToBegin():
     GPIO.output(LED_PIN,1)
     GPIO.wait_for_edge(START_PIN, GPIO.FALLING)
     GPIO.output(LED_PIN,0)
+    time.sleep(3)
     print "begining program"
 ########################################################
 
@@ -455,54 +456,105 @@ def takePicture(inColor = False):
 
 
 
-def tLook():
-    i = 0
+def getOrientation():
+    rotationCount = 0
+
     while True:
-        for x in range(0,360,10) :
-            takePicture()
-            found, filtered = rb.detectCow(clearedMainFrame)
-            #first validation, haar cascade
-            if found:            
-                print "HAAR FOUND COW ON RESTART"
-                #turnRight(35)
-                i = x
-                return i
-            else:
-                print "HAAR DIT NOT FIND COW ON RESTART"
-            turnLeft(10)
-#################################
-#           RESTART             #
-#################################
+        takePicture()
+        found, filtered = rb.detectCow(clearedMainFrame)
+        if found:
+            break
+        # check angles
+        turnRight(25)
+        takePicture()
+        found, filtered = rb.detectCow(clearedMainFrame)
+        if found:
+            turnLeft(25)
+            break
+        turnLeft(50)
+        found, filtered = rb.detectCow(clearedMainFrame)
+        if found:
+            turnRight(25)
+            break
+        rotationCount += 1
 
-def turnLooking4cow():
-    # turn until you find a cow
-    pseudoOriented = ' '
 
-    i = tLook()/10
-    # check probabilistic orientation configurations
+        if(rotationCount == 1):
+            com.turnWest()
+        elif(rotationCount == 2):
+            com.turnSouth()
+        elif(rotationCount == 3):
+            com.turnEast()
+        else:
+            com.turnNorth()
+            rotationCount = 0
+    
+    print "going to restart zone"
+    if(rotationCount == 0):
+        com.turnEast()
+    elif(rotationCount == 1):
+        com.turnNorth()
+    elif(rotationCount == 2):
+        com.turnWest()
+    elif(rotationCount == 3):
+        com.turnSouth()
 
-    # NORTH ?
-    if (i >= 0 and i <= 3):
-        print "P(pseudoOriented) -> NORTH"
-        turnRight(93)
-        pass   
-    # EAST ?
-    elif (i > 3 and i <= 8):
-        print "P(pseudoOriented) -> EAST"
-        turnRight(55)
-        pass
-    # SOUTH ?
-    elif (i > 8 and i <= 18):
-        print "P(pseudoOriented) -> SOUTH"
-        turnRight(60)
-        pass
-    # WEST ? 
-    elif (i > 18):
-        print "P(pseudoOriented) -> WEST"
-        turnRight(60)
-        pass
-
+        
     com.goToRestar()
+
+
+
+
+
+
+# def tLook():
+#     i = 0
+#     while True:
+#         for x in range(0,360,10) :
+#             takePicture()
+#             found, filtered = rb.detectCow(clearedMainFrame)
+#             #first validation, haar cascade
+#             if found:
+#                 print "HAAR FOUND COW ON RESTART"
+#                 #turnRight(35)
+#                 i = x
+#                 return i
+#             else:
+#                 print "HAAR DIT NOT FIND COW ON RESTART"
+#             turnLeft(10)
+# #################################
+# #           RESTART             #
+# #################################
+
+# def turnLooking4cow():
+#     # turn until you find a cow
+#     pseudoOriented = ' '
+
+#     i = tLook()/10
+#     # check probabilistic orientation configurations
+
+#     # NORTH ?
+#     if (i >= 0 and i <= 3):
+#         print "P(pseudoOriented) -> NORTH"
+#         turnRight(93)
+#         pass
+#     # EAST ?
+#     elif (i > 3 and i <= 8):
+#         print "P(pseudoOriented) -> EAST"
+#         turnRight(55)
+#         pass
+#     # SOUTH ?
+#     elif (i > 8 and i <= 18):
+#         print "P(pseudoOriented) -> SOUTH"
+#         turnRight(60)
+#         pass
+#     # WEST ?
+#     elif (i > 18):
+#         print "P(pseudoOriented) -> WEST"
+#         turnRight(60)
+#         pass
+
+#     com.goToRestar()
 
 
 
@@ -510,69 +562,74 @@ def turnLooking4cow():
 tFile = open("../calibration/restart.txt", "r+")
 trial = (tFile.readline().strip(" \n"))
 print trial
-try: 
+try:
     numberOfTrial = int(trial[len(trial)-1])
+    # update trial
+    linesToWrite = [" "+str(numberOfTrial + 1)]
 except ValueError:
     print "Error en el archivo de restart"
     while True:
         pass
 
 
-# update trial
-linesToWrite = [" "+str(numberOfTrial + 1)]
+
+print "updating restart.txt"
 tFile.writelines(linesToWrite)
 tFile.close()
+print "...Done"
 
 restarted = False
 if (numberOfTrial > 0):
     restarted = True
     print "Restart, looking for a cow"
+    com.closeClaw()
     waitToBegin()
-    turnLooking4cow()
+    # turnLooking4cow()
+    getOrientation()
 
 '''
     MAIN
 '''
 
 if __name__ == "__main__":
-
-    if (not restarted):
-        waitToBegin()
-    # Robot always STARTS facing NORTH, check field in 'information' folder #
-
-    #goAndGrabTerrine()
-
-    # STARTING EXPLORTION HERE #
-    #com.turnWest()
-    #turnRight(90)
-    #walkingDetecting()
-    #com.getInCow()
-    #cv2.waitKey(0)
-    #com.milk()
-    #com.goToStart()
-
-    #searchTank()
-
-
-
-    #NO MORE TESTING!! THIS IS COMPETITION
-    goAndGrabTerrine()
-    walkingDetecting()
-    com.getInCow()
-    com.milk()
-    com.goToStart()
-    searchTank()
-
-    
-    
     while True:
-        print "code"
-        pass
+
+        if (not restarted):
+            waitToBegin()
+        # Robot always STARTS facing NORTH, check field in 'information' folder #
+
+        #goAndGrabTerrine()
+
+        # STARTING EXPLORTION HERE #
+        #com.turnWest()
+        #turnRight(90)
+        #walkingDetecting()
+        #com.getInCow()
+        #cv2.waitKey(0)
+        #com.milk()
+        #com.goToStart()
+
+        #searchTank()
 
 
 
-    # takePicture()
-    # getToTank()
-    # com.forwardNCm(200)
+        #NO MORE TESTING!! THIS IS COMPETITION
+        goAndGrabTerrine()
+        walkingDetecting()
+        com.getInCow()
+        com.milk()
+        com.goToStart()
+        searchTank()
+        com.returnFromTank()
 
+
+##        while True:
+##            print "code"
+##            pass
+
+
+
+        # takePicture()
+        # getToTank()
+        # com.forwardNCm(200)
 
